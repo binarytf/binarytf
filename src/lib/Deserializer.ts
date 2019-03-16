@@ -39,17 +39,17 @@ export class Deserializer {
 			case BinaryTokens.Array: return this.readValueArray();
 			case BinaryTokens.EmptyArray: return [];
 			case BinaryTokens.ObjectReference: return this._objectIDs.get(this.readUint32());
-			case BinaryTokens.Date: return new Date(this.readFloat64());
-			case BinaryTokens.BooleanObject: return new Boolean(this.readUint8());
-			case BinaryTokens.NumberObject: return new Number(this.readFloat64());
-			case BinaryTokens.StringObject: return new String(this.readString());
+			case BinaryTokens.Date: return this.createObjectID(new Date(this.readFloat64()));
+			case BinaryTokens.BooleanObject: return this.createObjectID(new Boolean(this.readUint8()));
+			case BinaryTokens.NumberObject: return this.createObjectID(new Number(this.readFloat64()));
+			case BinaryTokens.StringObject: return this.createObjectID(new String(this.readString()));
 			case BinaryTokens.EmptyObject: return {};
 			case BinaryTokens.Object: return this.readValueObject();
-			case BinaryTokens.RegExp: return new RegExp(this.readString(), RegExps.flagsFromInteger(this.readUint8()));
+			case BinaryTokens.RegExp: return this.createObjectID(new RegExp(this.readString(), RegExps.flagsFromInteger(this.readUint8())));
 			case BinaryTokens.Map: return this.readValueMap();
-			case BinaryTokens.EmptyMap: return new Map();
+			case BinaryTokens.EmptyMap: return this.createObjectID(new Map());
 			case BinaryTokens.Set: return this.readValueSet();
-			case BinaryTokens.EmptySet: return new Set();
+			case BinaryTokens.EmptySet: return this.createObjectID(new Set());
 			case BinaryTokens.ArrayBuffer: throw new Error('Unreachable');
 			case BinaryTokens.Int8Array: throw new Error('Unreachable');
 			case BinaryTokens.Uint8Array: throw new Error('Unreachable');
@@ -66,15 +66,13 @@ export class Deserializer {
 	}
 
 	private readValueSet() {
-		const value = new Set();
-		this._objectIDs.set(this._objectIDs.size, value);
+		const value = this.createObjectID(new Set());
 		for (const entry of this.readValueArray()) value.add(entry);
 		return value;
 	}
 
 	private readValueMap() {
-		const value = new Map();
-		this._objectIDs.set(this._objectIDs.size, value);
+		const value = this.createObjectID(new Map());
 		for (let i = 0, max = this.readUint32(); i < max; i++) {
 			value.set(this.read(), this.read());
 		}
@@ -82,8 +80,7 @@ export class Deserializer {
 	}
 
 	private readValueObject() {
-		const value = {};
-		this._objectIDs.set(this._objectIDs.size, value);
+		const value = this.createObjectID({});
 		for (let i = 0, max = this.readUint32(); i < max; i++) {
 			value[this.read() as string | number] = this.read();
 		}
@@ -91,8 +88,7 @@ export class Deserializer {
 	}
 
 	private readValueArray() {
-		const value = new Array(this.readUint32());
-		this._objectIDs.set(this._objectIDs.size, value);
+		const value = this.createObjectID(new Array(this.readUint32()));
 		for (let i = 0, max = value.length; i < max; i++) {
 			if (this._buffer[this.offset] !== BinaryTokens.Hole) value[i] = this.read();
 		}
@@ -120,6 +116,11 @@ export class Deserializer {
 		}
 
 		return sign ? -value : value;
+	}
+
+	private createObjectID<T>(value: T) {
+		this._objectIDs.set(this._objectIDs.size, value);
+		return value;
 	}
 
 	private readUint8() {

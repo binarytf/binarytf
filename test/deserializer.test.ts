@@ -314,19 +314,24 @@ test('Deserialize Set', (t) => {
 });
 
 test('Deserialize Set (Circular)', (t) => {
-	t.plan(5);
+	t.plan(8);
 
 	const set = new Set();
+	set.add(new Set());
 	set.add(set);
 	const serialized = serialize(set);
 	const deserialized = deserialize(serialized) as Set<any>;
 	t.equal(typeof deserialized, 'object');
 	t.true(deserialized instanceof Set);
-	t.equal(deserialized.size, 1);
+	t.equal(deserialized.size, 2);
 
-	const [first] = deserialized;
+	const [first, second] = deserialized;
 	t.true(first instanceof Set);
-	t.equal(first, deserialized);
+	t.equal(first.size, 0);
+
+	t.true(second instanceof Set);
+	t.equal(second.size, 2);
+	t.equal(second, deserialized);
 });
 
 // TODO: Rest of tests
