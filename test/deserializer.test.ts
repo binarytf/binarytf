@@ -365,8 +365,8 @@ test('Deserialize Multiple (Circular)', (t) => {
 	t.equal(deserialized.array[0], deserialized);
 });
 
-test.skip('Deserialize Object Nested (Circular)', (t) => {
-	t.plan(18);
+test('Deserialize Object Nested (Circular)', (t) => {
+	t.plan(17);
 
 	const obj = { a: { b: { c: true, d: null }, obj: null } };
 	obj.a.obj = obj;
@@ -384,7 +384,6 @@ test.skip('Deserialize Object Nested (Circular)', (t) => {
 
 	// obj.a | { b: [Object], obj: [Object] }
 	t.true('b' in deserialized.a);
-	t.equal(typeof deserialized.b, 'object');
 	t.equal(typeof deserialized.a.b, 'object');
 	t.equal(Object.keys(deserialized.a.b).length, 2);
 
