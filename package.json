@@ -4,13 +4,20 @@
   "description": "Binary Term Format",
   "main": "dist/index",
   "scripts": {
+    "prepublishOnly": "yarn compile",
     "build:browser": "webpack",
     "lint": "tslint --fix '{test,src}/**/*.ts'",
     "test:lint": "tslint '{test,src}/**/*.ts'",
-    "test:suite": "tsc -p . && node dist/test/suite.js",
+    "test:suite": "yarn compile && node dist/test/suite.js",
     "compile": "tsc -p .",
     "watch": "tsc -p . -w"
   },
+  "keywords": [
+    "binary",
+    "serializer",
+    "deserializer",
+    "circular"
+  ],
   "repository": "https://github.com/kyranet/binarytf",
   "author": "Antonio Román <kyradiscord@gmail.com>",
   "license": "MIT",
