@@ -334,4 +334,35 @@ test('Deserialize Set (Circular)', (t) => {
 	t.equal(second, deserialized);
 });
 
+test('Deserialize Multiple (Circular)', (t) => {
+	t.plan(16);
+
+	const obj = { map: null, set: null, array: [] };
+	obj.map = new Map([[1, obj]]);
+	obj.set = new Set([obj]);
+	obj.array.push(obj);
+	const serialized = serialize(obj);
+	const deserialized = deserialize(serialized) as Record<any, any>;
+
+	t.equal(typeof deserialized, 'object');
+	t.true(deserialized instanceof Object);
+	t.equal(Object.keys(deserialized).length, 3);
+	t.true('map' in deserialized);
+	t.true('set' in deserialized);
+	t.true('array' in deserialized);
+
+	t.true(deserialized.map instanceof Map);
+	t.equal(deserialized.map.size, 1);
+	t.equal(deserialized.map.keys().next().value, 1);
+	t.equal(deserialized.map.values().next().value, deserialized);
+
+	t.true(deserialized.set instanceof Set);
+	t.equal(deserialized.set.size, 1);
+	t.equal(deserialized.set.keys().next().value, deserialized);
+
+	t.true(Array.isArray(deserialized.array));
+	t.equal(deserialized.array.length, 1);
+	t.equal(deserialized.array[0], deserialized);
+});
+
 // TODO: Rest of tests
