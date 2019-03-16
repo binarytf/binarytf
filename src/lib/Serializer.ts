@@ -86,8 +86,8 @@ export class Serializer {
 				if (typeof id === 'number') {
 					this.ensureAlloc(5);
 					this._buffer[this._offset++] = BinaryTokens.ObjectReference;
+					this.writeUint32(id, this._offset);
 					this._offset += 4;
-					this.writeUint32(id, this._offset - 4);
 					return;
 				}
 				this._objectIDs.set(value, this._objectIDs.size);
@@ -101,8 +101,8 @@ export class Serializer {
 
 					this.ensureAlloc(5);
 					this._buffer[this._offset++] = BinaryTokens.Array;
+					this.writeUint32(value.length, this._offset);
 					this._offset += 4;
-					this.writeUint32(value.length, this._offset - 4);
 
 					for (let i = 0, n = value.length; i < n; i++) {
 						if (i in value) {
@@ -170,8 +170,8 @@ export class Serializer {
 
 						this.ensureAlloc(5);
 						this._buffer[this._offset++] = BinaryTokens.Object;
+						this.writeUint32(keys.length, this._offset);
 						this._offset += 4;
-						this.writeUint32(keys.length, this._offset - 4);
 
 						for (const entryKey of keys) {
 							this.parse(entryKey);
@@ -190,8 +190,8 @@ export class Serializer {
 
 						this.ensureAlloc(5);
 						this._buffer[this._offset++] = BinaryTokens.Map;
+						this.writeUint32(typedSource.size, this._offset);
 						this._offset += 4;
-						this.writeUint32(typedSource.size, this._offset - 4);
 
 						for (const [entryKey, entryValue] of typedSource.entries()) {
 							this.parse(entryKey);
@@ -210,8 +210,8 @@ export class Serializer {
 
 						this.ensureAlloc(5);
 						this._buffer[this._offset++] = BinaryTokens.Set;
+						this.writeUint32(typedSource.size, this._offset);
 						this._offset += 4;
-						this.writeUint32(typedSource.size, this._offset - 4);
 
 						for (const entryValue of typedSource) {
 							this.parse(entryValue);
@@ -229,12 +229,12 @@ export class Serializer {
 						this.ensureAlloc(4 + uint8Array.length);
 
 						// Write the byte length
+						this.writeUint32(uint8Array.length, this._offset);
 						this._offset += 4;
-						this.writeUint32(uint8Array.length, this._offset - 4);
 
 						// Write the data
+						this._buffer.set(uint8Array, this._offset);
 						this._offset += uint8Array.length;
-						this._buffer.set(uint8Array, this._offset - uint8Array.length);
 						return;
 					}
 					default: {
@@ -267,14 +267,14 @@ export class Serializer {
 
 	private writeValueInt32(value: number) {
 		this.ensureAlloc(4);
+		this.writeUint32(value, this._offset);
 		this._offset += 4;
-		this.writeUint32(value, this._offset - 4);
 	}
 
 	private writeValueFloat64(value: number) {
 		this.ensureAlloc(8);
+		this.writeFloat64(value, this._offset);
 		this._offset += 8;
-		this.writeFloat64(value, this._offset - 8);
 	}
 
 	private writeValueBoolean(value: boolean) {
@@ -286,11 +286,11 @@ export class Serializer {
 		const serialized = Serializer._textEncoder.encode(value);
 		this.ensureAlloc(4 + serialized.length);
 
+		this.writeUint32(serialized.length, this._offset);
 		this._offset += 4;
-		this.writeUint32(serialized.length, this._offset - 4);
 
+		this._buffer.set(serialized, this._offset);
 		this._offset += serialized.length;
-		this._buffer.set(serialized, this._offset - serialized.length);
 	}
 
 	private getNumberType(value: number) {
