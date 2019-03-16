@@ -1,8 +1,8 @@
 {
   "name": "binarytf",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Binary Term Format",
-  "main": "dist/index",
+  "main": "dist/src/index",
   "scripts": {
     "prepublishOnly": "yarn compile",
     "build:browser": "webpack",
