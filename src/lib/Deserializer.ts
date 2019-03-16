@@ -48,7 +48,7 @@ export class Deserializer {
 			case BinaryTokens.RegExp: return new RegExp(this.readString(), RegExps.flagsFromInteger(this.readUint8()));
 			case BinaryTokens.Map: return this.readValueMap();
 			case BinaryTokens.EmptyMap: return new Map();
-			case BinaryTokens.Set: return new Set(this.readValueArray());
+			case BinaryTokens.Set: return this.readValueSet();
 			case BinaryTokens.EmptySet: return new Set();
 			case BinaryTokens.ArrayBuffer: throw new Error('Unreachable');
 			case BinaryTokens.Int8Array: throw new Error('Unreachable');
@@ -63,6 +63,13 @@ export class Deserializer {
 			case BinaryTokens.DataView: throw new Error('Unreachable');
 			default: throw new Error('Unreachable');
 		}
+	}
+
+	private readValueSet() {
+		const value = new Set();
+		this._objectIDs.set(this._objectIDs.size, value);
+		for (const entry of this.readValueArray()) value.add(entry);
+		return value;
 	}
 
 	private readValueMap() {

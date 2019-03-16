@@ -123,7 +123,7 @@ test('Serialize Array (PInt32)', (t) => {
 	t.equal(serialized.length, 7);
 });
 
-test('Serialize Array (Hole)', (t) => {
+test('Serialize Array (Holey)', (t) => {
 	t.plan(1);
 
 	const serialized = serialize([, ]);

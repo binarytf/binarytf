@@ -142,7 +142,7 @@ test('Deserialize Array (PInt32)', (t) => {
 	t.deepEqual(deserialized, [4]);
 });
 
-test('Deserialize Array (Hole)', (t) => {
+test('Deserialize Array (Holey)', (t) => {
 	t.plan(3);
 
 	const serialized = serialize([, ]);
@@ -150,6 +150,22 @@ test('Deserialize Array (Hole)', (t) => {
 	t.equal(typeof deserialized, 'object');
 	t.true(Array.isArray(deserialized));
 	t.deepEqual(deserialized, [, ]);
+});
+
+test('Deserialize Array (Circular)', (t) => {
+	t.plan(5);
+
+	const array = [];
+	array.push(array);
+	const serialized = serialize(array);
+	const deserialized = deserialize(serialized) as Array<any>;
+	t.equal(typeof deserialized, 'object');
+	t.true(Array.isArray(deserialized));
+	t.equal(deserialized.length, 1);
+
+	const [first] = deserialized;
+	t.true(Array.isArray(first));
+	t.equal(first, deserialized);
 });
 
 test('Deserialize Object (Empty)', (t) => {
@@ -258,6 +274,24 @@ test('Deserialize Map', (t) => {
 	t.equal(deserialized.get(1), null);
 });
 
+test('Deserialize Map (Circular)', (t) => {
+	t.plan(7);
+
+	const map = new Map();
+	map.set('a', map);
+	const serialized = serialize(map);
+	const deserialized = deserialize(serialized) as Map<any, any>;
+	t.equal(typeof deserialized, 'object');
+	t.true(deserialized instanceof Map);
+	t.equal(deserialized.size, 1);
+
+	const [[key, value]] = deserialized;
+	t.equal(typeof key, 'string');
+	t.equal(key, 'a');
+	t.true(value instanceof Map);
+	t.equal(value, deserialized);
+});
+
 test('Deserialize Set (Empty)', (t) => {
 	t.plan(3);
 
@@ -277,6 +311,22 @@ test('Deserialize Set', (t) => {
 	t.true(deserialized instanceof Set);
 	t.equal(deserialized.size, 1);
 	t.equal(deserialized.values().next().value, null);
+});
+
+test('Deserialize Set (Circular)', (t) => {
+	t.plan(5);
+
+	const set = new Set();
+	set.add(set);
+	const serialized = serialize(set);
+	const deserialized = deserialize(serialized) as Set<any>;
+	t.equal(typeof deserialized, 'object');
+	t.true(deserialized instanceof Set);
+	t.equal(deserialized.size, 1);
+
+	const [first] = deserialized;
+	t.true(first instanceof Set);
+	t.equal(first, deserialized);
 });
 
 // TODO: Rest of tests
