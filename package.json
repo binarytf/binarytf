@@ -1,0 +1,26 @@
+{
+  "name": "binarytf",
+  "version": "0.0.1",
+  "description": "Binary Term Format",
+  "main": "dist/index",
+  "scripts": {
+    "build:browser": "webpack",
+    "lint": "tslint --fix '{test,src}/**/*.ts'",
+    "test:lint": "tslint '{test,src}/**/*.ts'",
+    "test:suite": "tsc -p . && node dist/test/suite.js",
+    "compile": "tsc -p .",
+    "watch": "tsc -p . -w"
+  },
+  "repository": "https://github.com/kyranet/binarytf",
+  "author": "Antonio Román <kyradiscord@gmail.com>",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "@types/node": "^11.11.3",
+    "@types/tape": "^4.2.33",
+    "tape": "^4.10.1",
+    "ts-node": "^8.0.3",
+    "tslint": "^5.14.0",
+    "typescript": "^3.3.3333"
+  }
+}
