@@ -229,4 +229,13 @@ test('Serialize Set', (t) => {
 	t.equal(serialized.length, 6);
 });
 
+test('Serialize ArrayBuffer', (t) => {
+	t.plan(1);
+
+	const buffer = new ArrayBuffer(4);
+	const serialized = serialize(buffer);
+	// 1 (TYPE) + 4 (LENGTH) + 4 (BYTE)
+	t.equal(serialized.length, 9);
+});
+
 // TODO: Rest of tests

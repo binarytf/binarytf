@@ -365,4 +365,65 @@ test('Deserialize Multiple (Circular)', (t) => {
 	t.equal(deserialized.array[0], deserialized);
 });
 
+test.skip('Deserialize Object Nested (Circular)', (t) => {
+	t.plan(18);
+
+	const obj = { a: { b: { c: true, d: null }, obj: null } };
+	obj.a.obj = obj;
+	obj.a.b.d = obj.a.b;
+	const serialized = serialize(obj);
+	const deserialized = deserialize(serialized) as Record<any, any>;
+
+	t.equal(typeof deserialized, 'object');
+	t.equal(Object.keys(deserialized).length, 1);
+
+	// obj | { a: [Object] }
+	t.true('a' in deserialized);
+	t.equal(typeof deserialized.a, 'object');
+	t.equal(Object.keys(deserialized.a).length, 2);
+
+	// obj.a | { b: [Object], obj: [Object] }
+	t.true('b' in deserialized.a);
+	t.equal(typeof deserialized.b, 'object');
+	t.equal(typeof deserialized.a.b, 'object');
+	t.equal(Object.keys(deserialized.a.b).length, 2);
+
+	// obj.a.b | { c: true, d: [Circular] }
+	t.true('c' in deserialized.a.b);
+	t.equal(typeof deserialized.a.b.c, 'boolean');
+	t.equal(deserialized.a.b.c, true);
+
+	// obj.a.b | { c: true, d: [Circular] }
+	t.true('d' in deserialized.a.b);
+	t.equal(typeof deserialized.a.b.d, 'object');
+	t.equal(deserialized.a.b.d, deserialized.a.b);
+
+	// obj.a | { b: [Object], obj: [Object] }
+	t.true('obj' in deserialized.a);
+	t.equal(typeof deserialized.a.obj, 'object');
+	t.equal(deserialized.a.obj, deserialized);
+});
+
+test('Serialize ArrayBuffer', (t) => {
+	t.plan(5);
+
+	const buffer = new ArrayBuffer(4);
+	{
+		const uint8Array = new Uint8Array(buffer);
+		for (let i = 0; i < uint8Array.length; i++) uint8Array[i] = i;
+	}
+
+	const serialized = serialize(buffer);
+	const deserialized = deserialize(serialized) as ArrayBuffer;
+	t.equal(deserialized.byteLength, 4);
+
+	{
+		const uint8Array = new Uint8Array(deserialized);
+		t.equal(uint8Array[0], 0);
+		t.equal(uint8Array[1], 1);
+		t.equal(uint8Array[2], 2);
+		t.equal(uint8Array[3], 3);
+	}
+});
+
 // TODO: Rest of tests

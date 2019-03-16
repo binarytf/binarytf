@@ -209,7 +209,19 @@ export class Serializer {
 						return;
 					}
 					case '[object ArrayBuffer]': {
-						// TODO: Add this
+						const typedSource = value as ArrayBuffer;
+						this._buffer[this.offset++] = BinaryTokens.ArrayBuffer;
+
+						// We cannot read an ArrayBuffer, so we create an Uint8Array.
+						const uint8Array = new Uint8Array(typedSource);
+
+						// Write the byte length
+						this.offset += 4;
+						this.writeUint32(uint8Array.length, this.offset - 4);
+
+						// Write the data
+						this.offset += uint8Array.length;
+						this._buffer.set(uint8Array, this.offset - uint8Array.length);
 						return;
 					}
 					default: {

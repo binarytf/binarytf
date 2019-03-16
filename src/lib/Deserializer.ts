@@ -50,7 +50,7 @@ export class Deserializer {
 			case BinaryTokens.EmptyMap: return this.createObjectID(new Map());
 			case BinaryTokens.Set: return this.readValueSet();
 			case BinaryTokens.EmptySet: return this.createObjectID(new Set());
-			case BinaryTokens.ArrayBuffer: throw new Error('Unreachable');
+			case BinaryTokens.ArrayBuffer: return this.readValueArrayBuffer();
 			case BinaryTokens.Int8Array: throw new Error('Unreachable');
 			case BinaryTokens.Uint8Array: throw new Error('Unreachable');
 			case BinaryTokens.Uint8ClampedArray: throw new Error('Unreachable');
@@ -63,6 +63,15 @@ export class Deserializer {
 			case BinaryTokens.DataView: throw new Error('Unreachable');
 			default: throw new Error('Unreachable');
 		}
+	}
+
+	private readValueArrayBuffer() {
+		const value = this.createObjectID(new ArrayBuffer(this.readUint32()));
+		const uint8Array = new Uint8Array(value);
+		for (let i = 0, max = uint8Array.length; i < max; i++) {
+			uint8Array[i] = this.readUint8();
+		}
+		return value;
 	}
 
 	private readValueSet() {
@@ -82,7 +91,9 @@ export class Deserializer {
 	private readValueObject() {
 		const value = this.createObjectID({});
 		for (let i = 0, max = this.readUint32(); i < max; i++) {
-			value[this.read() as string | number] = this.read();
+			const entryKey = this.read() as string | number;
+			const entryValue = this.read();
+			value[entryKey] = entryValue;
 		}
 		return value;
 	}
