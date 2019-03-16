@@ -107,6 +107,30 @@ test('Serialize NFloat64', (t) => {
 	t.equal(serialized.length, 9);
 });
 
+test('Serialize NaN', (t) => {
+	t.plan(1);
+
+	const serialized = serialize(NaN);
+	// 1 (TYPE) + 8 (BYTE)
+	t.equal(serialized.length, 9);
+});
+
+test('Serialize Infinity', (t) => {
+	t.plan(1);
+
+	const serialized = serialize(Infinity);
+	// 1 (TYPE) + 8 (BYTE)
+	t.equal(serialized.length, 9);
+});
+
+test('Serialize Unsafe Float', (t) => {
+	t.plan(1);
+
+	const serialized = serialize(Number.MAX_VALUE);
+	// 1 (TYPE) + 8 (BYTE)
+	t.equal(serialized.length, 9);
+});
+
 test('Serialize Array (Empty)', (t) => {
 	t.plan(1);
 

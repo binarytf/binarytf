@@ -122,6 +122,33 @@ test('Deserialize NFloat64', (t) => {
 	t.equal(deserialized, value);
 });
 
+test('Deserialize NaN', (t) => {
+	t.plan(2);
+
+	const serialized = serialize(NaN);
+	const deserialized = deserialize(serialized) as number;
+	t.equal(typeof deserialized, 'number');
+	t.true(Number.isNaN(deserialized));
+});
+
+test('Deserialize Infinity', (t) => {
+	t.plan(2);
+
+	const serialized = serialize(Infinity);
+	const deserialized = deserialize(serialized) as number;
+	t.equal(typeof deserialized, 'number');
+	t.equal(deserialized, Infinity);
+});
+
+test('Deserialize Unsafe Float', (t) => {
+	t.plan(2);
+
+	const serialized = serialize(Number.MAX_VALUE);
+	const deserialized = deserialize(serialized) as number;
+	t.equal(typeof deserialized, 'number');
+	t.equal(deserialized, Number.MAX_VALUE);
+});
+
 test('Deserialize Array (Empty)', (t) => {
 	t.plan(3);
 

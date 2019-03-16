@@ -330,14 +330,7 @@ export class Serializer {
 
 	private writeFloat64(value: number, offset: number) {
 		float64Array[0] = value;
-		this._buffer[offset++] = uInt8Float64Array[0];
-		this._buffer[offset++] = uInt8Float64Array[1];
-		this._buffer[offset++] = uInt8Float64Array[2];
-		this._buffer[offset++] = uInt8Float64Array[3];
-		this._buffer[offset++] = uInt8Float64Array[4];
-		this._buffer[offset++] = uInt8Float64Array[5];
-		this._buffer[offset++] = uInt8Float64Array[6];
-		this._buffer[offset++] = uInt8Float64Array[7];
+		this._buffer.set(uInt8Float64Array, offset);
 	}
 
 }
