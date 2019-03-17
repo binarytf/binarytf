@@ -209,6 +209,7 @@ test('Deserialize Object', (t) => {
 
 	const serialized = serialize({ a: 12 });
 	const deserialized = deserialize(serialized);
+
 	t.equal(typeof deserialized, 'object');
 	t.deepEqual(deserialized, { a: 12 });
 });
@@ -371,8 +372,8 @@ test('Deserialize Multiple (Circular)', (t) => {
 	const serialized = serialize(obj);
 	const deserialized = deserialize(serialized) as Record<any, any>;
 
+	t.notEqual(deserialized, null);
 	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof Object);
 	t.equal(Object.keys(deserialized).length, 3);
 	t.true('map' in deserialized);
 	t.true('set' in deserialized);
@@ -393,7 +394,7 @@ test('Deserialize Multiple (Circular)', (t) => {
 });
 
 test('Deserialize Object Nested (Circular)', (t) => {
-	t.plan(17);
+	t.plan(13);
 
 	const obj = { a: { b: { c: true, d: null }, obj: null } };
 	obj.a.obj = obj;
@@ -401,32 +402,28 @@ test('Deserialize Object Nested (Circular)', (t) => {
 	const serialized = serialize(obj);
 	const deserialized = deserialize(serialized) as Record<any, any>;
 
+	t.notEqual(deserialized, null);
 	t.equal(typeof deserialized, 'object');
 	t.equal(Object.keys(deserialized).length, 1);
 
 	// obj | { a: [Object] }
 	t.true('a' in deserialized);
-	t.equal(typeof deserialized.a, 'object');
 	t.equal(Object.keys(deserialized.a).length, 2);
 
 	// obj.a | { b: [Object], obj: [Object] }
 	t.true('b' in deserialized.a);
-	t.equal(typeof deserialized.a.b, 'object');
 	t.equal(Object.keys(deserialized.a.b).length, 2);
 
 	// obj.a.b | { c: true, d: [Circular] }
 	t.true('c' in deserialized.a.b);
-	t.equal(typeof deserialized.a.b.c, 'boolean');
 	t.equal(deserialized.a.b.c, true);
 
 	// obj.a.b | { c: true, d: [Circular] }
 	t.true('d' in deserialized.a.b);
-	t.equal(typeof deserialized.a.b.d, 'object');
 	t.equal(deserialized.a.b.d, deserialized.a.b);
 
 	// obj.a | { b: [Object], obj: [Object] }
 	t.true('obj' in deserialized.a);
-	t.equal(typeof deserialized.a.obj, 'object');
 	t.equal(deserialized.a.obj, deserialized);
 });
 
@@ -616,4 +613,42 @@ test('Deserialize DataView', (t) => {
 	t.equal(deserialized[1], value[1]);
 	t.equal(deserialized[2], value[2]);
 	t.equal(deserialized[3], value[3]);
+});
+
+test('Deserialize WeakMap', (t) => {
+	t.plan(1);
+
+	const serialized = serialize(new WeakMap());
+	const deserialized = deserialize(serialized) as WeakMap<object, unknown>;
+
+	t.true(deserialized instanceof WeakMap);
+});
+
+test('Deserialize WeakSet', (t) => {
+	t.plan(1);
+
+	const serialized = serialize(new WeakSet());
+	const deserialized = deserialize(serialized) as WeakSet<object>;
+
+	t.true(deserialized instanceof WeakSet);
+});
+
+test('Deserialize Unsupported Types', (t) => {
+	t.plan(1);
+
+	const serialized = serialize(() => { }, () => null);
+	const deserialized = deserialize(serialized) as null;
+
+	t.equal(deserialized, null);
+});
+
+test('Deserialize Object With Unsupported Types', (t) => {
+	t.plan(2);
+
+	const value = { a: true, b: Symbol() };
+	const serialized = serialize(value, () => 'Wrong Input');
+	const deserialized = deserialize(serialized) as Record<any, any>;
+
+	t.equal(typeof deserialized, 'object');
+	t.deepEqual(deserialized, { a: true, b: 'Wrong Input' });
 });

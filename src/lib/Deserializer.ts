@@ -51,6 +51,8 @@ export class Deserializer {
 			case BinaryTokens.Set: return this.readValueSet();
 			case BinaryTokens.EmptySet: return this.createObjectID(new Set());
 			case BinaryTokens.ArrayBuffer: return this.readValueArrayBuffer();
+			case BinaryTokens.WeakMap: return this.createObjectID(new WeakMap());
+			case BinaryTokens.WeakSet: return this.createObjectID(new WeakSet());
 			case BinaryTokens.Int8Array:
 			case BinaryTokens.Uint8Array:
 			case BinaryTokens.Uint8ClampedArray:

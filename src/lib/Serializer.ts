@@ -11,14 +11,17 @@ const float64Array = new Float64Array(1);
 const uInt8Float64Array = new Uint8Array(float64Array.buffer);
 
 export class Serializer {
+	public onUnsupported: (value: unknown) => unknown;
 	private _buffer: Uint8Array = new Uint8Array(16);
 	private _offset = 0;
 	private _objectIDs = new Map() as Map<Record<any, any>, number>;
 	private _data: any;
+	private _handlingUnsupported = false;
 	private static _textEncoder = new TextEncoder();
 
-	public constructor(data: any) {
+	public constructor(data: any, onUnsupported: (value: unknown) => unknown = null) {
 		this._data = data;
+		this.onUnsupported = onUnsupported;
 	}
 
 	public process() {
@@ -40,8 +43,29 @@ export class Serializer {
 			case BinaryPrimitives.Object: return this.parseObject(value);
 			case BinaryPrimitives.String: return this.parseString(value);
 			case BinaryPrimitives.Undefined: return this.parseUndefined();
-			default: throw new TypeError(`Unsupported type ${hint}`);
+			default: return this.handleUnsupported(value);
 		}
+	}
+
+	protected handleUnsupported(value: unknown) {
+		// If there's an onUnsupported handler, try to call it
+		if (this.onUnsupported) {
+			// If the serializer was handling an unsupported type, abort the serialization
+			// as it's most likely an error in the return type of the handler.
+			if (this._handlingUnsupported) {
+				throw new TypeError(`Failed to handle unsupported type, aborting serialization.`);
+			}
+
+			// Set the serializer to handling unsupported, parse, and once it's done
+			// serializing the output of unSupported, set it back to false.
+			this._handlingUnsupported = true;
+			this.parse(this.onUnsupported(value));
+			this._handlingUnsupported = false;
+			return;
+		}
+
+		// If no handler is available, throw TypeError
+		throw new TypeError(`Unsupported type '${typeof value}'`);
 	}
 
 	private parseBigInt(value: bigint) {
@@ -111,6 +135,9 @@ export class Serializer {
 			case '[object Map]': return this.parseValueObjectMap(value as Map<unknown, unknown>);
 			case '[object Set]': return this.parseValueObjectSet(value as Set<unknown>);
 			case '[object ArrayBuffer]': return this.parseValueObjectArrayBuffer(value as ArrayBuffer);
+			case '[object WeakMap]': return this.parseValueObjectWeakMap();
+			case '[object WeakSet]': return this.parseValueObjectWeakSet();
+			case '[object Promise]': return this.handleUnsupported(value);
 			default: return this.parseValueObjectFallback(value, tag);
 		}
 	}
@@ -233,24 +260,20 @@ export class Serializer {
 		this._offset += uint8Array.length;
 	}
 
+	private parseValueObjectWeakMap() {
+		this.ensureAlloc(1);
+		this._buffer[this._offset++] = BinaryTokens.WeakMap;
+	}
+
+	private parseValueObjectWeakSet() {
+		this.ensureAlloc(1);
+		this._buffer[this._offset++] = BinaryTokens.WeakSet;
+	}
+
 	private parseValueObjectFallback(value: object, tag: string) {
 		const typedArrayTag = TypedArrays.typedArrayTags.get(tag);
-		if (typedArrayTag) {
-			this.writeValueTypedArray(value as TypedArray, typedArrayTag);
-			return;
-		}
-
-		if ('toJSON' in value) {
-			this.parse((value as any).toJSON());
-			return;
-		}
-
-		if ('valueOf' in value) {
-			this.parse((value as any).valueOf());
-			return;
-		}
-
-		this.parseValueObjectLiteral(value);
+		if (typedArrayTag) this.writeValueTypedArray(value as TypedArray, typedArrayTag);
+		else this.parseValueObjectLiteral(value);
 	}
 
 	private parseValueReference(value: number) {

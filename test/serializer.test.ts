@@ -262,4 +262,33 @@ test('Serialize ArrayBuffer', (t) => {
 	t.equal(serialized.length, 9);
 });
 
-// TODO: Rest of tests
+// TODO: Add TypedArray tests
+
+test('Serialize WeakMap', (t) => {
+	t.plan(1);
+
+	const serialized = serialize(new WeakMap());
+	// 1 (TYPE)
+	t.equal(serialized.length, 1);
+});
+
+test('Serialize WeakSet', (t) => {
+	t.plan(1);
+
+	const serialized = serialize(new WeakSet());
+	// 1 (TYPE)
+	t.equal(serialized.length, 1);
+});
+
+test('Serialize Unsupported Types', (t) => {
+	t.plan(1);
+
+	const serialized = serialize(() => { }, () => null);
+	// 1 (TYPE)
+	t.equal(serialized.length, 1);
+});
+
+test('Serialize Unsupported Types (Invalid)', (t) => {
+	t.plan(1);
+	t.throws(() => serialize(() => { }, () => Symbol()), TypeError);
+});
