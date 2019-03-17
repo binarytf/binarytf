@@ -1,6 +1,6 @@
 import { TextDecoder } from 'util';
-import { BinaryTokens } from './util/constants';
-import { BigIntegers, RegExps } from './util/util';
+import { BinaryTokens, TypedArray } from './util/constants';
+import { BigIntegers, RegExps, TypedArrays } from './util/util';
 
 export class Deserializer {
 
@@ -51,18 +51,37 @@ export class Deserializer {
 			case BinaryTokens.Set: return this.readValueSet();
 			case BinaryTokens.EmptySet: return this.createObjectID(new Set());
 			case BinaryTokens.ArrayBuffer: return this.readValueArrayBuffer();
-			case BinaryTokens.Int8Array: throw new Error('Unreachable');
-			case BinaryTokens.Uint8Array: throw new Error('Unreachable');
-			case BinaryTokens.Uint8ClampedArray: throw new Error('Unreachable');
-			case BinaryTokens.Int16Array: throw new Error('Unreachable');
-			case BinaryTokens.Uint16Array: throw new Error('Unreachable');
-			case BinaryTokens.Int32Array: throw new Error('Unreachable');
-			case BinaryTokens.Uint32Array: throw new Error('Unreachable');
-			case BinaryTokens.Float32Array: throw new Error('Unreachable');
-			case BinaryTokens.Float64Array: throw new Error('Unreachable');
-			case BinaryTokens.DataView: throw new Error('Unreachable');
+			case BinaryTokens.Int8Array:
+			case BinaryTokens.Uint8Array:
+			case BinaryTokens.Uint8ClampedArray:
+			case BinaryTokens.Int16Array:
+			case BinaryTokens.Uint16Array:
+			case BinaryTokens.Int32Array:
+			case BinaryTokens.Uint32Array:
+			case BinaryTokens.Float32Array:
+			case BinaryTokens.Float64Array:
+			case BinaryTokens.DataView: return this.readValueTypedArray(type);
 			default: throw new Error('Unreachable');
 		}
+	}
+
+	private readValueTypedArray(token: BinaryTokens) {
+		// Read the byte length, then create a shared ArrayBuffer for the desired
+		// typedArray and an Uint8Array which we write to.
+		const byteLength = this.readUint32();
+
+		let value: TypedArray;
+		// Fast-path if we are deserializing an Uint8Array
+		if (token === BinaryTokens.Uint8Array) {
+			value = this._buffer.subarray(this.offset, this.offset + byteLength);
+		} else {
+			const buffer = new ArrayBuffer(byteLength);
+			const ctor = TypedArrays.typedArrayTagToConstructor.get(token);
+			value = new ctor(buffer);
+			new Uint8Array(buffer).set(this._buffer.subarray(this.offset, this.offset + byteLength));
+		}
+		this.offset += byteLength;
+		return this.createObjectID(value);
 	}
 
 	private readValueArrayBuffer() {

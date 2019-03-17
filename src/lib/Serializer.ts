@@ -1,5 +1,5 @@
-import { BinaryPrimitives, BinaryTokens } from './util/constants';
-import { Numbers, BigIntegers, RegExps } from './util/util';
+import { BinaryPrimitives, BinaryTokens, TypedArray } from './util/constants';
+import { Numbers, BigIntegers, RegExps, TypedArrays } from './util/util';
 
 const MIN_INT32 = -(2 ** 31);
 const MAX_INT32 = (2 ** 31) - 1;
@@ -116,7 +116,8 @@ export class Serializer {
 					return;
 				}
 
-				switch (Object.prototype.toString.call(value)) {
+				const tag = Object.prototype.toString.call(value);
+				switch (tag) {
 					case '[object String]': {
 						const typedSource = value as String;
 						this.ensureAlloc(1);
@@ -238,8 +239,14 @@ export class Serializer {
 						return;
 					}
 					default: {
-						// TODO: Handle TypedArrays
-						return;
+						const typedSource = value as TypedArray;
+						const typedArrayTag = TypedArrays.typedArrayTags.get(tag);
+						if (typedArrayTag) {
+							this.writeValueTypedArray(typedSource, typedArrayTag);
+							return;
+						}
+
+						throw new TypeError('Cannot Serialize. Maybe the source is unsupported?');
 					}
 				}
 			}
@@ -258,6 +265,23 @@ export class Serializer {
 			}
 			default: throw new TypeError(`Unsupported type ${hint}`);
 		}
+	}
+
+	private writeValueTypedArray(value: TypedArray, tag: BinaryTokens) {
+		// Allocate 5 + byteLength to the internal buffer and assign the tag
+		this.ensureAlloc(5 + value.byteLength);
+		this._buffer[this._offset++] = tag;
+
+		// Write the array length in the next 4 bytes
+		this.writeUint32(value.byteLength, this._offset);
+		this._offset += 4;
+
+		if (tag !== BinaryTokens.Uint8Array) {
+			value = new Uint8Array(value.buffer);
+		}
+
+		this._buffer.set(value, this._offset);
+		this._offset += value.byteLength;
 	}
 
 	private writeValueByte(value: number) {

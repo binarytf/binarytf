@@ -430,8 +430,8 @@ test('Deserialize Object Nested (Circular)', (t) => {
 	t.equal(deserialized.a.obj, deserialized);
 });
 
-test('Serialize ArrayBuffer', (t) => {
-	t.plan(5);
+test('Deserialize ArrayBuffer', (t) => {
+	t.plan(6);
 
 	const buffer = new ArrayBuffer(4);
 	{
@@ -441,6 +441,8 @@ test('Serialize ArrayBuffer', (t) => {
 
 	const serialized = serialize(buffer);
 	const deserialized = deserialize(serialized) as ArrayBuffer;
+
+	t.true(deserialized instanceof ArrayBuffer);
 	t.equal(deserialized.byteLength, 4);
 
 	{
@@ -452,4 +454,166 @@ test('Serialize ArrayBuffer', (t) => {
 	}
 });
 
-// TODO: Rest of tests
+test('Deserialize Int8Array', (t) => {
+	t.plan(7);
+
+	const value = new Int8Array([-10, -5, 0, 5, 10]);
+	const serialized = serialize(value);
+	const deserialized = deserialize(serialized) as Int8Array;
+
+	t.true(deserialized instanceof Int8Array);
+	t.equal(deserialized.length, value.length);
+	t.equal(deserialized[0], value[0]);
+	t.equal(deserialized[1], value[1]);
+	t.equal(deserialized[2], value[2]);
+	t.equal(deserialized[3], value[3]);
+	t.equal(deserialized[4], value[4]);
+});
+
+test('Deserialize Uint8Array', (t) => {
+	t.plan(7);
+
+	const value = new Uint8Array([0, 1, 2, 5, 0xFF]);
+	const serialized = serialize(value);
+	const deserialized = deserialize(serialized) as Uint8Array;
+
+	t.true(deserialized instanceof Uint8Array);
+	t.equal(deserialized.length, value.length);
+	t.equal(deserialized[0], value[0]);
+	t.equal(deserialized[1], value[1]);
+	t.equal(deserialized[2], value[2]);
+	t.equal(deserialized[3], value[3]);
+	t.equal(deserialized[4], value[4]);
+});
+
+test('Deserialize Uint8ClampedArray', (t) => {
+	t.plan(7);
+
+	const value = new Uint8ClampedArray([0, 1, 2, 5, 0xFF]);
+	const serialized = serialize(value);
+	const deserialized = deserialize(serialized) as Uint8ClampedArray;
+
+	t.true(deserialized instanceof Uint8ClampedArray);
+	t.equal(deserialized.length, value.length);
+	t.equal(deserialized[0], value[0]);
+	t.equal(deserialized[1], value[1]);
+	t.equal(deserialized[2], value[2]);
+	t.equal(deserialized[3], value[3]);
+	t.equal(deserialized[4], value[4]);
+});
+
+test('Deserialize Int16Array', (t) => {
+	t.plan(7);
+
+	const value = new Int16Array([-0x7FFE, 1, 2, 0xFF, 0x7FFF]);
+	const serialized = serialize(value);
+	const deserialized = deserialize(serialized) as Int16Array;
+
+	t.true(deserialized instanceof Int16Array);
+	t.equal(deserialized.length, value.length);
+	t.equal(deserialized[0], value[0]);
+	t.equal(deserialized[1], value[1]);
+	t.equal(deserialized[2], value[2]);
+	t.equal(deserialized[3], value[3]);
+	t.equal(deserialized[4], value[4]);
+});
+
+test('Deserialize Uint16Array', (t) => {
+	t.plan(7);
+
+	const value = new Uint16Array([0, 1, 2, 0xFF, 0xFFFF]);
+	const serialized = serialize(value);
+	const deserialized = deserialize(serialized) as Uint16Array;
+
+	t.true(deserialized instanceof Uint16Array);
+	t.equal(deserialized.length, value.length);
+	t.equal(deserialized[0], value[0]);
+	t.equal(deserialized[1], value[1]);
+	t.equal(deserialized[2], value[2]);
+	t.equal(deserialized[3], value[3]);
+	t.equal(deserialized[4], value[4]);
+});
+
+test('Deserialize Int32Array', (t) => {
+	t.plan(7);
+
+	const value = new Int32Array([-0x7FFFFFFE, 1, 2, 0xFF, 0x7FFFFFFF]);
+	const serialized = serialize(value);
+	const deserialized = deserialize(serialized) as Int32Array;
+
+	t.true(deserialized instanceof Int32Array);
+	t.equal(deserialized.length, value.length);
+	t.equal(deserialized[0], value[0]);
+	t.equal(deserialized[1], value[1]);
+	t.equal(deserialized[2], value[2]);
+	t.equal(deserialized[3], value[3]);
+	t.equal(deserialized[4], value[4]);
+});
+
+test('Deserialize Uint32Array', (t) => {
+	t.plan(7);
+
+	const value = new Uint32Array([0, 1, 2, 0xFF, 0xFFFFFFFF]);
+	const serialized = serialize(value);
+	const deserialized = deserialize(serialized) as Uint32Array;
+
+	t.true(deserialized instanceof Uint32Array);
+	t.equal(deserialized.length, value.length);
+	t.equal(deserialized[0], value[0]);
+	t.equal(deserialized[1], value[1]);
+	t.equal(deserialized[2], value[2]);
+	t.equal(deserialized[3], value[3]);
+	t.equal(deserialized[4], value[4]);
+});
+
+test('Deserialize Float32Array', (t) => {
+	t.plan(7);
+
+	const value = new Float32Array([-50, 3.14159, 4.2, 5.1234, 54321.4321]);
+	const serialized = serialize(value);
+	const deserialized = deserialize(serialized) as Float32Array;
+
+	t.true(deserialized instanceof Float32Array);
+	t.equal(deserialized.length, value.length);
+	t.equal(deserialized[0], value[0]);
+	t.equal(deserialized[1], value[1]);
+	t.equal(deserialized[2], value[2]);
+	t.equal(deserialized[3], value[3]);
+	t.equal(deserialized[4], value[4]);
+});
+
+test('Deserialize Float64Array', (t) => {
+	t.plan(7);
+
+	const value = new Float64Array([-500, 3.141592653589793, 4.2, 5.12345678, 54321.4321234]);
+	const serialized = serialize(value);
+	const deserialized = deserialize(serialized) as Float64Array;
+
+	t.true(deserialized instanceof Float64Array);
+	t.equal(deserialized.length, value.length);
+	t.equal(deserialized[0], value[0]);
+	t.equal(deserialized[1], value[1]);
+	t.equal(deserialized[2], value[2]);
+	t.equal(deserialized[3], value[3]);
+	t.equal(deserialized[4], value[4]);
+});
+
+test('Deserialize DataView', (t) => {
+	t.plan(6);
+
+	const buffer = new ArrayBuffer(4);
+	{
+		const uint8Array = new Uint8Array(buffer);
+		for (let i = 0; i < uint8Array.length; i++) uint8Array[i] = i;
+	}
+	const value = new DataView(buffer);
+	const serialized = serialize(value);
+	const deserialized = deserialize(serialized) as DataView;
+
+	t.true(deserialized instanceof DataView);
+	t.equal(deserialized.byteLength, value.byteLength);
+	t.equal(deserialized[0], value[0]);
+	t.equal(deserialized[1], value[1]);
+	t.equal(deserialized[2], value[2]);
+	t.equal(deserialized[3], value[3]);
+});
