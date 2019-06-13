@@ -51,5 +51,4 @@ export enum BinaryPrimitives {
 }
 
 export type TypedArray = Uint8Array | Float32Array | Int32Array;
-// tslint:disable-next-line: variable-name
 export const TypedArray = Object.getPrototypeOf(Int8Array) as TypedArray;

@@ -1,0 +1,11 @@
+{
+  "extends": "bamboo",
+  "rules": {
+	  "@typescript-eslint/no-namespace": 0
+  },
+  "globals": {
+    "BigInt": true,
+    "BigInt64Array": true,
+    "BigUint64Array": true
+  }
+}

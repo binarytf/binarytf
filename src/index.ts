@@ -1,7 +1,7 @@
-import { Serializer } from './lib/Serializer';
+import { Serializer, OnUnsupported } from './lib/Serializer';
 import { Deserializer } from './lib/Deserializer';
 
-export function serialize(data: any, onUnsupported?: (value: unknown) => unknown) {
+export function serialize(data: any, onUnsupported?: OnUnsupported) {
 	return new Serializer(data, onUnsupported).process();
 }
 

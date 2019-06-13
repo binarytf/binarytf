@@ -8,11 +8,11 @@ export namespace RegExps {
 	const u = 1 << 4;
 
 	export function flagsAsInteger(regExp: RegExp) {
-		return (regExp.global ? g : 0) |
-			(regExp.ignoreCase ? i : 0) |
-			(regExp.multiline ? m : 0) |
-			(regExp.sticky ? y : 0) |
-			(regExp.unicode ? u : 0);
+		return (regExp.global ? g : 0)
+			| (regExp.ignoreCase ? i : 0)
+			| (regExp.multiline ? m : 0)
+			| (regExp.sticky ? y : 0)
+			| (regExp.unicode ? u : 0);
 	}
 
 	export function flagsFromInteger(integer: number) {
@@ -34,13 +34,13 @@ export namespace BigIntegers {
 	export const BYTE = SUPPORTED ? BigInt(0xFF) : null;
 
 	export function nextPowerOfTwo(n: bigint) {
-		return n > 0 && (n & (n - ONE)) === ZERO ? Number(n) : 1 << bitCount(n);
+		return n > 0 && (n & (n - ONE!)) === ZERO ? Number(n) : 1 << bitCount(n);
 	}
 
 	export function bitCount(n: bigint) {
 		let count = 0;
 		while (n !== ZERO) {
-			n >>= ONE;
+			n >>= ONE!;
 			count += 1;
 		}
 
@@ -68,10 +68,10 @@ export namespace TypedArrays {
 	if (typeof BigUint64Array === 'function') constructors.push(BigUint64Array);
 
 	export const typedArrayTags = new Map(constructors.map(typedArray =>
-		[Object.prototype.toString.call(new typedArray(new ArrayBuffer(0))), BinaryTokens[typedArray.name]] as [string, BinaryTokens]
-	));
+		// @ts-ignore
+		[Object.prototype.toString.call(new typedArray(new ArrayBuffer(0))), BinaryTokens[typedArray.name]] as [string, BinaryTokens]));
 
 	export const typedArrayTagToConstructor = new Map(constructors.map(typedArray =>
-		[BinaryTokens[typedArray.name], typedArray] as unknown as [BinaryTokens, { new <T extends TypedArray>(...args: any): T }]
-	));
+		// @ts-ignore
+		[BinaryTokens[typedArray.name], typedArray] as unknown as [BinaryTokens, { new <T extends TypedArray>(...args: any): T }]));
 }

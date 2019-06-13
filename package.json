@@ -6,8 +6,8 @@
   "scripts": {
     "prepublishOnly": "yarn compile",
     "build:browser": "webpack",
-    "lint": "tslint --fix '{test,src}/**/*.ts'",
-    "test:lint": "tslint '{test,src}/**/*.ts'",
+    "lint": "eslint --ext ts src --fix",
+    "test:lint": "eslint --ext ts src",
     "test:suite": "yarn compile && node dist/test/suite.js",
     "compile": "tsc -p .",
     "watch": "tsc -p . -w"
@@ -23,11 +23,13 @@
   "license": "MIT",
   "private": false,
   "devDependencies": {
-    "@types/node": "^12.0.0",
+    "@types/node": "^12.0.8",
     "@types/tape": "^4.2.33",
-    "tape": "^4.10.1",
-    "ts-node": "^8.0.3",
-    "tslint": "^5.14.0",
-    "typescript": "^3.3.3333"
+    "@typescript-eslint/eslint-plugin": "^1.10.2",
+    "@typescript-eslint/parser": "^1.10.2",
+    "eslint": "^5.16.0",
+    "eslint-config-bamboo": "^1.3.0",
+    "tape": "^4.10.2",
+    "typescript": "^3.5.2"
   }
 }

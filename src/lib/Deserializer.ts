@@ -2,12 +2,14 @@ import { TextDecoder } from 'util';
 import { BinaryTokens, TypedArray } from './util/constants';
 import { BigIntegers, RegExps, TypedArrays } from './util/util';
 
+const float64Array = new Float64Array(1);
+const uInt8Float64Array = new Uint8Array(float64Array.buffer);
+
 export class Deserializer {
 
-	private _buffer: Uint8Array;
+	private _buffer: Uint8Array | null;
 	private offset = 0;
 	private _objectIDs = new Map() as Map<number, Record<any, any>>;
-	private static _textDecoder = new TextDecoder();
 
 	public constructor(buffer: Uint8Array) {
 		this._buffer = buffer;
@@ -40,8 +42,11 @@ export class Deserializer {
 			case BinaryTokens.EmptyArray: return [];
 			case BinaryTokens.ObjectReference: return this._objectIDs.get(this.readUint32());
 			case BinaryTokens.Date: return this.createObjectID(new Date(this.readFloat64()));
+			// eslint-disable-next-line no-new-wrappers
 			case BinaryTokens.BooleanObject: return this.createObjectID(new Boolean(this.readUint8()));
+			// eslint-disable-next-line no-new-wrappers
 			case BinaryTokens.NumberObject: return this.createObjectID(new Number(this.readFloat64()));
+			// eslint-disable-next-line no-new-wrappers
 			case BinaryTokens.StringObject: return this.createObjectID(new String(this.readString()));
 			case BinaryTokens.EmptyObject: return {};
 			case BinaryTokens.Object: return this.readValueObject();
@@ -75,12 +80,12 @@ export class Deserializer {
 		let value: TypedArray;
 		// Fast-path if we are deserializing an Uint8Array
 		if (token === BinaryTokens.Uint8Array) {
-			value = this._buffer.subarray(this.offset, this.offset + byteLength);
+			value = this._buffer!.subarray(this.offset, this.offset + byteLength);
 		} else {
 			const buffer = new ArrayBuffer(byteLength);
-			const ctor = TypedArrays.typedArrayTagToConstructor.get(token);
+			const ctor = TypedArrays.typedArrayTagToConstructor.get(token)!;
 			value = new ctor(buffer);
-			new Uint8Array(buffer).set(this._buffer.subarray(this.offset, this.offset + byteLength));
+			new Uint8Array(buffer).set(this._buffer!.subarray(this.offset, this.offset + byteLength));
 		}
 		this.offset += byteLength;
 		return this.createObjectID(value);
@@ -110,7 +115,7 @@ export class Deserializer {
 	}
 
 	private readValueObject() {
-		const value = this.createObjectID({});
+		const value = this.createObjectID({}) as Record<string | number, unknown>;
 		for (let i = 0, max = this.readUint32(); i < max; i++) {
 			const entryKey = this.read() as string | number;
 			const entryValue = this.read();
@@ -122,14 +127,14 @@ export class Deserializer {
 	private readValueArray() {
 		const value = this.createObjectID(new Array(this.readUint32()));
 		for (let i = 0, max = value.length; i < max; i++) {
-			if (this._buffer[this.offset] !== BinaryTokens.Hole) value[i] = this.read();
+			if (this._buffer![this.offset] !== BinaryTokens.Hole) value[i] = this.read();
 		}
 		return value;
 	}
 
 	private readString() {
 		const length = this.readUint32();
-		const sub = this._buffer.subarray(this.offset, this.offset + length);
+		const sub = this._buffer!.subarray(this.offset, this.offset + length);
 		const str = Deserializer._textDecoder.decode(sub);
 		this.offset += length;
 		return str;
@@ -138,13 +143,13 @@ export class Deserializer {
 	private readValueBigInt(sign: boolean) {
 		const length = this.readUint32();
 
-		let value = BigIntegers.ZERO;
-		let b = BigIntegers.ONE;
+		let value = BigIntegers.ZERO!;
+		let b = BigIntegers.ONE!;
 
 		for (let i = 0; i < length; i++) {
 			const digit = this.readUint8();
 			value += BigInt(digit) * b;
-			b <<= BigIntegers.EIGHT;
+			b <<= BigIntegers.EIGHT!;
 		}
 
 		return sign ? -value : value;
@@ -156,30 +161,29 @@ export class Deserializer {
 	}
 
 	private readUint8() {
-		return this._buffer[this.offset++];
+		return this._buffer![this.offset++];
 	}
 
 	private readUint32() {
-		return this._buffer[this.offset++] * 2 ** 24
-			+ this._buffer[this.offset++] * 2 ** 16
-			+ this._buffer[this.offset++] * 2 ** 8
-			+ this._buffer[this.offset++];
+		return (this._buffer![this.offset++] * (2 ** 24)) +
+			(this._buffer![this.offset++] * (2 ** 16)) +
+			(this._buffer![this.offset++] * (2 ** 8)) +
+			this._buffer![this.offset++];
 
 	}
 
 	private readFloat64() {
-		uInt8Float64Array[0] = this._buffer[this.offset++];
-		uInt8Float64Array[1] = this._buffer[this.offset++];
-		uInt8Float64Array[2] = this._buffer[this.offset++];
-		uInt8Float64Array[3] = this._buffer[this.offset++];
-		uInt8Float64Array[4] = this._buffer[this.offset++];
-		uInt8Float64Array[5] = this._buffer[this.offset++];
-		uInt8Float64Array[6] = this._buffer[this.offset++];
-		uInt8Float64Array[7] = this._buffer[this.offset++];
+		uInt8Float64Array[0] = this._buffer![this.offset++];
+		uInt8Float64Array[1] = this._buffer![this.offset++];
+		uInt8Float64Array[2] = this._buffer![this.offset++];
+		uInt8Float64Array[3] = this._buffer![this.offset++];
+		uInt8Float64Array[4] = this._buffer![this.offset++];
+		uInt8Float64Array[5] = this._buffer![this.offset++];
+		uInt8Float64Array[6] = this._buffer![this.offset++];
+		uInt8Float64Array[7] = this._buffer![this.offset++];
 		return float64Array[0];
 	}
 
-}
+	private static _textDecoder = new TextDecoder();
 
-const float64Array = new Float64Array(1);
-const uInt8Float64Array = new Uint8Array(float64Array.buffer);
+}
