@@ -2,6 +2,7 @@ import { TextDecoder } from 'util';
 import { BinaryTokens, TypedArray } from './util/constants';
 import { BigIntegers, RegExps, TypedArrays } from './util/util';
 
+const NULL_TERMINATOR = 0x00;
 const float64Array = new Float64Array(1);
 const uInt8Float64Array = new Uint8Array(float64Array.buffer);
 
@@ -13,6 +14,10 @@ export class Deserializer {
 
 	public constructor(buffer: Uint8Array) {
 		this._buffer = buffer;
+	}
+
+	private get finished() {
+		return this.offset === this._buffer!.length;
 	}
 
 	public process() {
@@ -102,13 +107,17 @@ export class Deserializer {
 
 	private readValueSet() {
 		const value = this.createObjectID(new Set());
-		for (const entry of this.readValueArray()) value.add(entry);
+		while (!this.finished) {
+			if (this.watchUint8() === NULL_TERMINATOR) break;
+			value.add(this.read());
+		}
 		return value;
 	}
 
 	private readValueMap() {
 		const value = this.createObjectID(new Map());
-		for (let i = 0, max = this.readUint32(); i < max; i++) {
+		while (!this.finished) {
+			if (this.watchUint8() === NULL_TERMINATOR) break;
 			value.set(this.read(), this.read());
 		}
 		return value;
@@ -116,7 +125,8 @@ export class Deserializer {
 
 	private readValueObject() {
 		const value = this.createObjectID({}) as Record<string | number, unknown>;
-		for (let i = 0, max = this.readUint32(); i < max; i++) {
+		for (let i = 0; !this.finished; i++) {
+			if (this.watchUint8() === NULL_TERMINATOR) break;
 			const entryKey = this.read() as string | number;
 			const entryValue = this.read();
 			value[entryKey] = entryValue;
@@ -125,18 +135,22 @@ export class Deserializer {
 	}
 
 	private readValueArray() {
-		const value = this.createObjectID(new Array(this.readUint32()));
-		for (let i = 0, max = value.length; i < max; i++) {
-			if (this._buffer![this.offset] !== BinaryTokens.Hole) value[i] = this.read();
+		const value = this.createObjectID([] as unknown[]);
+		for (let i = 0; !this.finished; ++i) {
+			const raw = this.readUint8();
+			if (raw === BinaryTokens.Hole) continue;
+			if (raw === NULL_TERMINATOR) break;
+			this.offsetBack();
+			value[i] = this.read();
 		}
 		return value;
 	}
 
 	private readString() {
-		const length = this.readUint32();
-		const sub = this._buffer!.subarray(this.offset, this.offset + length);
+		const end = this._buffer!.indexOf(NULL_TERMINATOR, this.offset);
+		const sub = this._buffer!.subarray(this.offset, end);
 		const str = Deserializer._textDecoder.decode(sub);
-		this.offset += length;
+		this.offset = end + 1;
 		return str;
 	}
 
@@ -158,6 +172,14 @@ export class Deserializer {
 	private createObjectID<T>(value: T) {
 		this._objectIDs.set(this._objectIDs.size, value);
 		return value;
+	}
+
+	private offsetBack() {
+		--this.offset;
+	}
+
+	private watchUint8() {
+		return this._buffer![this.offset];
 	}
 
 	private readUint8() {

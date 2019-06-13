@@ -5,6 +5,7 @@ import { TextEncoder } from 'util';
 // Immutable
 const MIN_INT32 = -(2 ** 31);
 const MAX_INT32 = (2 ** 31) - 1;
+const NULL_TERMINATOR = 0x00;
 
 // Mutable
 const float64Array = new Float64Array(1);
@@ -214,15 +215,16 @@ export class Serializer {
 			return;
 		}
 
-		this.ensureAlloc(5);
+		this.ensureAlloc(1);
 		this._buffer![this._offset++] = BinaryTokens.Object;
-		this.writeUint32(keys.length, this._offset);
-		this._offset += 4;
 
 		for (const entryKey of keys) {
 			this.parse(entryKey);
 			this.parse(value[entryKey]);
 		}
+
+		this.ensureAlloc(1);
+		this._buffer![this._offset++] = NULL_TERMINATOR;
 	}
 
 	private parseValueObjectMap(value: Map<unknown, unknown>) {
@@ -232,15 +234,16 @@ export class Serializer {
 			return;
 		}
 
-		this.ensureAlloc(5);
+		this.ensureAlloc(1);
 		this._buffer![this._offset++] = BinaryTokens.Map;
-		this.writeUint32(value.size, this._offset);
-		this._offset += 4;
 
 		for (const [entryKey, entryValue] of value.entries()) {
 			this.parse(entryKey);
 			this.parse(entryValue);
 		}
+
+		this.ensureAlloc(1);
+		this._buffer![this._offset++] = NULL_TERMINATOR;
 	}
 
 	private parseValueObjectSet(value: Set<unknown>) {
@@ -250,14 +253,15 @@ export class Serializer {
 			return;
 		}
 
-		this.ensureAlloc(5);
+		this.ensureAlloc(1);
 		this._buffer![this._offset++] = BinaryTokens.Set;
-		this.writeUint32(value.size, this._offset);
-		this._offset += 4;
 
 		for (const entryValue of value) {
 			this.parse(entryValue);
 		}
+
+		this.ensureAlloc(1);
+		this._buffer![this._offset++] = NULL_TERMINATOR;
 	}
 
 	private parseValueObjectArrayBuffer(value: ArrayBuffer) {
@@ -307,10 +311,8 @@ export class Serializer {
 			return;
 		}
 
-		this.ensureAlloc(5);
+		this.ensureAlloc(2);
 		this._buffer![this._offset++] = BinaryTokens.Array;
-		this.writeUint32(value.length, this._offset);
-		this._offset += 4;
 
 		for (let i = 0, n = value.length; i < n; i++) {
 			if (i in value) {
@@ -320,6 +322,9 @@ export class Serializer {
 				this._buffer![this._offset++] = BinaryTokens.Hole;
 			}
 		}
+
+		this.ensureAlloc(1);
+		this._buffer![this._offset++] = NULL_TERMINATOR;
 	}
 
 	private writeValueTypedArray(value: TypedArray, tag: BinaryTokens) {
@@ -363,13 +368,11 @@ export class Serializer {
 
 	private writeValueString(value: string) {
 		const serialized = Serializer._textEncoder.encode(value);
-		this.ensureAlloc(4 + serialized.length);
-
-		this.writeUint32(serialized.length, this._offset);
-		this._offset += 4;
+		this.ensureAlloc(1 + serialized.length);
 
 		this._buffer!.set(serialized, this._offset);
 		this._offset += serialized.length;
+		this._buffer![this._offset++] = NULL_TERMINATOR;
 	}
 
 	private getNumberType(value: number) {
