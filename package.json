@@ -8,7 +8,7 @@
     "build:browser": "webpack",
     "lint": "eslint --ext ts src --fix",
     "test:lint": "eslint --ext ts src",
-    "test:suite": "yarn build && node dist/test/suite.js",
+    "test": "yarn build && node dist/test/suite.js",
     "build": "tsc -p .",
     "watch": "tsc -p . -w"
   },
