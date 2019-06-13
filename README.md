@@ -32,10 +32,23 @@
 ## About
 
 `Binary Term Format` is a term format inspired in ETF with more types and circular reference serialization and deserialization.
+This term format is designed to fix one of ETF's flaws: byte size.
+
+Serializing this object:
+
+```json
+{ "test": ["hello", "world"], "more": { "nested": "objects", "do": ["you", "like", "it?"] } }
+```
+
+Takes `80` bytes as `JSON.stringify()`'d, `116` bytes as `ETF` using [`devsnek/earl`][earl], and just `71` bytes in `BTF`.
+
+The extreme compression is achieved by delimiting the bytes using a technique similar to [null delimited string](https://en.wikipedia.org/wiki/Null-terminated_string)s. Allowing every string, array, set, map, and object, to trim the byte size by 3 (4 bytes for length/size -> 1 byte to delimit the field). TypedArrays do not get this feature, since they have a type for all elements instead of a type for each element, `[0]` works because it is encoded as `ArrayType` + `NumberByteLiteralType` + `0x00` + `NullDelimiter`, but this technique would not work in `Uint8Array[0]` (`Uint8ArrayType` + `0x00 + 0x00 + 0x00 + 0x01` + `0x00`).
+
+And this is also achieved by using special types for empty collections, `[null]` takes 3 bytes (`ArrayType` + `NullType` + `NullDelimiter`), but `[]` takes a single byte (`EmptyArrayType`). This also applies to empty objects, sets, and maps.
 
 ## Usage
 
-This module is meant to be plug-and-play, it exposes two functions, `serialize` and `deserialize`, and would be used in the following way:
+This module is [plug-and-play](https://en.wikipedia.org/wiki/Plug_and_play), it exposes two functions, `serialize` and `deserialize`, and would be used in the following way:
 
 ```javascript
 const { serialize, deserialize } = require('binarytf');
@@ -47,7 +60,7 @@ console.log(deserialized); // { hello: 'world' }
 
 ## Credit
 
-`binarytf` is heavily based on [`devsnek/earl`](https://github.com/devsnek/earl), this module wouldn't be possible without it's author:
+`binarytf` is heavily based on [`devsnek/earl`][earl], this module wouldn't be possible without it's author:
 
 - [Gus Caplan](https://github.com/devsnek)
 
@@ -66,3 +79,5 @@ console.log(deserialized); // { hello: 'world' }
 Authored and maintained by kyranet.
 
 > Github [kyranet](https://github.com/kyranet) - Twitter [@kyranet_](https://twitter.com/kyranet_)
+
+[earl]: https://github.com/devsnek/earl
