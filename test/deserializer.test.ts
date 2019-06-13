@@ -1,7 +1,7 @@
 import * as test from 'tape';
 import { serialize, deserialize } from '../src/index';
 
-test('Deserialize Null', (t) => {
+test('Deserialize Null', t => {
 	t.plan(2);
 
 	const serialized = serialize(null);
@@ -11,7 +11,7 @@ test('Deserialize Null', (t) => {
 });
 
 if (typeof BigInt === 'function') {
-	test('Deserialize PBigInt', (t) => {
+	test('Deserialize PBigInt', t => {
 		t.plan(2);
 
 		const serialized = serialize(BigInt('4'));
@@ -20,7 +20,7 @@ if (typeof BigInt === 'function') {
 		t.equal(deserialized, BigInt('4'));
 	});
 
-	test('Deserialize PBigInt', (t) => {
+	test('Deserialize PBigInt', t => {
 		t.plan(2);
 
 		const serialized = serialize(-BigInt('4'));
@@ -30,7 +30,7 @@ if (typeof BigInt === 'function') {
 	});
 }
 
-test('Deserialize Boolean', (t) => {
+test('Deserialize Boolean', t => {
 	t.plan(2);
 
 	const serialized = serialize(false);
@@ -39,7 +39,7 @@ test('Deserialize Boolean', (t) => {
 	t.equal(deserialized, false);
 });
 
-test('Deserialize UTF8', (t) => {
+test('Deserialize UTF8', t => {
 	t.plan(2);
 
 	const serialized = serialize('Hello');
@@ -48,7 +48,7 @@ test('Deserialize UTF8', (t) => {
 	t.equal(deserialized, 'Hello');
 });
 
-test('Deserialize UTF16', (t) => {
+test('Deserialize UTF16', t => {
 	t.plan(2);
 
 	const serialized = serialize('⭐');
@@ -57,7 +57,7 @@ test('Deserialize UTF16', (t) => {
 	t.equal(deserialized, '⭐');
 });
 
-test('Deserialize Undefined', (t) => {
+test('Deserialize Undefined', t => {
 	t.plan(2);
 
 	const serialized = serialize(undefined);
@@ -66,7 +66,7 @@ test('Deserialize Undefined', (t) => {
 	t.equal(deserialized, undefined);
 });
 
-test('Deserialize PByte', (t) => {
+test('Deserialize PByte', t => {
 	t.plan(2);
 
 	const serialized = serialize(24);
@@ -75,7 +75,7 @@ test('Deserialize PByte', (t) => {
 	t.equal(deserialized, 24);
 });
 
-test('Deserialize NByte', (t) => {
+test('Deserialize NByte', t => {
 	t.plan(2);
 
 	const serialized = serialize(-24);
@@ -84,7 +84,7 @@ test('Deserialize NByte', (t) => {
 	t.equal(deserialized, -24);
 });
 
-test('Deserialize PInt32', (t) => {
+test('Deserialize PInt32', t => {
 	t.plan(2);
 
 	const serialized = serialize(0xFFA);
@@ -93,7 +93,7 @@ test('Deserialize PInt32', (t) => {
 	t.equal(deserialized, 0xFFA);
 });
 
-test('Deserialize NInt32', (t) => {
+test('Deserialize NInt32', t => {
 	t.plan(2);
 
 	const serialized = serialize(-0xFFA);
@@ -102,7 +102,7 @@ test('Deserialize NInt32', (t) => {
 	t.equal(deserialized, -0xFFA);
 });
 
-test('Deserialize PFloat64', (t) => {
+test('Deserialize PFloat64', t => {
 	t.plan(2);
 
 	const value = 0xFFFFFFFF + 0.1;
@@ -112,7 +112,7 @@ test('Deserialize PFloat64', (t) => {
 	t.equal(deserialized, value);
 });
 
-test('Deserialize NFloat64', (t) => {
+test('Deserialize NFloat64', t => {
 	t.plan(2);
 
 	const value = -0xFFFFFFFF - 0.1;
@@ -122,7 +122,7 @@ test('Deserialize NFloat64', (t) => {
 	t.equal(deserialized, value);
 });
 
-test('Deserialize NaN', (t) => {
+test('Deserialize NaN', t => {
 	t.plan(2);
 
 	const serialized = serialize(NaN);
@@ -131,7 +131,7 @@ test('Deserialize NaN', (t) => {
 	t.true(Number.isNaN(deserialized));
 });
 
-test('Deserialize Infinity', (t) => {
+test('Deserialize Infinity', t => {
 	t.plan(2);
 
 	const serialized = serialize(Infinity);
@@ -140,7 +140,7 @@ test('Deserialize Infinity', (t) => {
 	t.equal(deserialized, Infinity);
 });
 
-test('Deserialize Unsafe Float', (t) => {
+test('Deserialize Unsafe Float', t => {
 	t.plan(2);
 
 	const serialized = serialize(Number.MAX_VALUE);
@@ -149,7 +149,7 @@ test('Deserialize Unsafe Float', (t) => {
 	t.equal(deserialized, Number.MAX_VALUE);
 });
 
-test('Deserialize Array (Empty)', (t) => {
+test('Deserialize Array (Empty)', t => {
 	t.plan(3);
 
 	const serialized = serialize([]);
@@ -159,7 +159,7 @@ test('Deserialize Array (Empty)', (t) => {
 	t.deepEqual(deserialized, []);
 });
 
-test('Deserialize Array (PInt32)', (t) => {
+test('Deserialize Array (PInt32)', t => {
 	t.plan(3);
 
 	const serialized = serialize([4]);
@@ -169,17 +169,19 @@ test('Deserialize Array (PInt32)', (t) => {
 	t.deepEqual(deserialized, [4]);
 });
 
-test('Deserialize Array (Holey)', (t) => {
+test('Deserialize Array (Holey)', t => {
 	t.plan(3);
 
+	// eslint-disable-next-line no-sparse-arrays, array-bracket-spacing
 	const serialized = serialize([, ]);
 	const deserialized = deserialize(serialized);
 	t.equal(typeof deserialized, 'object');
 	t.true(Array.isArray(deserialized));
+	// eslint-disable-next-line no-sparse-arrays, array-bracket-spacing
 	t.deepEqual(deserialized, [, ]);
 });
 
-test('Deserialize Array (Circular)', (t) => {
+test('Deserialize Array (Circular)', t => {
 	t.plan(5);
 
 	const array = [];
@@ -195,7 +197,7 @@ test('Deserialize Array (Circular)', (t) => {
 	t.equal(first, deserialized);
 });
 
-test('Deserialize Object (Empty)', (t) => {
+test('Deserialize Object (Empty)', t => {
 	t.plan(2);
 
 	const serialized = serialize({});
@@ -204,7 +206,7 @@ test('Deserialize Object (Empty)', (t) => {
 	t.deepEqual(deserialized, {});
 });
 
-test('Deserialize Object', (t) => {
+test('Deserialize Object', t => {
 	t.plan(2);
 
 	const serialized = serialize({ a: 12 });
@@ -214,7 +216,7 @@ test('Deserialize Object', (t) => {
 	t.deepEqual(deserialized, { a: 12 });
 });
 
-test('Deserialize Object (Circular)', (t) => {
+test('Deserialize Object (Circular)', t => {
 	t.plan(3);
 
 	const object = { a: null };
@@ -226,7 +228,7 @@ test('Deserialize Object (Circular)', (t) => {
 	t.assert(deserialized === deserialized.a);
 });
 
-test('Deserialize Date', (t) => {
+test('Deserialize Date', t => {
 	t.plan(3);
 
 	const serialized = serialize(new Date(1000));
@@ -236,9 +238,10 @@ test('Deserialize Date', (t) => {
 	t.equal(deserialized.valueOf(), 1000);
 });
 
-test('Deserialize Boolean Object', (t) => {
+test('Deserialize Boolean Object', t => {
 	t.plan(3);
 
+	// eslint-disable-next-line no-new-wrappers
 	const serialized = serialize(new Boolean(true));
 	const deserialized = deserialize(serialized);
 	t.equal(typeof deserialized, 'object');
@@ -246,9 +249,10 @@ test('Deserialize Boolean Object', (t) => {
 	t.equal(deserialized.valueOf(), true);
 });
 
-test('Deserialize Number Object', (t) => {
+test('Deserialize Number Object', t => {
 	t.plan(3);
 
+	// eslint-disable-next-line no-new-wrappers
 	const serialized = serialize(new Number(12));
 	const deserialized = deserialize(serialized);
 	t.equal(typeof deserialized, 'object');
@@ -256,9 +260,10 @@ test('Deserialize Number Object', (t) => {
 	t.equal(deserialized.valueOf(), 12);
 });
 
-test('Deserialize String Object', (t) => {
+test('Deserialize String Object', t => {
 	t.plan(3);
 
+	// eslint-disable-next-line no-new-wrappers
 	const serialized = serialize(new String('Hello'));
 	const deserialized = deserialize(serialized);
 	t.equal(typeof deserialized, 'object');
@@ -266,7 +271,7 @@ test('Deserialize String Object', (t) => {
 	t.equal(deserialized.valueOf(), 'Hello');
 });
 
-test('Deserialize RegExp', (t) => {
+test('Deserialize RegExp', t => {
 	t.plan(8);
 
 	const serialized = serialize(/ab/g);
@@ -281,7 +286,7 @@ test('Deserialize RegExp', (t) => {
 	t.false(deserialized.unicode);
 });
 
-test('Deserialize Map (Empty)', (t) => {
+test('Deserialize Map (Empty)', t => {
 	t.plan(3);
 
 	const serialized = serialize(new Map());
@@ -291,7 +296,7 @@ test('Deserialize Map (Empty)', (t) => {
 	t.equal(deserialized.size, 0);
 });
 
-test('Deserialize Map', (t) => {
+test('Deserialize Map', t => {
 	t.plan(4);
 
 	const serialized = serialize(new Map([[1, null]]));
@@ -302,7 +307,7 @@ test('Deserialize Map', (t) => {
 	t.equal(deserialized.get(1), null);
 });
 
-test('Deserialize Map (Circular)', (t) => {
+test('Deserialize Map (Circular)', t => {
 	t.plan(7);
 
 	const map = new Map();
@@ -320,7 +325,7 @@ test('Deserialize Map (Circular)', (t) => {
 	t.equal(value, deserialized);
 });
 
-test('Deserialize Set (Empty)', (t) => {
+test('Deserialize Set (Empty)', t => {
 	t.plan(3);
 
 	const serialized = serialize(new Set());
@@ -330,7 +335,7 @@ test('Deserialize Set (Empty)', (t) => {
 	t.equal(deserialized.size, 0);
 });
 
-test('Deserialize Set', (t) => {
+test('Deserialize Set', t => {
 	t.plan(4);
 
 	const serialized = serialize(new Set([null]));
@@ -341,7 +346,7 @@ test('Deserialize Set', (t) => {
 	t.equal(deserialized.values().next().value, null);
 });
 
-test('Deserialize Set (Circular)', (t) => {
+test('Deserialize Set (Circular)', t => {
 	t.plan(8);
 
 	const set = new Set();
@@ -362,7 +367,7 @@ test('Deserialize Set (Circular)', (t) => {
 	t.equal(second, deserialized);
 });
 
-test('Deserialize Multiple (Circular)', (t) => {
+test('Deserialize Multiple (Circular)', t => {
 	t.plan(16);
 
 	const obj = { map: null, set: null, array: [] };
@@ -393,7 +398,7 @@ test('Deserialize Multiple (Circular)', (t) => {
 	t.equal(deserialized.array[0], deserialized);
 });
 
-test('Deserialize Object Nested (Circular)', (t) => {
+test('Deserialize Object Nested (Circular)', t => {
 	t.plan(13);
 
 	const obj = { a: { b: { c: true, d: null }, obj: null } };
@@ -427,7 +432,7 @@ test('Deserialize Object Nested (Circular)', (t) => {
 	t.equal(deserialized.a.obj, deserialized);
 });
 
-test('Deserialize ArrayBuffer', (t) => {
+test('Deserialize ArrayBuffer', t => {
 	t.plan(6);
 
 	const buffer = new ArrayBuffer(4);
@@ -451,7 +456,7 @@ test('Deserialize ArrayBuffer', (t) => {
 	}
 });
 
-test('Deserialize Int8Array', (t) => {
+test('Deserialize Int8Array', t => {
 	t.plan(7);
 
 	const value = new Int8Array([-10, -5, 0, 5, 10]);
@@ -467,7 +472,7 @@ test('Deserialize Int8Array', (t) => {
 	t.equal(deserialized[4], value[4]);
 });
 
-test('Deserialize Uint8Array', (t) => {
+test('Deserialize Uint8Array', t => {
 	t.plan(7);
 
 	const value = new Uint8Array([0, 1, 2, 5, 0xFF]);
@@ -483,7 +488,7 @@ test('Deserialize Uint8Array', (t) => {
 	t.equal(deserialized[4], value[4]);
 });
 
-test('Deserialize Uint8ClampedArray', (t) => {
+test('Deserialize Uint8ClampedArray', t => {
 	t.plan(7);
 
 	const value = new Uint8ClampedArray([0, 1, 2, 5, 0xFF]);
@@ -499,7 +504,7 @@ test('Deserialize Uint8ClampedArray', (t) => {
 	t.equal(deserialized[4], value[4]);
 });
 
-test('Deserialize Int16Array', (t) => {
+test('Deserialize Int16Array', t => {
 	t.plan(7);
 
 	const value = new Int16Array([-0x7FFE, 1, 2, 0xFF, 0x7FFF]);
@@ -515,7 +520,7 @@ test('Deserialize Int16Array', (t) => {
 	t.equal(deserialized[4], value[4]);
 });
 
-test('Deserialize Uint16Array', (t) => {
+test('Deserialize Uint16Array', t => {
 	t.plan(7);
 
 	const value = new Uint16Array([0, 1, 2, 0xFF, 0xFFFF]);
@@ -531,7 +536,7 @@ test('Deserialize Uint16Array', (t) => {
 	t.equal(deserialized[4], value[4]);
 });
 
-test('Deserialize Int32Array', (t) => {
+test('Deserialize Int32Array', t => {
 	t.plan(7);
 
 	const value = new Int32Array([-0x7FFFFFFE, 1, 2, 0xFF, 0x7FFFFFFF]);
@@ -547,7 +552,7 @@ test('Deserialize Int32Array', (t) => {
 	t.equal(deserialized[4], value[4]);
 });
 
-test('Deserialize Uint32Array', (t) => {
+test('Deserialize Uint32Array', t => {
 	t.plan(7);
 
 	const value = new Uint32Array([0, 1, 2, 0xFF, 0xFFFFFFFF]);
@@ -563,7 +568,7 @@ test('Deserialize Uint32Array', (t) => {
 	t.equal(deserialized[4], value[4]);
 });
 
-test('Deserialize Float32Array', (t) => {
+test('Deserialize Float32Array', t => {
 	t.plan(7);
 
 	const value = new Float32Array([-50, 3.14159, 4.2, 5.1234, 54321.4321]);
@@ -579,7 +584,7 @@ test('Deserialize Float32Array', (t) => {
 	t.equal(deserialized[4], value[4]);
 });
 
-test('Deserialize Float64Array', (t) => {
+test('Deserialize Float64Array', t => {
 	t.plan(7);
 
 	const value = new Float64Array([-500, 3.141592653589793, 4.2, 5.12345678, 54321.4321234]);
@@ -595,7 +600,7 @@ test('Deserialize Float64Array', (t) => {
 	t.equal(deserialized[4], value[4]);
 });
 
-test('Deserialize DataView', (t) => {
+test('Deserialize DataView', t => {
 	t.plan(6);
 
 	const buffer = new ArrayBuffer(4);
@@ -615,7 +620,7 @@ test('Deserialize DataView', (t) => {
 	t.equal(deserialized[3], value[3]);
 });
 
-test('Deserialize WeakMap', (t) => {
+test('Deserialize WeakMap', t => {
 	t.plan(1);
 
 	const serialized = serialize(new WeakMap());
@@ -624,7 +629,7 @@ test('Deserialize WeakMap', (t) => {
 	t.true(deserialized instanceof WeakMap);
 });
 
-test('Deserialize WeakSet', (t) => {
+test('Deserialize WeakSet', t => {
 	t.plan(1);
 
 	const serialized = serialize(new WeakSet());
@@ -633,7 +638,7 @@ test('Deserialize WeakSet', (t) => {
 	t.true(deserialized instanceof WeakSet);
 });
 
-test('Deserialize Unsupported Types', (t) => {
+test('Deserialize Unsupported Types', t => {
 	t.plan(1);
 
 	const serialized = serialize(() => { }, () => null);
@@ -642,10 +647,10 @@ test('Deserialize Unsupported Types', (t) => {
 	t.equal(deserialized, null);
 });
 
-test('Deserialize Object With Unsupported Types', (t) => {
+test('Deserialize Object With Unsupported Types', t => {
 	t.plan(2);
 
-	const value = { a: true, b: Symbol() };
+	const value = { a: true, b: Symbol('') };
 	const serialized = serialize(value, () => 'Wrong Input');
 	const deserialized = deserialize(serialized) as Record<any, any>;
 
