@@ -17,8 +17,8 @@ logs/
 .github/
 .gitignore
 docs/
-test/
+dist/test/
 src/
 tsconfig.json
-tslint.json
+.eslintrc.json
 webpack.config.js

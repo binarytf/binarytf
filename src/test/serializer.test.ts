@@ -1,5 +1,5 @@
 import * as test from 'tape';
-import { serialize } from '../src/index';
+import { serialize } from '../index';
 
 test('Serialize Null', t => {
 	t.plan(1);
@@ -39,16 +39,16 @@ test('Serialize UTF8', t => {
 	t.plan(1);
 
 	const serialized = serialize('Hello');
-	// 1 (TYPE) + 4 (LENGTH) + 5 (BYTE)
-	t.equal(serialized.length, 10);
+	// 1 (TYPE) + 5 (BYTE) + 1 (NULL TERMINATOR)
+	t.equal(serialized.length, 7);
 });
 
 test('Serialize UTF16', t => {
 	t.plan(1);
 
 	const serialized = serialize('⭐');
-	// 1 (TYPE) + 4 (LENGTH) + 3 (BYTE)
-	t.equal(serialized.length, 8);
+	// 1 (TYPE) + 3 (BYTE) + 1 (NULL TERMINATOR)
+	t.equal(serialized.length, 5);
 });
 
 test('Serialize Undefined', t => {
@@ -143,8 +143,8 @@ test('Serialize Array (PInt32)', t => {
 	t.plan(1);
 
 	const serialized = serialize([4]);
-	// 1 (TYPE) + 4 (LENGTH) + [1 (TYPE) + 1 (BYTE)]
-	t.equal(serialized.length, 7);
+	// 1 (TYPE) + [1 (TYPE) + 1 (BYTE)] + 1 (NULL TERMINATOR)
+	t.equal(serialized.length, 4);
 });
 
 test('Serialize Array (Holey)', t => {
@@ -152,8 +152,8 @@ test('Serialize Array (Holey)', t => {
 
 	// eslint-disable-next-line no-sparse-arrays, array-bracket-spacing
 	const serialized = serialize([, ]);
-	// 1 (TYPE) + 4 (LENGTH) + 1 (TYPE), value inferred
-	t.equal(serialized.length, 6);
+	// 1 (TYPE) + 1 (TYPE), value inferred + 1 (NULL TERMINATOR)
+	t.equal(serialized.length, 3);
 });
 
 test('Serialize Object (Empty)', t => {
@@ -168,18 +168,19 @@ test('Serialize Object', t => {
 	t.plan(1);
 
 	const serialized = serialize({ a: 12 });
-	// 1 (TYPE) + 4 (LENGTH) + [1 (TYPE) + 4 (LENGTH) + 1 (BYTE)] + [1 (TYPE) + 1 (BYTE)]
-	t.equal(serialized.length, 13);
+	// 1 (TYPE) + [1 (TYPE) + 1 (BYTE) + 1 (NULL TERMINATOR)] + [1 (TYPE) + 1 (BYTE)] + 1 (NULL TERMINATOR)
+	t.equal(serialized.length, 7);
 });
 
 test('Serialize Object (Circular)', t => {
 	t.plan(1);
 
-	const object = { a: null };
+	interface Test { a: Test | null }
+	const object: Test = { a: null };
 	object.a = object;
 	const serialized = serialize(object);
-	// 1 (TYPE) + 4 (LENGTH) + 1 (TYPE) + [4 (LENGTH) + 1 (BYTE)] + [1 (TYPE) + 4 (BYTE)]
-	t.equal(serialized.length, 16);
+	// 1 (TYPE) + 1 (TYPE) + [1 (BYTE) + 1 (NULL TERMINATOR)] + [1 (TYPE) + 4 (BYTE)] + 1 (NULL TERMINATOR)
+	t.equal(serialized.length, 10);
 });
 
 test('Serialize Date', t => {
@@ -213,16 +214,16 @@ test('Serialize String Object', t => {
 
 	// eslint-disable-next-line no-new-wrappers
 	const serialized = serialize(new String('Hello'));
-	// 1 (TYPE) + 4 (LENGTH) + 5 (BYTE)
-	t.equal(serialized.length, 10);
+	// 1 (TYPE) + 5 (BYTE) + 1 (NULL TERMINATOR)
+	t.equal(serialized.length, 7);
 });
 
 test('Serialize RegExp', t => {
 	t.plan(1);
 
 	const serialized = serialize(/ab/g);
-	// 1 (TYPE) + 4 (LENGTH) + 2 (BYTE) + 1 (BYTE)
-	t.equal(serialized.length, 8);
+	// 1 (TYPE) + 2 (BYTE) + 1 (NULL TERMINATOR) + 1 (BYTE)
+	t.equal(serialized.length, 5);
 });
 
 test('Serialize Map (Empty)', t => {
@@ -237,8 +238,8 @@ test('Serialize Map', t => {
 	t.plan(1);
 
 	const serialized = serialize(new Map([[1, null]]));
-	// 1 (TYPE) + 4 (LENGTH) + [1 (TYPE) + 1 (BYTE)] + [1 (TYPE)]
-	t.equal(serialized.length, 8);
+	// 1 (TYPE) + [1 (TYPE) + 1 (BYTE)] + [1 (TYPE)] + 1 (NULL TERMINATOR)
+	t.equal(serialized.length, 5);
 });
 
 test('Serialize Set (Empty)', t => {
@@ -253,8 +254,8 @@ test('Serialize Set', t => {
 	t.plan(1);
 
 	const serialized = serialize(new Set([null]));
-	// 1 (TYPE) + 4 (LENGTH) + [1 (TYPE)]
-	t.equal(serialized.length, 6);
+	// 1 (TYPE) + [1 (TYPE)] + 1 (NULL TERMINATOR)
+	t.equal(serialized.length, 3);
 });
 
 test('Serialize ArrayBuffer', t => {

@@ -1,5 +1,5 @@
 import * as test from 'tape';
-import { serialize, deserialize } from '../src/index';
+import { serialize, deserialize } from '../index';
 
 test('Deserialize Null', t => {
 	t.plan(2);
@@ -184,7 +184,7 @@ test('Deserialize Array (Holey)', t => {
 test('Deserialize Array (Circular)', t => {
 	t.plan(5);
 
-	const array = [];
+	const array: unknown[] = [];
 	array.push(array);
 	const serialized = serialize(array);
 	const deserialized = deserialize(serialized) as Array<any>;
@@ -219,10 +219,11 @@ test('Deserialize Object', t => {
 test('Deserialize Object (Circular)', t => {
 	t.plan(3);
 
-	const object = { a: null };
+	interface Test { a: Test | null }
+	const object: Test = { a: null };
 	object.a = object;
 	const serialized = serialize(object);
-	const deserialized = deserialize(serialized) as Record<any, any>;
+	const deserialized = deserialize(serialized) as Test;
 	t.equal(typeof deserialized, 'object');
 	t.true(deserialized instanceof Object);
 	t.assert(deserialized === deserialized.a);
@@ -232,7 +233,7 @@ test('Deserialize Date', t => {
 	t.plan(3);
 
 	const serialized = serialize(new Date(1000));
-	const deserialized = deserialize(serialized);
+	const deserialized = deserialize(serialized) as Date;
 	t.equal(typeof deserialized, 'object');
 	t.true(deserialized instanceof Date);
 	t.equal(deserialized.valueOf(), 1000);
@@ -243,7 +244,8 @@ test('Deserialize Boolean Object', t => {
 
 	// eslint-disable-next-line no-new-wrappers
 	const serialized = serialize(new Boolean(true));
-	const deserialized = deserialize(serialized);
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	const deserialized = deserialize(serialized) as Boolean;
 	t.equal(typeof deserialized, 'object');
 	t.true(deserialized instanceof Boolean);
 	t.equal(deserialized.valueOf(), true);
@@ -254,7 +256,8 @@ test('Deserialize Number Object', t => {
 
 	// eslint-disable-next-line no-new-wrappers
 	const serialized = serialize(new Number(12));
-	const deserialized = deserialize(serialized);
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	const deserialized = deserialize(serialized) as Number;
 	t.equal(typeof deserialized, 'object');
 	t.true(deserialized instanceof Number);
 	t.equal(deserialized.valueOf(), 12);
@@ -265,7 +268,8 @@ test('Deserialize String Object', t => {
 
 	// eslint-disable-next-line no-new-wrappers
 	const serialized = serialize(new String('Hello'));
-	const deserialized = deserialize(serialized);
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	const deserialized = deserialize(serialized) as String;
 	t.equal(typeof deserialized, 'object');
 	t.true(deserialized instanceof String);
 	t.equal(deserialized.valueOf(), 'Hello');
@@ -370,12 +374,14 @@ test('Deserialize Set (Circular)', t => {
 test('Deserialize Multiple (Circular)', t => {
 	t.plan(16);
 
-	const obj = { map: null, set: null, array: [] };
-	obj.map = new Map([[1, obj]]);
-	obj.set = new Set([obj]);
-	obj.array.push(obj);
-	const serialized = serialize(obj);
-	const deserialized = deserialize(serialized) as Record<any, any>;
+	interface Test { map: Map<number, Test> | null; set: Set<Test> | null; array: Test[] }
+
+	const object: Test = { map: null, set: null, array: [] };
+	object.map = new Map([[1, object]]);
+	object.set = new Set([object]);
+	object.array.push(object);
+	const serialized = serialize(object);
+	const deserialized = deserialize(serialized) as Test;
 
 	t.notEqual(deserialized, null);
 	t.equal(typeof deserialized, 'object');
@@ -385,13 +391,13 @@ test('Deserialize Multiple (Circular)', t => {
 	t.true('array' in deserialized);
 
 	t.true(deserialized.map instanceof Map);
-	t.equal(deserialized.map.size, 1);
-	t.equal(deserialized.map.keys().next().value, 1);
-	t.equal(deserialized.map.values().next().value, deserialized);
+	t.equal(deserialized.map!.size, 1);
+	t.equal(deserialized.map!.keys().next().value, 1);
+	t.equal(deserialized.map!.values().next().value, deserialized);
 
 	t.true(deserialized.set instanceof Set);
-	t.equal(deserialized.set.size, 1);
-	t.equal(deserialized.set.keys().next().value, deserialized);
+	t.equal(deserialized.set!.size, 1);
+	t.equal(deserialized.set!.keys().next().value, deserialized);
 
 	t.true(Array.isArray(deserialized.array));
 	t.equal(deserialized.array.length, 1);
@@ -401,11 +407,14 @@ test('Deserialize Multiple (Circular)', t => {
 test('Deserialize Object Nested (Circular)', t => {
 	t.plan(13);
 
-	const obj = { a: { b: { c: true, d: null }, obj: null } };
+	interface Test { a: { b: InnerTest; obj: Test | null } }
+	interface InnerTest { c: boolean; d: InnerTest | null }
+
+	const obj: Test = { a: { b: { c: true, d: null }, obj: null } };
 	obj.a.obj = obj;
 	obj.a.b.d = obj.a.b;
 	const serialized = serialize(obj);
-	const deserialized = deserialize(serialized) as Record<any, any>;
+	const deserialized = deserialize(serialized) as Test;
 
 	t.notEqual(deserialized, null);
 	t.equal(typeof deserialized, 'object');
@@ -604,20 +613,20 @@ test('Deserialize DataView', t => {
 	t.plan(6);
 
 	const buffer = new ArrayBuffer(4);
-	{
-		const uint8Array = new Uint8Array(buffer);
-		for (let i = 0; i < uint8Array.length; i++) uint8Array[i] = i;
-	}
+	const uint8Array = new Uint8Array(buffer);
+	for (let i = 0; i < uint8Array.length; i++) uint8Array[i] = i;
 	const value = new DataView(buffer);
 	const serialized = serialize(value);
 	const deserialized = deserialize(serialized) as DataView;
 
 	t.true(deserialized instanceof DataView);
 	t.equal(deserialized.byteLength, value.byteLength);
-	t.equal(deserialized[0], value[0]);
-	t.equal(deserialized[1], value[1]);
-	t.equal(deserialized[2], value[2]);
-	t.equal(deserialized[3], value[3]);
+
+	const deserializedBuffer = new Uint8Array(deserialized.buffer);
+	t.equal(deserializedBuffer[0], uint8Array[0]);
+	t.equal(deserializedBuffer[1], uint8Array[1]);
+	t.equal(deserializedBuffer[2], uint8Array[2]);
+	t.equal(deserializedBuffer[3], uint8Array[3]);
 });
 
 test('Deserialize WeakMap', t => {
@@ -650,9 +659,12 @@ test('Deserialize Unsupported Types', t => {
 test('Deserialize Object With Unsupported Types', t => {
 	t.plan(2);
 
-	const value = { a: true, b: Symbol('') };
+	interface Test { a: boolean; b: symbol }
+	interface ExpectedTest { a: boolean; b: string }
+
+	const value: Test = { a: true, b: Symbol('') };
 	const serialized = serialize(value, () => 'Wrong Input');
-	const deserialized = deserialize(serialized) as Record<any, any>;
+	const deserialized = deserialize(serialized) as ExpectedTest;
 
 	t.equal(typeof deserialized, 'object');
 	t.deepEqual(deserialized, { a: true, b: 'Wrong Input' });

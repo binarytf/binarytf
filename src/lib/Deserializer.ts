@@ -111,6 +111,8 @@ export class Deserializer {
 			if (this.watchUint8() === NULL_TERMINATOR) break;
 			value.add(this.read());
 		}
+
+		++this.offset;
 		return value;
 	}
 
@@ -120,6 +122,8 @@ export class Deserializer {
 			if (this.watchUint8() === NULL_TERMINATOR) break;
 			value.set(this.read(), this.read());
 		}
+
+		++this.offset;
 		return value;
 	}
 
@@ -131,6 +135,8 @@ export class Deserializer {
 			const entryValue = this.read();
 			value[entryKey] = entryValue;
 		}
+
+		++this.offset;
 		return value;
 	}
 
