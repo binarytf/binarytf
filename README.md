@@ -1,15 +1,37 @@
 # binarytf
 
+<div align="center">
+	<p>
+		<a href="https://discord.gg/pE5sfxK">
+			<img src="https://discordapp.com/api/guilds/582495121698717696/embed.png" alt="Discord" />
+		</a>
+		<a href="https://www.npmjs.com/package/binarytf">
+			<img src="https://img.shields.io/npm/v/binarytf.svg?maxAge=3600" alt="NPM version" />
+		</a>
+		<a href="https://www.npmjs.com/package/binarytf">
+			<img src="https://img.shields.io/npm/dt/binarytf.svg?maxAge=3600" alt="NPM downloads" />
+		</a>
+		<a href="https://dev.azure.com/kyranet/kyranet.public/_build/latest?definitionId=1&branchName=master">
+			<img src="https://dev.azure.com/kyranet/kyranet.public/_apis/build/status/kyranet.binarytf?branchName=master" alt="Build status" />
+		</a>
+		<a href="https://lgtm.com/projects/g/kyranet/binarytf/alerts/">
+			<img src="https://img.shields.io/lgtm/alerts/g/kyranet/binarytf.svg?logo=lgtm&logoWidth=18" alt="Total alerts">
+		</a>
+		<a href="https://dependabot.com">
+			<img src="https://api.dependabot.com/badges/status?host=github&repo=kyranet/binarytf" alt="Dependabot Status">
+		</a>
+		<a href="https://www.patreon.com/kyranet">
+			<img src="https://img.shields.io/badge/donate-patreon-F96854.svg" alt="Patreon" />
+		</a>
+	</p>
+	<p>
+		<a href="https://nodei.co/npm/binarytf/"><img src="https://nodei.co/npm/binarytf.png?downloads=true&stars=true" alt="npm installnfo" /></a>
+	</p>
+</div>
+
+## About
+
 `Binary Term Format` is a term format inspired in ETF with more types and circular reference serialization and deserialization.
-
-[![npm](https://nodei.co/npm/binarytf.png?downloads=true&stars=true)](https://nodei.co/npm/binarytf/)
-
-[![npm](https://img.shields.io/npm/v/binarytf.svg?maxAge=3600)](https://www.npmjs.com/package/binarytf)
-[![npm](https://img.shields.io/npm/dt/binarytf.svg?maxAge=3600)](https://www.npmjs.com/package/binarytf)
-
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/kyranet/binarytf.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/kyranet/binarytf/context:javascript)
-
-[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=kyranet/binarytf)](https://dependabot.com)
 
 ## Usage
 
@@ -29,8 +51,18 @@ console.log(deserialized); // { hello: 'world' }
 
 - [Gus Caplan](https://github.com/devsnek)
 
-## License
+## Contributing
 
-Licensed under MIT
+1. Fork it!
+1. Create your feature branch: `git checkout -b my-new-feature`
+1. Commit your changes: `git commit -am 'Add some feature'`
+1. Push to the branch: `git push origin my-new-feature`
+1. Submit a pull request!
 
-Copyright (c) 2019 [kyranet](https://github.com/kyranet)
+## Author
+
+**binarytf** © [kyranet](https://github.com/kyranet), released under the
+[MIT](https://github.com/kyranet/binarytf/blob/master/LICENSE) License.
+Authored and maintained by kyranet.
+
+> Github [kyranet](https://github.com/kyranet) - Twitter [@kyranet_](https://twitter.com/kyranet_)
