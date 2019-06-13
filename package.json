@@ -4,12 +4,12 @@
   "description": "Binary Term Format",
   "main": "dist/src/index",
   "scripts": {
-    "prepublishOnly": "yarn compile",
+    "prepublishOnly": "yarn build",
     "build:browser": "webpack",
     "lint": "eslint --ext ts src --fix",
     "test:lint": "eslint --ext ts src",
-    "test:suite": "yarn compile && node dist/test/suite.js",
-    "compile": "tsc -p .",
+    "test:suite": "yarn build && node dist/test/suite.js",
+    "build": "tsc -p .",
     "watch": "tsc -p . -w"
   },
   "keywords": [
