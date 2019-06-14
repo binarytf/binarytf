@@ -35,8 +35,10 @@ jobs:
         displayName: 'Install Dependencies'
       - script: 'yarn test'
         displayName: 'Test Suite'
-      - script: 'yarn run cover'
+      - script: 'yarn run coverage'
         displayName: 'Generate Coverage Results'
+      - script: 'yarn run coverage:report'
+        displayName: 'Report Coverage Results'
       - task: PublishCodeCoverageResults@1
         inputs:
           codeCoverageTool: 'cobertura'
