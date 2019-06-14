@@ -101,17 +101,23 @@ export class Serializer {
 		const type = this.getNumberType(value);
 		this.write8(type);
 		switch (type) {
-			case BinaryTokens.NByte: this.write8(-value);
+			case BinaryTokens.NByte:
+				this.write8(-value);
 				break;
-			case BinaryTokens.PByte: this.write8(value);
+			case BinaryTokens.PByte:
+				this.write8(value);
 				break;
-			case BinaryTokens.NInt32: this.write32(-value);
+			case BinaryTokens.NInt32:
+				this.write32(-value);
 				break;
-			case BinaryTokens.PInt32: this.write32(value);
+			case BinaryTokens.PInt32:
+				this.write32(value);
 				break;
-			case BinaryTokens.NFloat64: this.writeF64(-value);
+			case BinaryTokens.NFloat64:
+				this.writeF64(-value);
 				break;
-			case BinaryTokens.PFloat64: this.writeF64(value);
+			case BinaryTokens.PFloat64:
+				this.writeF64(value);
 				break;
 			default:
 				/* istanbul ignore next */
