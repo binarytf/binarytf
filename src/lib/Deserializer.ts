@@ -1,6 +1,7 @@
 import { TextDecoder } from 'util';
 import { BinaryTokens, TypedArray } from './util/constants';
 import { BigIntegers, RegExps, TypedArrays } from './util/util';
+import { DeserializerError, Reason } from './errors/DeserializerError';
 
 const NULL_TERMINATOR = 0x00;
 const float64Array = new Float64Array(1);
@@ -73,7 +74,7 @@ export class Deserializer {
 			case BinaryTokens.Float32Array:
 			case BinaryTokens.Float64Array:
 			case BinaryTokens.DataView: return this.readValueTypedArray(type);
-			default: throw new Error('Unreachable');
+			default: throw new DeserializerError(`Unknown type received: ${type}`, Reason.UnknownType);
 		}
 	}
 
@@ -107,36 +108,30 @@ export class Deserializer {
 
 	private readValueSet() {
 		const value = this.createObjectID(new Set());
-		while (!this.finished) {
-			if (this.watchUint8() === NULL_TERMINATOR) break;
+		while (!this.readNullTerminator()) {
 			value.add(this.read());
 		}
 
-		++this.offset;
 		return value;
 	}
 
 	private readValueMap() {
 		const value = this.createObjectID(new Map());
-		while (!this.finished) {
-			if (this.watchUint8() === NULL_TERMINATOR) break;
+		while (!this.readNullTerminator()) {
 			value.set(this.read(), this.read());
 		}
 
-		++this.offset;
 		return value;
 	}
 
 	private readValueObject() {
 		const value = this.createObjectID({}) as Record<string | number, unknown>;
-		for (let i = 0; !this.finished; i++) {
-			if (this.watchUint8() === NULL_TERMINATOR) break;
+		while (!this.readNullTerminator()) {
 			const entryKey = this.read() as string | number;
 			const entryValue = this.read();
 			value[entryKey] = entryValue;
 		}
 
-		++this.offset;
 		return value;
 	}
 
@@ -173,6 +168,15 @@ export class Deserializer {
 		}
 
 		return sign ? -value : value;
+	}
+
+	private readNullTerminator() {
+		if (this.finished) throw new DeserializerError('Found End-Of-Buffer, expecting a `NullTerminator` before.', Reason.UnexpectedNullTerminator);
+		if (this.watchUint8() === NULL_TERMINATOR) {
+			++this.offset;
+			return true;
+		}
+		return false;
 	}
 
 	private createObjectID<T>(value: T) {
