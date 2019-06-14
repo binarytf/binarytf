@@ -1,4 +1,5 @@
 export enum BinaryTokens {
+	NullPointer,
 	Hole,
 	Null,
 	PBigInt,
