@@ -290,7 +290,7 @@ test('Deserialize String Object', t => {
 });
 
 test('Deserialize RegExp', t => {
-	t.plan(8);
+	t.plan(9);
 
 	const serialized = serialize(/ab/g);
 	const deserialized = deserialize(serialized) as RegExp;
@@ -302,6 +302,23 @@ test('Deserialize RegExp', t => {
 	t.false(deserialized.multiline);
 	t.false(deserialized.sticky);
 	t.false(deserialized.unicode);
+	t.false(deserialized.dotAll);
+});
+
+test('Deserialize RegExp (All Flags)', t => {
+	t.plan(9);
+
+	const serialized = serialize(/ab/gimyus);
+	const deserialized = deserialize(serialized) as RegExp;
+	t.equal(typeof deserialized, 'object');
+	t.true(deserialized instanceof RegExp);
+	t.equal(deserialized.source, 'ab');
+	t.true(deserialized.global);
+	t.true(deserialized.ignoreCase);
+	t.true(deserialized.multiline);
+	t.true(deserialized.sticky);
+	t.true(deserialized.unicode);
+	t.true(deserialized.dotAll);
 });
 
 test('Deserialize Map (Empty)', t => {
