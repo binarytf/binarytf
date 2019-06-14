@@ -1,5 +1,7 @@
 import * as test from 'tape';
 import { serialize, deserialize } from '../index';
+import { DeserializerError, DeserializerReason } from '../lib/errors/DeserializerError';
+import { BinaryTokens } from '../lib/util/constants';
 
 test('Deserialize Null', t => {
 	t.plan(2);
@@ -239,7 +241,7 @@ test('Deserialize Date', t => {
 	t.equal(deserialized.valueOf(), 1000);
 });
 
-test('Deserialize Boolean Object', t => {
+test('Deserialize Boolean Object (True)', t => {
 	t.plan(3);
 
 	// eslint-disable-next-line no-new-wrappers
@@ -249,6 +251,18 @@ test('Deserialize Boolean Object', t => {
 	t.equal(typeof deserialized, 'object');
 	t.true(deserialized instanceof Boolean);
 	t.equal(deserialized.valueOf(), true);
+});
+
+test('Deserialize Boolean Object (False)', t => {
+	t.plan(3);
+
+	// eslint-disable-next-line no-new-wrappers
+	const serialized = serialize(new Boolean(false));
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	const deserialized = deserialize(serialized) as Boolean;
+	t.equal(typeof deserialized, 'object');
+	t.true(deserialized instanceof Boolean);
+	t.equal(deserialized.valueOf(), false);
 });
 
 test('Deserialize Number Object', t => {
@@ -668,4 +682,46 @@ test('Deserialize Object With Unsupported Types', t => {
 
 	t.equal(typeof deserialized, 'object');
 	t.deepEqual(deserialized, { a: true, b: 'Wrong Input' });
+});
+
+test('Deserialize Forged Buffer (Invalid Type)', t => {
+	t.plan(2);
+	try {
+		const uint8Array = new Uint8Array(1);
+		uint8Array[0] = 0xFF;
+		deserialize(uint8Array);
+		t.fail('Deserialize should fail.');
+	} catch (error) {
+		t.true(error instanceof DeserializerError);
+		t.equal((error as DeserializerError).kind, DeserializerReason.UnknownType);
+	}
+});
+
+test('Deserialize Forged Buffer (String Invalid Null Pointer)', t => {
+	t.plan(2);
+	try {
+		const uint8Array = new Uint8Array(2);
+		uint8Array[0] = BinaryTokens.String;
+		uint8Array[1] = 0x61;
+		deserialize(uint8Array);
+		t.fail('Deserialize should fail.');
+	} catch (error) {
+		t.true(error instanceof DeserializerError);
+		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedNullTerminator);
+	}
+});
+
+test('Deserialize Forged Buffer (Array Invalid Null Pointer)', t => {
+	t.plan(2);
+	try {
+		const uint8Array = new Uint8Array(2);
+		uint8Array[0] = BinaryTokens.Array;
+		uint8Array[1] = BinaryTokens.Null;
+		const deserialized = deserialize(uint8Array);
+		deserialized;
+		t.fail('Deserialize should fail.');
+	} catch (error) {
+		t.true(error instanceof DeserializerError);
+		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedNullTerminator);
+	}
 });

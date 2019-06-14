@@ -63,7 +63,7 @@ test('Serialize Undefined', t => {
 test('Serialize PByte', t => {
 	t.plan(1);
 
-	const serialized = serialize(24);
+	const serialized = serialize(0xFF);
 	// 1 (TYPE) + 1 (BYTE)
 	t.equal(serialized.length, 2);
 });
@@ -71,7 +71,7 @@ test('Serialize PByte', t => {
 test('Serialize NByte', t => {
 	t.plan(1);
 
-	const serialized = serialize(-24);
+	const serialized = serialize(0xFF * -1);
 	// 1 (TYPE) + 1 (BYTE)
 	t.equal(serialized.length, 2);
 });
@@ -79,7 +79,7 @@ test('Serialize NByte', t => {
 test('Serialize PInt32', t => {
 	t.plan(1);
 
-	const serialized = serialize(0xFFA);
+	const serialized = serialize(0xFFFF);
 	// 1 (TYPE) + 4 (BYTE)
 	t.equal(serialized.length, 5);
 });
@@ -87,7 +87,7 @@ test('Serialize PInt32', t => {
 test('Serialize NInt32', t => {
 	t.plan(1);
 
-	const serialized = serialize(-0xFFA);
+	const serialized = serialize(0xFFFF * -1);
 	// 1 (TYPE) + 4 (BYTE)
 	t.equal(serialized.length, 5);
 });
@@ -95,7 +95,7 @@ test('Serialize NInt32', t => {
 test('Serialize PFloat64', t => {
 	t.plan(1);
 
-	const serialized = serialize(0xFFFFFFFF + 0.1);
+	const serialized = serialize(0xFFFFFFFFF - 0.1);
 	// 1 (TYPE) + 8 (BYTE)
 	t.equal(serialized.length, 9);
 });
@@ -103,7 +103,7 @@ test('Serialize PFloat64', t => {
 test('Serialize NFloat64', t => {
 	t.plan(1);
 
-	const serialized = serialize(-0xFFFFFFFF - 0.1);
+	const serialized = serialize((0xFFFFFFFF - 0.1) * -1);
 	// 1 (TYPE) + 8 (BYTE)
 	t.equal(serialized.length, 9);
 });
@@ -171,6 +171,14 @@ test('Serialize Object', t => {
 	const serialized = serialize({ a: 12 });
 	// 1 (TYPE) + [1 (TYPE) + 1 (BYTE) + 1 (NULL TERMINATOR)] + [1 (TYPE) + 1 (BYTE)] + 1 (NULL TERMINATOR)
 	t.equal(serialized.length, 7);
+});
+
+test('Serialize Object Fallback (Math)', t => {
+	t.plan(1);
+
+	const serialized = serialize(Math);
+	// 1 (TYPE)
+	t.equal(serialized.length, 1);
 });
 
 test('Serialize Object (Circular)', t => {
@@ -294,10 +302,21 @@ test('Serialize Unsupported Types', t => {
 	t.equal(serialized.length, 1);
 });
 
-test('Serialize Unsupported Serialized Types (Invalid)', t => {
+test('Serialize Unsupported Types No-Fallback (Invalid)', t => {
 	t.plan(2);
 	try {
 		serialize(() => {});
+		t.fail('Serialize should fail.');
+	} catch (error) {
+		t.true(error instanceof SerializerError);
+		t.equal((error as SerializerError).kind, SerializerReason.UnsupportedType);
+	}
+});
+
+test('Serialize Unsupported Object Types (Invalid)', t => {
+	t.plan(2);
+	try {
+		serialize(Promise.resolve());
 		t.fail('Serialize should fail.');
 	} catch (error) {
 		t.true(error instanceof SerializerError);

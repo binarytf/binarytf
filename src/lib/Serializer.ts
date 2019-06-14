@@ -114,6 +114,7 @@ export class Serializer {
 			case BinaryTokens.PFloat64: this.writeF64(value);
 				break;
 			default:
+				/* istanbul ignore next */
 				throw new Error(`Unreachable code. Got unexpected integer type ${type}`);
 		}
 	}

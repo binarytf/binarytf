@@ -32,24 +32,6 @@ export namespace BigIntegers {
 	export const ONE = SUPPORTED ? BigInt(1) : null;
 	export const EIGHT = SUPPORTED ? BigInt(8) : null;
 	export const BYTE = SUPPORTED ? BigInt(0xFF) : null;
-
-	export function nextPowerOfTwo(n: bigint) {
-		return n > 0 && (n & (n - ONE!)) === ZERO ? Number(n) : 1 << bitCount(n);
-	}
-
-	export function bitCount(n: bigint) {
-		let count = 0;
-		while (n !== ZERO) {
-			n >>= ONE!;
-			count += 1;
-		}
-
-		return count;
-	}
-
-	export function byteCount(n: bigint) {
-		return Math.ceil(bitCount(n) / 8);
-	}
 }
 
 export namespace Numbers {

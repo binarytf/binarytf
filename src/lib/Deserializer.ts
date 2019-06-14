@@ -136,18 +136,22 @@ export class Deserializer {
 
 	private readValueArray() {
 		const value = this.createObjectID([] as unknown[]);
-		for (let i = 0; !this.finished; ++i) {
-			const raw = this.readUint8();
-			if (raw === BinaryTokens.NullPointer) break;
-			if (raw === BinaryTokens.Hole) continue;
-			this.offsetBack();
-			value[i] = this.read();
+		let i = 0;
+		while (!this.readNullTerminator()) {
+			if (this.readUint8() !== BinaryTokens.Hole) {
+				this.offsetBack();
+				value[i] = this.read();
+			}
+			++i;
 		}
 		return value;
 	}
 
 	private readString() {
 		const end = this._buffer!.indexOf(BinaryTokens.NullPointer, this.offset);
+		if (end === -1) {
+			throw new DeserializerError('Found End-Of-Buffer, expecting a `NullTerminator` before.', DeserializerReason.UnexpectedNullTerminator);
+		}
 		const sub = this._buffer!.subarray(this.offset, end);
 		const str = Deserializer._textDecoder.decode(sub);
 		this.offset = end + 1;
@@ -170,10 +174,11 @@ export class Deserializer {
 	}
 
 	private readNullTerminator() {
-		if (this.finished) throw new DeserializerError('Found End-Of-Buffer, expecting a `NullTerminator` before.', DeserializerReason.UnexpectedNullTerminator);
 		if (this.watchUint8() === BinaryTokens.NullPointer) {
 			++this.offset;
 			return true;
+		} else if (this.finished) {
+			throw new DeserializerError('Found End-Of-Buffer, expecting a `NullTerminator` before.', DeserializerReason.UnexpectedNullTerminator);
 		}
 		return false;
 	}
