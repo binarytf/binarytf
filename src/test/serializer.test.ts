@@ -1,5 +1,6 @@
 import * as test from 'tape';
 import { serialize } from '../index';
+import { SerializerError, SerializerReason } from '../lib/errors/SerializerError';
 
 test('Serialize Null', t => {
 	t.plan(1);
@@ -293,7 +294,35 @@ test('Serialize Unsupported Types', t => {
 	t.equal(serialized.length, 1);
 });
 
-test('Serialize Unsupported Types (Invalid)', t => {
-	t.plan(1);
-	t.throws(() => serialize(() => { }, () => Symbol('')), TypeError);
+test('Serialize Unsupported Serialized Types (Invalid)', t => {
+	t.plan(2);
+	try {
+		serialize(() => {});
+		t.fail('Serialize should fail.');
+	} catch (error) {
+		t.true(error instanceof SerializerError);
+		t.equal((error as SerializerError).kind, SerializerReason.UnsupportedType);
+	}
+});
+
+test('Serialize Unsupported Serialized Types (Invalid)', t => {
+	t.plan(2);
+	try {
+		serialize(() => { }, () => Symbol(''));
+		t.fail('Serialize should fail.');
+	} catch (error) {
+		t.true(error instanceof SerializerError);
+		t.equal((error as SerializerError).kind, SerializerReason.UnsupportedSerializedType);
+	}
+});
+
+test('Serialize String with Null Pointer (Invalid)', t => {
+	t.plan(2);
+	try {
+		serialize('Hello\0 World');
+		t.fail('Serialize should fail.');
+	} catch (error) {
+		t.true(error instanceof SerializerError);
+		t.equal((error as SerializerError).kind, SerializerReason.UnexpectedNullValue);
+	}
 });

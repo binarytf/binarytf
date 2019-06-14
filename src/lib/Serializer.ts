@@ -1,5 +1,6 @@
 import { BinaryPrimitives, BinaryTokens, TypedArray } from './util/constants';
 import { Numbers, BigIntegers, RegExps, TypedArrays } from './util/util';
+import { SerializerError, SerializerReason } from './errors/SerializerError';
 import { TextEncoder } from 'util';
 
 // Immutable
@@ -47,17 +48,17 @@ export class Serializer {
 			case BinaryPrimitives.Object: return this.parseObject(value);
 			case BinaryPrimitives.String: return this.parseString(value);
 			case BinaryPrimitives.Undefined: return this.parseUndefined();
-			default: return this.handleUnsupported(value);
+			default: return this.handleUnsupported(value, hint);
 		}
 	}
 
-	protected handleUnsupported(value: unknown) {
+	protected handleUnsupported(value: unknown, hint = typeof value) {
 		// If there's an onUnsupported handler, try to call it
 		if (this.onUnsupported) {
 			// If the serializer was handling an unsupported type, abort the serialization
 			// as it's most likely an error in the return type of the handler.
 			if (this._handlingUnsupported) {
-				throw new TypeError(`Failed to handle unsupported type, aborting serialization.`);
+				throw new SerializerError('The modified value was not serializable.', SerializerReason.UnsupportedSerializedType);
 			}
 
 			// Set the serializer to handling unsupported, parse, and once it's done
@@ -69,7 +70,7 @@ export class Serializer {
 		}
 
 		// If no handler is available, throw TypeError
-		throw new TypeError(`Unsupported type '${typeof value}'`);
+		throw new SerializerError(`Unsupported type '${hint}'.`, SerializerReason.UnsupportedType);
 	}
 
 	private parseBigInt(value: bigint) {
@@ -148,7 +149,7 @@ export class Serializer {
 			case '[object ArrayBuffer]': return this.parseValueObjectArrayBuffer(value as ArrayBuffer);
 			case '[object WeakMap]': return this.parseValueObjectWeakMap();
 			case '[object WeakSet]': return this.parseValueObjectWeakSet();
-			case '[object Promise]': return this.handleUnsupported(value);
+			case '[object Promise]': return this.handleUnsupported(value, 'object');
 			default: return this.parseValueObjectFallback(value, tag);
 		}
 	}
@@ -328,6 +329,11 @@ export class Serializer {
 
 	private writeValueString(value: string) {
 		const serialized = Serializer._textEncoder.encode(value);
+
+		// Strings must not contain a null pointer, since they are null-delimited.
+		if (serialized.includes(BinaryTokens.NullPointer)) {
+			throw new SerializerError('Unexpected null pointer in serialized string.', SerializerReason.UnexpectedNullValue);
+		}
 
 		this.write(serialized);
 		this.write8(BinaryTokens.NullPointer);

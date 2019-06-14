@@ -1,7 +1,7 @@
 import { TextDecoder } from 'util';
 import { BinaryTokens, TypedArray } from './util/constants';
 import { BigIntegers, RegExps, TypedArrays } from './util/util';
-import { DeserializerError, Reason } from './errors/DeserializerError';
+import { DeserializerError, DeserializerReason } from './errors/DeserializerError';
 
 const float64Array = new Float64Array(1);
 const uInt8Float64Array = new Uint8Array(float64Array.buffer);
@@ -73,7 +73,7 @@ export class Deserializer {
 			case BinaryTokens.Float32Array:
 			case BinaryTokens.Float64Array:
 			case BinaryTokens.DataView: return this.readValueTypedArray(type);
-			default: throw new DeserializerError(`Unknown type received: ${type}`, Reason.UnknownType);
+			default: throw new DeserializerError(`Unknown type received: ${type}`, DeserializerReason.UnknownType);
 		}
 	}
 
@@ -170,7 +170,7 @@ export class Deserializer {
 	}
 
 	private readNullTerminator() {
-		if (this.finished) throw new DeserializerError('Found End-Of-Buffer, expecting a `NullTerminator` before.', Reason.UnexpectedNullTerminator);
+		if (this.finished) throw new DeserializerError('Found End-Of-Buffer, expecting a `NullTerminator` before.', DeserializerReason.UnexpectedNullTerminator);
 		if (this.watchUint8() === BinaryTokens.NullPointer) {
 			++this.offset;
 			return true;

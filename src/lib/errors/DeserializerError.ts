@@ -1,15 +1,15 @@
 export class DeserializerError extends Error {
 
-	public kind: Reason;
+	public kind: DeserializerReason;
 
-	public constructor(message: string, kind: Reason) {
+	public constructor(message: string, kind: DeserializerReason) {
 		super(message);
 		this.kind = kind;
 	}
 
 }
 
-export enum Reason {
+export enum DeserializerReason {
 	UnknownType = 'UnknownType',
 	UnexpectedNullTerminator = 'UnexpectedNullTerminator'
 }
