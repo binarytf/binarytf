@@ -292,11 +292,24 @@ test('Deserialize String Object', t => {
 test('Deserialize RegExp', t => {
 	t.plan(9);
 
-	const serialized = serialize(/ab/g);
+	const serialized = serialize(/ab/);
 	const deserialized = deserialize(serialized) as RegExp;
 	t.equal(typeof deserialized, 'object');
 	t.true(deserialized instanceof RegExp);
 	t.equal(deserialized.source, 'ab');
+	t.false(deserialized.global);
+	t.false(deserialized.ignoreCase);
+	t.false(deserialized.multiline);
+	t.false(deserialized.sticky);
+	t.false(deserialized.unicode);
+	t.false(deserialized.dotAll);
+});
+
+test('Deserialize RegExp (Flag: Global)', t => {
+	t.plan(6);
+
+	const serialized = serialize(/ab/g);
+	const deserialized = deserialize(serialized) as RegExp;
 	t.true(deserialized.global);
 	t.false(deserialized.ignoreCase);
 	t.false(deserialized.multiline);
@@ -305,14 +318,76 @@ test('Deserialize RegExp', t => {
 	t.false(deserialized.dotAll);
 });
 
+test('Deserialize RegExp (Flag: IgnoreCase)', t => {
+	t.plan(6);
+
+	const serialized = serialize(/ab/i);
+	const deserialized = deserialize(serialized) as RegExp;
+	t.false(deserialized.global);
+	t.true(deserialized.ignoreCase);
+	t.false(deserialized.multiline);
+	t.false(deserialized.sticky);
+	t.false(deserialized.unicode);
+	t.false(deserialized.dotAll);
+});
+
+test('Deserialize RegExp (Flag: Multiline)', t => {
+	t.plan(6);
+
+	const serialized = serialize(/ab/m);
+	const deserialized = deserialize(serialized) as RegExp;
+	t.false(deserialized.global);
+	t.false(deserialized.ignoreCase);
+	t.true(deserialized.multiline);
+	t.false(deserialized.sticky);
+	t.false(deserialized.unicode);
+	t.false(deserialized.dotAll);
+});
+
+test('Deserialize RegExp (Flag: Sticky)', t => {
+	t.plan(6);
+
+	const serialized = serialize(/ab/y);
+	const deserialized = deserialize(serialized) as RegExp;
+	t.false(deserialized.global);
+	t.false(deserialized.ignoreCase);
+	t.false(deserialized.multiline);
+	t.true(deserialized.sticky);
+	t.false(deserialized.unicode);
+	t.false(deserialized.dotAll);
+});
+
+test('Deserialize RegExp (Flag: Unicode)', t => {
+	t.plan(6);
+
+	const serialized = serialize(/ab/u);
+	const deserialized = deserialize(serialized) as RegExp;
+	t.false(deserialized.global);
+	t.false(deserialized.ignoreCase);
+	t.false(deserialized.multiline);
+	t.false(deserialized.sticky);
+	t.true(deserialized.unicode);
+	t.false(deserialized.dotAll);
+});
+
+test('Deserialize RegExp (Flag: DotAll)', t => {
+	t.plan(6);
+
+	const serialized = serialize(/ab/s);
+	const deserialized = deserialize(serialized) as RegExp;
+	t.false(deserialized.global);
+	t.false(deserialized.ignoreCase);
+	t.false(deserialized.multiline);
+	t.false(deserialized.sticky);
+	t.false(deserialized.unicode);
+	t.true(deserialized.dotAll);
+});
+
 test('Deserialize RegExp (All Flags)', t => {
-	t.plan(9);
+	t.plan(6);
 
 	const serialized = serialize(/ab/gimyus);
 	const deserialized = deserialize(serialized) as RegExp;
-	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof RegExp);
-	t.equal(deserialized.source, 'ab');
 	t.true(deserialized.global);
 	t.true(deserialized.ignoreCase);
 	t.true(deserialized.multiline);
