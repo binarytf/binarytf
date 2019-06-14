@@ -5,7 +5,6 @@ import { TextEncoder } from 'util';
 // Immutable
 const MIN_INT32 = -(2 ** 31);
 const MAX_INT32 = (2 ** 31) - 1;
-const NULL_TERMINATOR = 0x00;
 
 // Mutable
 const float64Array = new Float64Array(1);
@@ -208,7 +207,7 @@ export class Serializer {
 			this.parse(value[entryKey]);
 		}
 
-		this.write8(NULL_TERMINATOR);
+		this.write8(BinaryTokens.NullPointer);
 	}
 
 	private parseValueObjectMap(value: Map<unknown, unknown>) {
@@ -222,7 +221,7 @@ export class Serializer {
 			this.parse(entryValue);
 		}
 
-		this.write8(NULL_TERMINATOR);
+		this.write8(BinaryTokens.NullPointer);
 	}
 
 	private parseValueObjectSet(value: Set<unknown>) {
@@ -235,7 +234,7 @@ export class Serializer {
 			this.parse(entryValue);
 		}
 
-		this.write8(NULL_TERMINATOR);
+		this.write8(BinaryTokens.NullPointer);
 	}
 
 	private parseValueObjectArrayBuffer(value: ArrayBuffer) {
@@ -281,7 +280,7 @@ export class Serializer {
 			}
 		}
 
-		this.write8(NULL_TERMINATOR);
+		this.write8(BinaryTokens.NullPointer);
 	}
 
 	private writeValueTypedArray(value: TypedArray, tag: BinaryTokens) {
@@ -331,7 +330,7 @@ export class Serializer {
 		const serialized = Serializer._textEncoder.encode(value);
 
 		this.write(serialized);
-		this.write8(NULL_TERMINATOR);
+		this.write8(BinaryTokens.NullPointer);
 	}
 
 	private getNumberType(value: number) {

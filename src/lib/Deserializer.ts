@@ -3,7 +3,6 @@ import { BinaryTokens, TypedArray } from './util/constants';
 import { BigIntegers, RegExps, TypedArrays } from './util/util';
 import { DeserializerError, Reason } from './errors/DeserializerError';
 
-const NULL_TERMINATOR = 0x00;
 const float64Array = new Float64Array(1);
 const uInt8Float64Array = new Uint8Array(float64Array.buffer);
 
@@ -139,8 +138,8 @@ export class Deserializer {
 		const value = this.createObjectID([] as unknown[]);
 		for (let i = 0; !this.finished; ++i) {
 			const raw = this.readUint8();
+			if (raw === BinaryTokens.NullPointer) break;
 			if (raw === BinaryTokens.Hole) continue;
-			if (raw === NULL_TERMINATOR) break;
 			this.offsetBack();
 			value[i] = this.read();
 		}
@@ -148,7 +147,7 @@ export class Deserializer {
 	}
 
 	private readString() {
-		const end = this._buffer!.indexOf(NULL_TERMINATOR, this.offset);
+		const end = this._buffer!.indexOf(BinaryTokens.NullPointer, this.offset);
 		const sub = this._buffer!.subarray(this.offset, end);
 		const str = Deserializer._textDecoder.decode(sub);
 		this.offset = end + 1;
@@ -172,7 +171,7 @@ export class Deserializer {
 
 	private readNullTerminator() {
 		if (this.finished) throw new DeserializerError('Found End-Of-Buffer, expecting a `NullTerminator` before.', Reason.UnexpectedNullTerminator);
-		if (this.watchUint8() === NULL_TERMINATOR) {
+		if (this.watchUint8() === BinaryTokens.NullPointer) {
 			++this.offset;
 			return true;
 		}
