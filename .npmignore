@@ -13,6 +13,10 @@ logs/
 .vs/
 .idea/
 
+# Coverage
+.nyc_output/
+coverage/
+
 # NPM ignore
 .github/
 docs/
