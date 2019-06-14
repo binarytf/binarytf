@@ -1,5 +1,6 @@
 # Packages
 node_modules/
+package-lock.json
 yarn.lock
 
 # Log files
@@ -9,16 +10,19 @@ logs/
 # Miscellaneous
 .tmp/
 .vscode/
+.vs/
+.idea/
 
 # NPM ignore
+.github/
+docs/
+dist/test/
+dist/tsconfig.tsbuildinfo
+src/
 .eslintignore
 .eslintrc.json
 .gitattributes
-.github/
 .gitignore
-docs/
-dist/test/
-src/
+azure-pipelines.yml
 tsconfig.json
-.eslintrc.json
 webpack.config.js
