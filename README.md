@@ -15,7 +15,7 @@
 			<img src="https://dev.azure.com/kyranet/kyranet.public/_apis/build/status/kyranet.binarytf?branchName=master" alt="Build status" />
 		</a>
 		<a href="https://dev.azure.com/kyranet/kyranet.public/_build/latest?definitionId=1&branchName=master">
-			<img src="https://img.shields.io/azure-devops/coverage/kyranet/binarytf/1/master.svg" alt="Azure DevOps coverage">
+			<img src="https://img.shields.io/azure-devops/coverage/kyranet/kyranet.public/12/master.svg" alt="Azure DevOps coverage">
 		</a>
 		<a href="https://lgtm.com/projects/g/kyranet/binarytf/alerts/">
 			<img src="https://img.shields.io/lgtm/alerts/g/kyranet/binarytf.svg?logo=lgtm&logoWidth=18" alt="Total alerts">
