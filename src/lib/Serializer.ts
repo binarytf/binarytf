@@ -76,7 +76,7 @@ export class Serializer {
 	private parseBigInt(value: bigint) {
 		const sign = value >= BigIntegers.ZERO! ? 0 : 1;
 		this.ensureAlloc(5);
-		this._buffer![this._offset++] = sign ? BinaryTokens.NBigInt : BinaryTokens.PBigInt;
+		this.write8(sign ? BinaryTokens.NBigInt : BinaryTokens.PBigInt);
 
 		const headerOffset = this._offset;
 		this._offset += 4;
@@ -84,37 +84,34 @@ export class Serializer {
 		let unsignedBigInt = sign === 1 ? -value : value;
 		let byteCount = 0;
 		while (unsignedBigInt > 0) {
-			byteCount++;
-			this.ensureAlloc(1);
-			this._buffer![this._offset++] = Number(unsignedBigInt & BigIntegers.BYTE!);
+			++byteCount;
+			this.write8(Number(unsignedBigInt & BigIntegers.BYTE!));
 			unsignedBigInt >>= BigIntegers.EIGHT!;
 		}
 
-		this.writeUint32(headerOffset, byteCount);
+		this.write32At(byteCount, headerOffset);
 	}
 
 	private parseBoolean(value: boolean) {
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.Boolean;
-		this.writeValueBoolean(value);
+		this.write8(BinaryTokens.Boolean);
+		this.write8(value ? 1 : 0);
 	}
 
 	private parseNumber(value: number) {
 		const type = this.getNumberType(value);
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = type;
+		this.write8(type);
 		switch (type) {
-			case BinaryTokens.NByte: this.writeValueByte(-value);
+			case BinaryTokens.NByte: this.write8(-value);
 				break;
-			case BinaryTokens.PByte: this.writeValueByte(value);
+			case BinaryTokens.PByte: this.write8(value);
 				break;
-			case BinaryTokens.NInt32: this.writeValueInt32(-value);
+			case BinaryTokens.NInt32: this.write32(-value);
 				break;
-			case BinaryTokens.PInt32: this.writeValueInt32(value);
+			case BinaryTokens.PInt32: this.write32(value);
 				break;
-			case BinaryTokens.NFloat64: this.writeValueFloat64(-value);
+			case BinaryTokens.NFloat64: this.writeF64(-value);
 				break;
-			case BinaryTokens.PFloat64: this.writeValueFloat64(value);
+			case BinaryTokens.PFloat64: this.writeF64(value);
 				break;
 			default:
 				throw new Error(`Unreachable code. Got unexpected integer type ${type}`);
@@ -158,137 +155,103 @@ export class Serializer {
 	}
 
 	private parseString(value: string) {
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.String;
+		this.write8(BinaryTokens.String);
 		this.writeValueString(value);
 	}
 
 	private parseUndefined() {
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.Undefined;
+		this.write8(BinaryTokens.Undefined);
 	}
 
 	private parseValueNull() {
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.Null;
+		this.write8(BinaryTokens.Null);
 	}
 
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	private parseValueObjectString(value: String) {
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.StringObject;
+		this.write8(BinaryTokens.StringObject);
 		this.writeValueString(value.valueOf());
 	}
 
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	private parseValueObjectBoolean(value: Boolean) {
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.BooleanObject;
-		this.writeValueBoolean(value.valueOf());
+		this.write8(BinaryTokens.BooleanObject);
+		this.write8(value.valueOf() ? 1 : 0);
 	}
 
 	// eslint-disable-next-line @typescript-eslint/ban-types
 	private parseValueObjectNumber(value: Number) {
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.NumberObject;
-		this.writeValueFloat64(value.valueOf());
+		this.write8(BinaryTokens.NumberObject);
+		this.writeF64(value.valueOf());
 	}
 
 	private parseValueObjectDate(value: Date) {
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.Date;
-		this.writeValueFloat64(value.valueOf());
+		this.write8(BinaryTokens.Date);
+		this.writeF64(value.valueOf());
 	}
 
 	private parseValueObjectRegExp(value: RegExp) {
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.RegExp;
+		this.write8(BinaryTokens.RegExp);
 		this.writeValueString(value.source);
-		this.writeValueByte(RegExps.flagsAsInteger(value));
+		this.write8(RegExps.flagsAsInteger(value));
 	}
 
 	private parseValueObjectLiteral(value: Record<any, any>) {
 		const keys = Object.keys(value);
 		if (keys.length === 0) {
-			this.ensureAlloc(1);
-			this._buffer![this._offset++] = BinaryTokens.EmptyObject;
-			return;
+			return this.write8(BinaryTokens.EmptyObject);
 		}
 
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.Object;
-
+		this.write8(BinaryTokens.Object);
 		for (const entryKey of keys) {
 			this.parse(entryKey);
 			this.parse(value[entryKey]);
 		}
 
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = NULL_TERMINATOR;
+		this.write8(NULL_TERMINATOR);
 	}
 
 	private parseValueObjectMap(value: Map<unknown, unknown>) {
 		if (value.size === 0) {
-			this.ensureAlloc(1);
-			this._buffer![this._offset++] = BinaryTokens.EmptyMap;
-			return;
+			return this.write8(BinaryTokens.EmptyMap);
 		}
 
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.Map;
-
+		this.write8(BinaryTokens.Map);
 		for (const [entryKey, entryValue] of value.entries()) {
 			this.parse(entryKey);
 			this.parse(entryValue);
 		}
 
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = NULL_TERMINATOR;
+		this.write8(NULL_TERMINATOR);
 	}
 
 	private parseValueObjectSet(value: Set<unknown>) {
 		if (value.size === 0) {
-			this.ensureAlloc(1);
-			this._buffer![this._offset++] = BinaryTokens.EmptySet;
-			return;
+			return this.write8(BinaryTokens.EmptySet);
 		}
 
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.Set;
-
+		this.write8(BinaryTokens.Set);
 		for (const entryValue of value) {
 			this.parse(entryValue);
 		}
 
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = NULL_TERMINATOR;
+		this.write8(NULL_TERMINATOR);
 	}
 
 	private parseValueObjectArrayBuffer(value: ArrayBuffer) {
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.ArrayBuffer;
+		this.write8(BinaryTokens.ArrayBuffer);
 
-		// We cannot read an ArrayBuffer, so we create an Uint8Array.
 		const uint8Array = new Uint8Array(value);
-		this.ensureAlloc(4 + uint8Array.length);
-
-		// Write the byte length
-		this.writeUint32(uint8Array.length, this._offset);
-		this._offset += 4;
-
-		// Write the data
-		this._buffer!.set(uint8Array, this._offset);
-		this._offset += uint8Array.length;
+		this.write32(uint8Array.length);
+		this.write(uint8Array);
 	}
 
 	private parseValueObjectWeakMap() {
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.WeakMap;
+		this.write8(BinaryTokens.WeakMap);
 	}
 
 	private parseValueObjectWeakSet() {
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = BinaryTokens.WeakSet;
+		this.write8(BinaryTokens.WeakSet);
 	}
 
 	private parseValueObjectFallback(value: object, tag: string) {
@@ -298,81 +261,77 @@ export class Serializer {
 	}
 
 	private parseValueReference(value: number) {
-		this.ensureAlloc(5);
-		this._buffer![this._offset++] = BinaryTokens.ObjectReference;
-		this.writeUint32(value, this._offset);
-		this._offset += 4;
+		this.write8(BinaryTokens.ObjectReference);
+		this.write32(value);
 	}
 
 	private parseValueArray(value: Array<unknown>) {
 		if (value.length === 0) {
-			this.ensureAlloc(1);
-			this._buffer![this._offset++] = BinaryTokens.EmptyArray;
-			return;
+			return this.write8(BinaryTokens.EmptyArray);
 		}
 
 		this.ensureAlloc(2);
-		this._buffer![this._offset++] = BinaryTokens.Array;
+		this.write8(BinaryTokens.Array);
 
 		for (let i = 0, n = value.length; i < n; i++) {
 			if (i in value) {
 				this.parse(value[i]);
 			} else {
-				this.ensureAlloc(1);
-				this._buffer![this._offset++] = BinaryTokens.Hole;
+				this.write8(BinaryTokens.Hole);
 			}
 		}
 
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = NULL_TERMINATOR;
+		this.write8(NULL_TERMINATOR);
 	}
 
 	private writeValueTypedArray(value: TypedArray, tag: BinaryTokens) {
-		// Allocate 5 + byteLength to the internal buffer and assign the tag
-		this.ensureAlloc(5 + value.byteLength);
-		this._buffer![this._offset++] = tag;
-
-		// Write the array length in the next 4 bytes
-		this.writeUint32(value.byteLength, this._offset);
-		this._offset += 4;
+		this.write8(tag);
+		this.write32(value.byteLength);
 
 		if (tag !== BinaryTokens.Uint8Array) {
 			value = new Uint8Array(value.buffer);
 		}
 
+		this.write(value as Uint8Array);
+	}
+
+	private write(value: Uint8Array) {
+		this.ensureAlloc(value.byteLength);
 		this._buffer!.set(value, this._offset);
 		this._offset += value.byteLength;
 	}
 
-	private writeValueByte(value: number) {
+	private write8(value: number) {
 		this.ensureAlloc(1);
 		this._buffer![this._offset++] = value;
 	}
 
-	private writeValueInt32(value: number) {
+	private write32(value: number) {
 		this.ensureAlloc(4);
-		this.writeUint32(value, this._offset);
+		this.write32At(value, this._offset);
 		this._offset += 4;
 	}
 
-	private writeValueFloat64(value: number) {
-		this.ensureAlloc(8);
-		this.writeFloat64(value, this._offset);
-		this._offset += 8;
+	private write32At(value: number, offset: number) {
+		this._buffer![offset + 3] = value;
+		value >>>= 8;
+		this._buffer![offset + 2] = value;
+		value >>>= 8;
+		this._buffer![offset + 1] = value;
+		value >>>= 8;
+		this._buffer![offset] = value;
 	}
 
-	private writeValueBoolean(value: boolean) {
-		this.ensureAlloc(1);
-		this._buffer![this._offset++] = value ? 1 : 0;
+	private writeF64(value: number) {
+		float64Array[0] = value;
+		this.write(uInt8Float64Array);
 	}
 
 	private writeValueString(value: string) {
 		const serialized = Serializer._textEncoder.encode(value);
-		this.ensureAlloc(1 + serialized.length);
 
-		this._buffer!.set(serialized, this._offset);
-		this._offset += serialized.length;
-		this._buffer![this._offset++] = NULL_TERMINATOR;
+		this.write(serialized);
+		this.write8(NULL_TERMINATOR);
 	}
 
 	private getNumberType(value: number) {
@@ -398,21 +357,6 @@ export class Serializer {
 			this._buffer = new Uint8Array(Numbers.nextPowerOfTwo(length));
 			this._buffer.set(old!);
 		}
-	}
-
-	private writeUint32(value: number, offset: number) {
-		this._buffer![offset + 3] = value;
-		value >>>= 8;
-		this._buffer![offset + 2] = value;
-		value >>>= 8;
-		this._buffer![offset + 1] = value;
-		value >>>= 8;
-		this._buffer![offset] = value;
-	}
-
-	private writeFloat64(value: number, offset: number) {
-		float64Array[0] = value;
-		this._buffer!.set(uInt8Float64Array, offset);
 	}
 
 	private static _textEncoder = new TextEncoder();
