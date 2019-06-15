@@ -53,7 +53,7 @@ export class Deserializer {
 			case BinaryTokens.NumberObject: return this.createObjectID(new Number(this.readFloat64()));
 			// eslint-disable-next-line no-new-wrappers
 			case BinaryTokens.StringObject: return this.createObjectID(new String(this.readString()));
-			case BinaryTokens.EmptyObject: return {};
+			case BinaryTokens.EmptyObject: return this.createObjectID({});
 			case BinaryTokens.Object: return this.readValueObject();
 			case BinaryTokens.RegExp: return this.createObjectID(new RegExp(this.readString(), RegExps.flagsFromInteger(this.readUint8())));
 			case BinaryTokens.Map: return this.readValueMap();
