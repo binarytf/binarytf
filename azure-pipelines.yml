@@ -37,7 +37,7 @@ jobs:
         displayName: 'Generate Test Results'
       - task: PublishTestResults@2
         inputs:
-          testResultsFormat: xUnit
+          testResultsFormat: JUnit
           testResultsFiles: $(System.DefaultWorkingDirectory)/test.xml
         displayName: 'Publish Test Results'
       - script: 'yarn run coverage'
