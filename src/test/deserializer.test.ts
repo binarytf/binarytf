@@ -819,6 +819,80 @@ test('Deserialize Forged Buffer (Invalid Type)', t => {
 	}
 });
 
+test('Deserialize Forged Buffer (Invalid Number)', t => {
+	t.plan(2);
+	try {
+		const uint8Array = new Uint8Array(2);
+		uint8Array[0] = BinaryTokens.PInt32;
+		uint8Array[1] = 0x12;
+		deserialize(uint8Array);
+		t.fail('Deserialize should fail.');
+	} catch (error) {
+		t.true(error instanceof DeserializerError);
+		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
+	}
+});
+
+test('Deserialize Forged Buffer (Invalid BigInt | Missing ByteLength)', t => {
+	t.plan(2);
+	try {
+		const uint8Array = new Uint8Array(1);
+		uint8Array[0] = BinaryTokens.PBigInt;
+		deserialize(uint8Array);
+		t.fail('Deserialize should fail.');
+	} catch (error) {
+		t.true(error instanceof DeserializerError);
+		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
+	}
+});
+
+test('Deserialize Forged Buffer (Invalid BigInt | Missing Value)', t => {
+	t.plan(2);
+	try {
+		const uint8Array = new Uint8Array(5);
+		uint8Array[0] = BinaryTokens.PBigInt;
+		uint8Array[1] = 0x00;
+		uint8Array[2] = 0x00;
+		uint8Array[3] = 0x00;
+		uint8Array[4] = 0x06;
+		deserialize(uint8Array);
+		t.fail('Deserialize should fail.');
+	} catch (error) {
+		t.true(error instanceof DeserializerError);
+		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
+	}
+});
+
+test('Deserialize Forged Buffer (Invalid TypedArray | Missing ByteLength)', t => {
+	t.plan(2);
+	try {
+		const uint8Array = new Uint8Array(1);
+		uint8Array[0] = BinaryTokens.Uint8Array;
+		deserialize(uint8Array);
+		t.fail('Deserialize should fail.');
+	} catch (error) {
+		t.true(error instanceof DeserializerError);
+		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
+	}
+});
+
+test('Deserialize Forged Buffer (Invalid TypedArray | Missing Value)', t => {
+	t.plan(2);
+	try {
+		const uint8Array = new Uint8Array(5);
+		uint8Array[0] = BinaryTokens.Uint8Array;
+		uint8Array[1] = 0x00;
+		uint8Array[2] = 0x00;
+		uint8Array[3] = 0x00;
+		uint8Array[4] = 0x06;
+		deserialize(uint8Array);
+		t.fail('Deserialize should fail.');
+	} catch (error) {
+		t.true(error instanceof DeserializerError);
+		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
+	}
+});
+
 test('Deserialize Forged Buffer (String Invalid Null Pointer)', t => {
 	t.plan(2);
 	try {
@@ -829,7 +903,7 @@ test('Deserialize Forged Buffer (String Invalid Null Pointer)', t => {
 		t.fail('Deserialize should fail.');
 	} catch (error) {
 		t.true(error instanceof DeserializerError);
-		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedNullTerminator);
+		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
 	}
 });
 
@@ -844,6 +918,6 @@ test('Deserialize Forged Buffer (Array Invalid Null Pointer)', t => {
 		t.fail('Deserialize should fail.');
 	} catch (error) {
 		t.true(error instanceof DeserializerError);
-		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedNullTerminator);
+		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
 	}
 });

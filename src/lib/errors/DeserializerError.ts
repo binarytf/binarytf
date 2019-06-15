@@ -11,5 +11,5 @@ export class DeserializerError extends Error {
 
 export enum DeserializerReason {
 	UnknownType = 'UnknownType',
-	UnexpectedNullTerminator = 'UnexpectedNullTerminator'
+	UnexpectedEndOfBuffer = 'UnexpectedEndOfBuffer'
 }
