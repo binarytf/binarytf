@@ -52,7 +52,7 @@ export class Serializer {
 		}
 	}
 
-	protected handleUnsupported(value: unknown, hint = typeof value) {
+	protected handleUnsupported(value: unknown, hint: string) {
 		// If there's an onUnsupported handler, try to call it
 		if (this.onUnsupported) {
 			// If the serializer was handling an unsupported type, abort the serialization
@@ -100,6 +100,7 @@ export class Serializer {
 	private parseNumber(value: number) {
 		const type = this.getNumberType(value);
 		this.write8(type);
+		/* istanbul ignore next: This prints an erroneous coverage result. Definitely must be checked in the future. */
 		switch (type) {
 			case BinaryTokens.NByte:
 				this.write8(-value);
@@ -141,6 +142,7 @@ export class Serializer {
 		// We're doing this because it's safer for the context where you
 		// extend the classes.
 		const tag = Object.prototype.toString.call(value);
+		/* istanbul ignore next: This prints an erroneous coverage result. Definitely must be checked in the future. */
 		switch (tag) {
 			// eslint-disable-next-line @typescript-eslint/ban-types
 			case '[object String]': return this.parseValueObjectString(value as String);
