@@ -29,33 +29,33 @@ export class Deserializer {
 	}
 
 	public read() {
-		const type = this.readUint8();
+		const type = this.read8();
 		switch (type) {
 			case BinaryTokens.Null: return null;
 			case BinaryTokens.PBigInt: return this.readValueBigInt(false);
 			case BinaryTokens.NBigInt: return this.readValueBigInt(true);
-			case BinaryTokens.Boolean: return Boolean(this.readUint8());
+			case BinaryTokens.Boolean: return Boolean(this.read8());
 			case BinaryTokens.String: return this.readString();
 			case BinaryTokens.Undefined: return undefined;
-			case BinaryTokens.PByte: return this.readUint8();
-			case BinaryTokens.NByte: return -this.readUint8();
-			case BinaryTokens.PInt32: return this.readUint32();
-			case BinaryTokens.NInt32: return -this.readUint32();
-			case BinaryTokens.PFloat64: return this.readFloat64();
-			case BinaryTokens.NFloat64: return -this.readFloat64();
+			case BinaryTokens.PByte: return this.read8();
+			case BinaryTokens.NByte: return -this.read8();
+			case BinaryTokens.PInt32: return this.read32();
+			case BinaryTokens.NInt32: return -this.read32();
+			case BinaryTokens.PFloat64: return this.readF64();
+			case BinaryTokens.NFloat64: return -this.readF64();
 			case BinaryTokens.Array: return this.readValueArray();
 			case BinaryTokens.EmptyArray: return this.createObjectID([]);
-			case BinaryTokens.ObjectReference: return this._objectIDs.get(this.readUint32());
-			case BinaryTokens.Date: return this.createObjectID(new Date(this.readFloat64()));
+			case BinaryTokens.ObjectReference: return this._objectIDs.get(this.read32());
+			case BinaryTokens.Date: return this.createObjectID(new Date(this.readF64()));
 			// eslint-disable-next-line no-new-wrappers
-			case BinaryTokens.BooleanObject: return this.createObjectID(new Boolean(this.readUint8()));
+			case BinaryTokens.BooleanObject: return this.createObjectID(new Boolean(this.read8()));
 			// eslint-disable-next-line no-new-wrappers
-			case BinaryTokens.NumberObject: return this.createObjectID(new Number(this.readFloat64()));
+			case BinaryTokens.NumberObject: return this.createObjectID(new Number(this.readF64()));
 			// eslint-disable-next-line no-new-wrappers
 			case BinaryTokens.StringObject: return this.createObjectID(new String(this.readString()));
 			case BinaryTokens.EmptyObject: return this.createObjectID({});
 			case BinaryTokens.Object: return this.readValueObject();
-			case BinaryTokens.RegExp: return this.createObjectID(new RegExp(this.readString(), RegExps.flagsFromInteger(this.readUint8())));
+			case BinaryTokens.RegExp: return this.createObjectID(new RegExp(this.readString(), RegExps.flagsFromInteger(this.read8())));
 			case BinaryTokens.Map: return this.readValueMap();
 			case BinaryTokens.EmptyMap: return this.createObjectID(new Map());
 			case BinaryTokens.Set: return this.readValueSet();
@@ -80,7 +80,8 @@ export class Deserializer {
 	private readValueTypedArray(token: BinaryTokens) {
 		// Read the byte length, then create a shared ArrayBuffer for the desired
 		// typedArray and an Uint8Array which we write to.
-		const byteLength = this.readUint32();
+		const byteLength = this.read32();
+		this.ensureBytes(byteLength);
 
 		let value: TypedArray;
 		// Fast-path if we are deserializing an Uint8Array
@@ -97,10 +98,11 @@ export class Deserializer {
 	}
 
 	private readValueArrayBuffer() {
-		const value = this.createObjectID(new ArrayBuffer(this.readUint32()));
+		const value = this.createObjectID(new ArrayBuffer(this.read32()));
+
 		const uint8Array = new Uint8Array(value);
 		for (let i = 0, max = uint8Array.length; i < max; i++) {
-			uint8Array[i] = this.readUint8();
+			uint8Array[i] = this.read8();
 		}
 		return value;
 	}
@@ -138,7 +140,7 @@ export class Deserializer {
 		const value = this.createObjectID([] as unknown[]);
 		let i = 0;
 		while (!this.readNullTerminator()) {
-			if (this.readUint8() !== BinaryTokens.Hole) {
+			if (this.read8() !== BinaryTokens.Hole) {
 				this.offsetBack();
 				value[i] = this.read();
 			}
@@ -154,7 +156,7 @@ export class Deserializer {
 	private readString() {
 		const end = this._buffer!.indexOf(BinaryTokens.NullPointer, this.offset);
 		if (end === -1) {
-			throw new DeserializerError('Found End-Of-Buffer, expecting a `NullTerminator` before.', DeserializerReason.UnexpectedNullTerminator);
+			throw new DeserializerError('Found End-Of-Buffer, expecting a `NullTerminator` before.', DeserializerReason.UnexpectedEndOfBuffer);
 		}
 		const sub = this._buffer!.subarray(this.offset, end);
 		const str = Deserializer._textDecoder.decode(sub);
@@ -163,13 +165,13 @@ export class Deserializer {
 	}
 
 	private readValueBigInt(sign: boolean) {
-		const length = this.readUint32();
+		const byteLength = this.read32();
 
 		let value = BigIntegers.ZERO!;
 		let b = BigIntegers.ONE!;
 
-		for (let i = 0; i < length; i++) {
-			const digit = this.readUint8();
+		for (let i = 0; i < byteLength; i++) {
+			const digit = this.read8();
 			value += BigInt(digit) * b;
 			b <<= BigIntegers.EIGHT!;
 		}
@@ -178,11 +180,11 @@ export class Deserializer {
 	}
 
 	private readNullTerminator() {
-		if (this.watchUint8() === BinaryTokens.NullPointer) {
+		if (this.watch8() === BinaryTokens.NullPointer) {
 			++this.offset;
 			return true;
 		} else if (this.finished) {
-			throw new DeserializerError('Found End-Of-Buffer, expecting a `NullTerminator` before.', DeserializerReason.UnexpectedNullTerminator);
+			throw new DeserializerError('Found End-Of-Buffer, expecting a `NullTerminator` before.', DeserializerReason.UnexpectedEndOfBuffer);
 		}
 		return false;
 	}
@@ -196,15 +198,17 @@ export class Deserializer {
 		--this.offset;
 	}
 
-	private watchUint8() {
+	private watch8() {
 		return this._buffer![this.offset];
 	}
 
-	private readUint8() {
+	private read8() {
+		this.ensureBytes(1);
 		return this._buffer![this.offset++];
 	}
 
-	private readUint32() {
+	private read32() {
+		this.ensureBytes(4);
 		return (this._buffer![this.offset++] * (2 ** 24)) +
 			(this._buffer![this.offset++] * (2 ** 16)) +
 			(this._buffer![this.offset++] * (2 ** 8)) +
@@ -212,7 +216,8 @@ export class Deserializer {
 
 	}
 
-	private readFloat64() {
+	private readF64() {
+		this.ensureBytes(8);
 		uInt8Float64Array[0] = this._buffer![this.offset++];
 		uInt8Float64Array[1] = this._buffer![this.offset++];
 		uInt8Float64Array[2] = this._buffer![this.offset++];
@@ -222,6 +227,12 @@ export class Deserializer {
 		uInt8Float64Array[6] = this._buffer![this.offset++];
 		uInt8Float64Array[7] = this._buffer![this.offset++];
 		return float64Array[0];
+	}
+
+	private ensureBytes(amount: number) {
+		if (this.offset + amount > this._buffer!.length) {
+			throw new DeserializerError(`Found End-Of-Buffer, expecting ${amount} byte(s).`, DeserializerReason.UnexpectedEndOfBuffer);
+		}
 	}
 
 	private static _textDecoder = new TextDecoder();
