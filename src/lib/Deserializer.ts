@@ -8,8 +8,8 @@ const uInt8Float64Array = new Uint8Array(float64Array.buffer);
 
 export class Deserializer {
 
+	public offset = 0;
 	private _buffer: Uint8Array | null;
-	private offset = 0;
 	private _objectIDs = new Map() as Map<number, Record<any, any>>;
 
 	public constructor(buffer: Uint8Array) {
@@ -20,12 +20,10 @@ export class Deserializer {
 		return this.offset === this._buffer!.length;
 	}
 
-	public process() {
-		const temp = this.read();
+	public clean() {
 		this._buffer = null;
 		this.offset = 0;
 		this._objectIDs.clear();
-		return temp;
 	}
 
 	public read() {
