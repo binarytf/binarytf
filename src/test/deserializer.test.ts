@@ -1,5 +1,5 @@
 import * as test from 'tape';
-import { serialize, deserialize } from '../index';
+import { serialize, deserialize, deserializeWithMetadata } from '../index';
 import { DeserializerError, DeserializerReason } from '../lib/errors/DeserializerError';
 import { BinaryTokens } from '../lib/util/constants';
 
@@ -806,6 +806,17 @@ test('Deserialize Object With Unsupported Types', t => {
 	t.deepEqual(deserialized, { a: true, b: 'Wrong Input' });
 });
 
+test('Deserialize Value Offsets', t => {
+	t.plan(3);
+
+	const value = [1, 2, 3];
+	const serialized = serialize(value);
+
+	t.equal(deserialize(serialized, 1), 1);
+	t.equal(deserialize(serialized, 3), 2);
+	t.equal(deserialize(serialized, 5), 3);
+});
+
 test('Deserialize Forged Buffer (Invalid Type)', t => {
 	t.plan(2);
 	try {
@@ -919,5 +930,53 @@ test('Deserialize Forged Buffer (Array Invalid Null Pointer)', t => {
 	} catch (error) {
 		t.true(error instanceof DeserializerError);
 		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
+	}
+});
+
+test('Deserialize With Metadata (Simple)', t => {
+	t.plan(3);
+
+	const serialized = serialize('Hello World');
+	const metadata = deserializeWithMetadata<string>(serialized);
+
+	// The return of the metadata must always be an object
+	t.equal(typeof metadata, 'object');
+
+	// Test the offset
+	t.equal(metadata.offset, -1);
+
+	// Test the serialized data
+	t.equal(metadata.value, 'Hello World');
+});
+
+test('Deserialize With Metadata (Combinated)', t => {
+	t.plan(4);
+
+	const hello = serialize('Hello');
+	const world = serialize('World');
+	const serialized = new Uint8Array(hello.byteLength + world.byteLength);
+	serialized.set(hello, 0);
+	serialized.set(world, hello.byteLength);
+
+	// First part
+	{
+		const metadata = deserializeWithMetadata<string>(serialized);
+
+		// Test the offset
+		t.equal(metadata.offset, hello.byteLength);
+
+		// Test the serialized data
+		t.equal(metadata.value, 'Hello');
+	}
+
+	// Second part
+	{
+		const metadata = deserializeWithMetadata<string>(serialized, hello.byteLength);
+
+		// Test the offset
+		t.equal(metadata.offset, -1);
+
+		// Test the serialized data
+		t.equal(metadata.value, 'World');
 	}
 });
