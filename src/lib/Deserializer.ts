@@ -44,7 +44,7 @@ export class Deserializer {
 			case BinaryTokens.PFloat64: return this.readFloat64();
 			case BinaryTokens.NFloat64: return -this.readFloat64();
 			case BinaryTokens.Array: return this.readValueArray();
-			case BinaryTokens.EmptyArray: return [];
+			case BinaryTokens.EmptyArray: return this.createObjectID([]);
 			case BinaryTokens.ObjectReference: return this._objectIDs.get(this.readUint32());
 			case BinaryTokens.Date: return this.createObjectID(new Date(this.readFloat64()));
 			// eslint-disable-next-line no-new-wrappers
@@ -144,6 +144,10 @@ export class Deserializer {
 			}
 			++i;
 		}
+
+		// This is required for holey arrays
+		value.length = i;
+
 		return value;
 	}
 

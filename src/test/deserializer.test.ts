@@ -152,23 +152,22 @@ test('Deserialize Unsafe Float', t => {
 });
 
 test('Deserialize Array (Empty)', t => {
-	t.plan(3);
+	t.plan(2);
 
 	const serialized = serialize([]);
-	const deserialized = deserialize(serialized);
-	t.equal(typeof deserialized, 'object');
+	const deserialized = deserialize(serialized) as readonly unknown[];
 	t.true(Array.isArray(deserialized));
-	t.deepEqual(deserialized, []);
+	t.equal(deserialized.length, 0);
 });
 
 test('Deserialize Array (PInt32)', t => {
 	t.plan(3);
 
 	const serialized = serialize([4]);
-	const deserialized = deserialize(serialized);
-	t.equal(typeof deserialized, 'object');
+	const deserialized = deserialize(serialized) as readonly number[];
 	t.true(Array.isArray(deserialized));
-	t.deepEqual(deserialized, [4]);
+	t.equal(deserialized.length, 1);
+	t.equal(deserialized[0], 4);
 });
 
 test('Deserialize Array (Holey)', t => {
@@ -176,45 +175,37 @@ test('Deserialize Array (Holey)', t => {
 
 	// eslint-disable-next-line no-sparse-arrays, array-bracket-spacing
 	const serialized = serialize([, ]);
-	const deserialized = deserialize(serialized);
-	t.equal(typeof deserialized, 'object');
+	const deserialized = deserialize(serialized) as readonly unknown[];
 	t.true(Array.isArray(deserialized));
-	// eslint-disable-next-line no-sparse-arrays, array-bracket-spacing
-	t.deepEqual(deserialized, [, ]);
+	t.equal(deserialized.length, 1);
+	t.false(0 in deserialized);
 });
 
 test('Deserialize Array (Circular)', t => {
-	t.plan(5);
+	t.plan(3);
 
 	const array: unknown[] = [];
 	array.push(array);
 	const serialized = serialize(array);
-	const deserialized = deserialize(serialized) as Array<any>;
-	t.equal(typeof deserialized, 'object');
+	const deserialized = deserialize(serialized) as readonly unknown[];
 	t.true(Array.isArray(deserialized));
 	t.equal(deserialized.length, 1);
-
-	const [first] = deserialized;
-	t.true(Array.isArray(first));
-	t.equal(first, deserialized);
+	t.equal(deserialized[0], deserialized);
 });
 
 test('Deserialize Object (Empty)', t => {
-	t.plan(2);
+	t.plan(1);
 
 	const serialized = serialize({});
 	const deserialized = deserialize(serialized);
-	t.equal(typeof deserialized, 'object');
 	t.deepEqual(deserialized, {});
 });
 
 test('Deserialize Object', t => {
-	t.plan(2);
+	t.plan(1);
 
 	const serialized = serialize({ a: 12 });
 	const deserialized = deserialize(serialized);
-
-	t.equal(typeof deserialized, 'object');
 	t.deepEqual(deserialized, { a: 12 });
 });
 
