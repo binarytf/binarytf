@@ -8,3 +8,6 @@ dist/
 # Coverage
 .nyc_output/
 coverage/
+
+# Test results
+test.xml

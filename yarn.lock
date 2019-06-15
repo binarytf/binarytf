@@ -436,7 +436,7 @@ doctrine@^3.0.0:
   dependencies:
     esutils "^2.0.2"
 
-duplexer@^0.1.1:
+duplexer@^0.1.1, duplexer@~0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/duplexer/-/duplexer-0.1.1.tgz#ace6ff808c1ce66b57d1ebf97977acb02334cfc1"
   integrity sha1-rOb/gIwc5mtX0ev5eXessCM0z8E=
@@ -593,6 +593,11 @@ esutils@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/esutils/-/esutils-2.0.2.tgz#0abf4f1caa5bcb1f7a9d8acc6dea4faaa04bac9b"
   integrity sha1-Cr9PHKpbyx96nYrMbepPqqBLrJs=
+
+events-to-array@^1.0.1:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/events-to-array/-/events-to-array-1.1.2.tgz#2d41f563e1fe400ed4962fe1a4d5c6a7539df7f6"
+  integrity sha1-LUH1Y+H+QA7Uli/hpNXGp1Od9/Y=
 
 execa@^1.0.0:
   version "1.0.0"
@@ -827,7 +832,7 @@ inflight@^1.0.4:
     once "^1.3.0"
     wrappy "1"
 
-inherits@2, inherits@~2.0.3:
+inherits@2, inherits@~2.0.1, inherits@~2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/inherits/-/inherits-2.0.3.tgz#633c2c83e3da42a502f52466022480f4208261de"
   integrity sha1-Yzwsg+PaQqUC9SRmAiSA9CCCYd4=
@@ -974,7 +979,7 @@ js-tokens@^4.0.0:
   resolved "https://registry.yarnpkg.com/js-tokens/-/js-tokens-4.0.0.tgz#19203fb59991df98e3a287050d4647cdeaf32499"
   integrity sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==
 
-js-yaml@^3.13.0, js-yaml@^3.13.1:
+js-yaml@^3.13.0, js-yaml@^3.13.1, js-yaml@^3.2.7:
   version "3.13.1"
   resolved "https://registry.yarnpkg.com/js-yaml/-/js-yaml-3.13.1.tgz#aff151b30bfdfa8e49e05da22e7415e9dfa37847"
   integrity sha512-YfbcO7jXDdyj0DGxYVSlSeQNHbD7XPWvrVWeVUujrQEoZzWJIRrCPoyk6kL6IAjAG2IolMK4T0hNUe0HOUs5Jw==
@@ -1045,7 +1050,7 @@ lodash.unescape@4.0.1:
   resolved "https://registry.yarnpkg.com/lodash.unescape/-/lodash.unescape-4.0.1.tgz#bf2249886ce514cda112fae9218cdc065211fc9c"
   integrity sha1-vyJJiGzlFM2hEvrpIYzcBlIR/Jw=
 
-lodash@^4.17.11:
+lodash@^4.0.0, lodash@^4.17.11:
   version "4.17.11"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
   integrity sha512-cQKh8igo5QUhZ7lg38DYWAxMvjSAKG0A8wGSVimP07SIUEK2UO+arSRKbRZWtelMtN5V0Hkwh5ryOto/SshYIg==
@@ -1466,7 +1471,7 @@ read-pkg@^3.0.0:
     normalize-package-data "^2.3.2"
     path-type "^3.0.0"
 
-readable-stream@^2.0.0, readable-stream@~2.3.6:
+readable-stream@^2, readable-stream@^2.0.0, readable-stream@~2.3.6:
   version "2.3.6"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.6.tgz#b11c27d88b8ff1fbe070643cf94b0c79ae1b0aaf"
   integrity sha512-tQtKA9WIAhBF3+VLAseyMqZeBjW0AHJoxOtYqSUZNJxauErmLbVm2FW1y+J/YA9dUrAC39ITejlZWhVIwawkKw==
@@ -1806,6 +1811,29 @@ tap-out@^1.4.1:
     split "^1.0.0"
     trim "0.0.1"
 
+tap-parser@~1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/tap-parser/-/tap-parser-1.2.2.tgz#5e2f6970611f079c7cf857de1dc7aa1b480de7a5"
+  integrity sha1-Xi9pcGEfB5x8+FfeHceqG0gN56U=
+  dependencies:
+    events-to-array "^1.0.1"
+    inherits "~2.0.1"
+    js-yaml "^3.2.7"
+  optionalDependencies:
+    readable-stream "^2"
+
+tap-xunit@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/tap-xunit/-/tap-xunit-2.4.1.tgz#9823797b676ae5017f4e380bd70abb893b8e120e"
+  integrity sha512-qcZStDtjjYjMKAo7QNiCtOW256g3tuSyCSe5kNJniG1Q2oeOExJq4vm8CwboHZURpkXAHvtqMl4TVL7mcbMVVA==
+  dependencies:
+    duplexer "~0.1.1"
+    minimist "~1.2.0"
+    tap-parser "~1.2.2"
+    through2 "~2.0.0"
+    xmlbuilder "~4.2.0"
+    xtend "~4.0.0"
+
 tape@^4.10.2:
   version "4.10.2"
   resolved "https://registry.yarnpkg.com/tape/-/tape-4.10.2.tgz#129fcf62f86df92687036a52cce7b8ddcaffd7a6"
@@ -1840,7 +1868,7 @@ text-table@^0.2.0:
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
   integrity sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=
 
-through2@^2.0.0:
+through2@^2.0.0, through2@~2.0.0:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/through2/-/through2-2.0.5.tgz#01c1e39eb31d07cb7d03a96a70823260b23132cd"
   integrity sha512-/mrRod8xqpA+IHSLyGCQ2s8SPHiCDEeQJSep1jqLYeEUClOFG2Qsh+4FU6G9VeqpZnGW/Su8LQGc4YKni5rYSQ==
@@ -1995,7 +2023,14 @@ write@1.0.3:
   dependencies:
     mkdirp "^0.5.1"
 
-xtend@~4.0.1:
+xmlbuilder@~4.2.0:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/xmlbuilder/-/xmlbuilder-4.2.1.tgz#aa58a3041a066f90eaa16c2f5389ff19f3f461a5"
+  integrity sha1-qlijBBoGb5DqoWwvU4n/GfP0YaU=
+  dependencies:
+    lodash "^4.0.0"
+
+xtend@~4.0.0, xtend@~4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/xtend/-/xtend-4.0.1.tgz#a5c6d532be656e23db820efb943a1f04998d63af"
   integrity sha1-pcbVMr5lbiPbgg77lDofBJmNY68=
