@@ -501,6 +501,45 @@ test('Deserialize Multiple (Circular)', t => {
 	t.equal(deserialized.array[0], deserialized);
 });
 
+test('Deserialize Multiple (Cross-Circular)', t => {
+	t.plan(16);
+
+	type CircularMap = Map<string, unknown | Set<unknown | Test> | Set<unknown | Test> | Test>;
+	type CircularSet = Set<Map<string, unknown | Set<unknown | Test> | Test> | unknown | Test>;
+	interface Test { circle: Test | null; map: CircularMap; set: CircularSet }
+	const object: Test = { circle: null, map: new Map(), set: new Set() };
+	object.map.set('set', object.set);
+	object.map.set('map', object.map);
+	object.set.add(object.set);
+	object.set.add(object.map);
+	object.circle = object;
+
+	const serialized = serialize(object);
+	const deserialized = deserialize(serialized) as Test;
+	t.equal(typeof deserialized, 'object');
+	t.equal(Object.keys(deserialized).length, 3);
+	t.true('circle' in deserialized);
+	t.true('map' in deserialized);
+	t.true('set' in deserialized);
+
+	t.true(deserialized.map instanceof Map);
+	t.equal(deserialized.map!.size, 2);
+	const mapKeysIterator = deserialized.map!.keys();
+	t.equal(mapKeysIterator.next().value, 'set');
+	t.equal(mapKeysIterator.next().value, 'map');
+	const mapValuesIterator = deserialized.map!.values();
+	t.equal(mapValuesIterator.next().value, deserialized.set);
+	t.equal(mapValuesIterator.next().value, deserialized.map);
+
+	t.true(deserialized.set instanceof Set);
+	t.equal(deserialized.set!.size, 2);
+	const setKeysIterator = deserialized.set!.keys();
+	t.equal(setKeysIterator.next().value, deserialized.set);
+	t.equal(setKeysIterator.next().value, deserialized.map);
+
+	t.equal(deserialized.circle, deserialized);
+});
+
 test('Deserialize Object Nested (Circular)', t => {
 	t.plan(13);
 
