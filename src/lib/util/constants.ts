@@ -39,7 +39,7 @@ export enum BinaryTokens {
 	Uint32Array,
 	Float32Array,
 	Float64Array,
-	DataView,
+	DataView
 }
 
 export enum BinaryPrimitives {
