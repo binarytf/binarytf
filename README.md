@@ -1,4 +1,4 @@
-# binarytf <img src="https://github.com/binarytf/binarytf/blob/master/static/logo.png?raw=true" align="right" width="30%">
+# binarytf <img src="https://github.com/binarytf/binarytf/blob/master/static/logo.png?raw=true" align="right" width="22%">
 
 <div align="center">
 	<p>
