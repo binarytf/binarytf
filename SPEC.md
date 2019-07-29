@@ -52,11 +52,15 @@
 | :--: |
 | `0`  |
 
+A magic token that delimits untyped arrays and strings.
+
 ## Hole
 
 | 1    |
 | :--: |
 | `1`  |
+
+This token may be present **only** in `Array`s, and mean a non-set value.
 
 ## Null
 
@@ -64,7 +68,7 @@
 | :--: |
 | `2`  |
 
-A `null` pointer.
+A [Null][] pointer.
 
 ## PBigInt
 
@@ -72,7 +76,8 @@ A `null` pointer.
 | :--: | :----: | :----: |
 | `3`  | Length | Digit  |
 
-A positive arbitrary-precision BigInteger, they are stored in unary form. The digits are stored with the least significant byte stored first.
+A [positive arbitrary-precision BigInteger][PBigInt], they are stored in unary form. The digits are stored with the
+least significant byte stored first.
 
 ## NBigInt
 
@@ -80,7 +85,8 @@ A positive arbitrary-precision BigInteger, they are stored in unary form. The di
 | :--: | :----: | :----: |
 | `4`  | Length | Digit  |
 
-A negative arbitrary-precision BigInteger, they are stored in unary form. The digits are stored with the least significant byte stored first.
+A [negative arbitrary-precision BigInteger][NBigInt], they are stored in unary form. The digits are stored with the
+least significant byte stored first.
 
 ## Boolean
 
@@ -88,7 +94,7 @@ A negative arbitrary-precision BigInteger, they are stored in unary form. The di
 | :--: | :---: |
 | `5`  | Value |
 
-A boolean value, being `0x00` for false and `0x01` for true.
+A [Boolean][] primitive value, being `0x00` for false and `0x01` for true.
 
 ## String
 
@@ -96,7 +102,8 @@ A boolean value, being `0x00` for false and `0x01` for true.
 | :--: | :--: | :--: |
 | `6`  | Char | Tail |
 
-A string value composed as many UTF8 characters until it finds an ending `NullPointer` (`0x00` or `\0`) tail.
+A [String][] primitive value composed as many UTF8 characters until it finds an ending `NullPointer` (`0x00` or `\0`)
+tail.
 
 During the serialization progress, the `null` character (`\0` in most languages) is forbidden.
 
@@ -106,7 +113,7 @@ During the serialization progress, the `null` character (`\0` in most languages)
 | :--: |
 | `7`  |
 
-An `undefined` value. Can translated as `null` for other languages.
+An [Undefined][] value. Can translated as `null` for other languages.
 
 ## PByte
 
@@ -114,7 +121,7 @@ An `undefined` value. Can translated as `null` for other languages.
 | :--: | :--: |
 | `8`  | Byte |
 
-A positive byte.
+A [positive byte][PByte].
 
 ## NByte
 
@@ -122,7 +129,7 @@ A positive byte.
 | :--: | :--: |
 | `9`  | Byte |
 
-A negative byte.
+A [negative byte][NByte].
 
 ## PInt32
 
@@ -130,7 +137,7 @@ A negative byte.
 | :--: | :---: |
 | `10` | Bytes |
 
-A positive 32-bit integer.
+A [positive 32-bit integer][PInt32].
 
 ## NInt32
 
@@ -138,7 +145,7 @@ A positive 32-bit integer.
 | :--: | :---: |
 | `11` | Bytes |
 
-A negative 32-bit integer.
+A [negative 32-bit integer][NInt32].
 
 ## PFloat64
 
@@ -146,7 +153,7 @@ A negative 32-bit integer.
 | :--: | :---: |
 | `12` | Bytes |
 
-A positive IEEE764 64-bit float.
+A [positive IEEE 754][PFloat64] 64-bit float.
 
 ## NFloat64
 
@@ -154,7 +161,7 @@ A positive IEEE764 64-bit float.
 | :--: | :---: |
 | `13` | Bytes |
 
-A negative IEEE764 64-bit float.
+A [negative IEEE 754][NFloat64] 64-bit float.
 
 ## Array
 
@@ -162,7 +169,7 @@ A negative IEEE764 64-bit float.
 | :--: | :------: | :--: |
 | `14` | Elements | Tail |
 
-An untyped array of values.
+An untyped [Array][] of as many values until it finds an ending `NullPointer` (`0x00`) tail.
 
 ## EmptyArray
 
@@ -170,15 +177,16 @@ An untyped array of values.
 | :--: |
 | `15` |
 
-An empty untyped array.
+An empty untyped [Array][].
 
 ## ObjectReference
 
-| 1    |
-| :--: |
-| `16` |
+| 1    | 4             |
+| :--: | :-----------: |
+| `16` | Local Pointer |
 
-An object reference, this is the equivalent of a pointer.
+An [Object reference][ObjectReference], this is the equivalent of a pointer and refers to the object ID by insertion
+order.
 
 ## Date
 
@@ -186,7 +194,8 @@ An object reference, this is the equivalent of a pointer.
 | :--: | :---: |
 | `17` | Bytes |
 
-A Date object followed by an IEEE 764 integer value (can be converted to an unsigned 64 bit number for most languages).
+A [Date][] object followed by an IEEE 754 integer value (can be converted to an unsigned 64 bit number for most
+languages).
 
 ## BooleanObject
 
@@ -194,7 +203,7 @@ A Date object followed by an IEEE 764 integer value (can be converted to an unsi
 | :--: | :---: |
 | `18` | Value |
 
-A wrapped boolean object, same as `Boolean` but as an object instead of a primitive.
+A wrapped [boolean object][BooleanObject], same as `Boolean` but as an object instead of a primitive.
 
 ## NumberObject
 
@@ -202,7 +211,7 @@ A wrapped boolean object, same as `Boolean` but as an object instead of a primit
 | :--: |
 | `19` |
 
-A wrapped IEEE754 number object, different to `PFloat64` and `NFloat64` as it includes the sign.
+A wrapped IEEE754 [number object][NumberObject], different to `PFloat64` and `NFloat64` as it includes the sign.
 
 ## StringObject
 
@@ -210,7 +219,7 @@ A wrapped IEEE754 number object, different to `PFloat64` and `NFloat64` as it in
 | :--: |
 | `20` |
 
-A wrapped string object, same as `String` but as an object instead of a primitive.
+A wrapped [string object][StringObject], same as `String` but as an object instead of a primitive.
 
 ## EmptyObject
 
@@ -218,31 +227,44 @@ A wrapped string object, same as `String` but as an object instead of a primitiv
 | :--: |
 | `21` |
 
-An object without enumerated properties.
+An [Object][] without enumerated properties.
 
 ## Object
 
-| 1    |
-| :--: |
-| `22` |
+| 1    |       | 1    |
+| :--: | :---: | :--: |
+| `22` | Pairs | Tail |
 
-An object value, equivalent of `Dictionary` for other languages.
+An [Object][] value made of as many pairs until it finds an ending `NullPointer` (`0x00`) tail, equivalent of
+`Dictionary` for other languages.
+
+Each pair is a key (typically `String` or any numeric type) and a value of any type.
 
 ## RegExp
 
-| 1    |
-| :--: |
-| `23` |
+| 1    |      | 1    | 1     |
+| :--: | :--: | :--: | :---: |
+| `23` | Char | Tail | Flags |
 
-A RegExp instance.
+A [RegExp][] instance, it's encoded as a `String` (with the tail) and 8 bytes for the flags:
+
+- `0b0000_0001` (`1 << 0`) = `Global`
+- `0b0000_0010` (`1 << 1`) = `Ignore Case`
+- `0b0000_0100` (`1 << 2`) = `Multiline`
+- `0b0000_1000` (`1 << 3`) = `Sticky`
+- `0b0001_0000` (`1 << 4`) = `Unicode`
+- `0b0010_0000` (`1 << 5`) = `DotAll`
 
 ## Map
 
-| 1    |
-| :--: |
-| `24` |
+| 1    |       | 1    |
+| :--: | :---: | :--: |
+| `24` | Pairs | Tail |
 
-A Map value, equivalent of `Map` for other languages, or `HashMap`/`UnorderedMap`.
+A [Map][] value made of as many pairs until it finds an ending `NullPointer` (`0x00`) tail, equivalent of `Map` for
+other languages, or `HashMap`/`UnorderedMap`, it is read the same way as `Object`.
+
+Each pair is a key and a value of any type.
 
 ## EmptyMap
 
@@ -250,7 +272,7 @@ A Map value, equivalent of `Map` for other languages, or `HashMap`/`UnorderedMap
 | :--: |
 | `25` |
 
-An empty Map value, equivalent of an empty `Map` for other languages, or an empty `UnorderedMap`.
+An empty [Map][] value, equivalent of an empty `Map` for other languages, or an empty `UnorderedMap`.
 
 ## WeakMap
 
@@ -258,15 +280,16 @@ An empty Map value, equivalent of an empty `Map` for other languages, or an empt
 | :--: |
 | `26` |
 
-A WeakMap, it comes with no data since they are not transferable.
+A [WeakMap][], it comes with no data since they are not transferable.
 
 ## Set
 
-| 1    |
-| :--: |
-| `27` |
+| 1    |          | 1    |
+| :--: | :------: | :--: |
+| `27` | Elements | Tail |
 
-A Set value, equivalent of `HashSet` for other languages.
+A [Set][] made of as many values until it finds an ending `NullPointer` (`0x00`) tail, equivalent of `HashSet` for other
+languages, it is read the same way as `Array`.
 
 ## EmptySet
 
@@ -274,7 +297,7 @@ A Set value, equivalent of `HashSet` for other languages.
 | :--: |
 | `28` |
 
-An empty Set value, equivalent of an empty `HashSet` for other languages.
+An empty [Set][] value, equivalent of an empty `HashSet` for other languages.
 
 ## WeakSet
 
@@ -282,95 +305,95 @@ An empty Set value, equivalent of an empty `HashSet` for other languages.
 | :--: |
 | `29` |
 
-A WeakSet, it comes with no data since they are not transferable.
+A [WeakSet][], it comes with no data since they are not transferable.
 
 ## ArrayBuffer
 
-| 1    |
-| :--: |
-| `30` |
+| 1    | 4      | Length |
+| :--: | :----: | :----: |
+| `30` | Length | Byte   |
 
-An ArrayBuffer, it may be parsed as an array of 8-bit unsigned integers.
+An [ArrayBuffer][], it may be parsed as an array of 8-bit unsigned integers.
 
 ## Int8Array
 
-| 1    |
-| :--: |
-| `31` |
+| 1    | 4      | Length |
+| :--: | :----: | :----: |
+| `31` | Length | Byte   |
 
-An Int8Array, it may be read as an array of 8-bit signed integers.
+An [Int8Array][], it may be read as an array of 8-bit signed integers.
 
 ## Uint8Array
 
-| 1    |
-| :--: |
-| `32` |
+| 1    | 4      | Length |
+| :--: | :----: | :----: |
+| `32` | Length | Byte   |
 
-An Uint8Array, it may be read as an array of 8-bit unsigned integers.
+An [Uint8Array][], it may be read as an array of 8-bit unsigned integers.
 
 ## Uint8ClampedArray
 
-| 1    |
-| :--: |
-| `33` |
+| 1    | 4      | Length |
+| :--: | :----: | :----: |
+| `33` | Length | Byte   |
 
-An Uint8ClampedArray, it may be read as an optionally clamped array of 8-bit unsigned integers.
+An [Uint8ClampedArray][], it may be read as an optionally clamped array of 8-bit unsigned integers.
 
 ## Int16Array
 
-| 1    |
-| :--: |
-| `34` |
+| 1    | 4      | Length |
+| :--: | :----: | :----: |
+| `34` | Length | Byte   |
 
-An Int16Aarray, it may be read as an array of 16-bit signed integers.
+An [Int16Array][], it may be read as an array of 16-bit signed integers.
 
 ## Uint16Array
 
-| 1    |
-| :--: |
-| `35` |
+| 1    | 4      | Length |
+| :--: | :----: | :----: |
+| `35` | Length | Byte   |
 
-An Uint16Array, it may be read as an array of 16-bit unsigned integers.
+An [Uint16Array][], it may be read as an array of 16-bit unsigned integers.
 
 ## Int32Array
 
-| 1    |
-| :--: |
-| `36` |
+| 1    | 4      | Length |
+| :--: | :----: | :----: |
+| `36` | Length | Byte   |
 
-An Int32Array, it may be read as an array of 32-bit signed integers.
+An [Int32Array][], it may be read as an array of 32-bit signed integers.
 
 ## Uint32Array
 
-| 1    |
-| :--: |
-| `37` |
+| 1    | 4      | Length |
+| :--: | :----: | :----: |
+| `37` | Length | Byte   |
 
-An Uint32Array, it may be read as an array of 32-bit unsigned integers.
+An [Uint32Array][], it may be read as an array of 32-bit unsigned integers.
 
 ## Float32Array
 
-| 1    |
-| :--: |
-| `38` |
+| 1    | 4      | Length |
+| :--: | :----: | :----: |
+| `38` | Length | Byte   |
 
-A Float32Array, it may be read as an array of 32-bit IEEE 764 floating points.
+A [Float32Array][], it may be read as an array of 32-bit IEEE 754 floating points.
 
 ## Float64Array
 
-| 1    |
-| :--: |
-| `39` |
+| 1    | 4      | Length |
+| :--: | :----: | :----: |
+| `39` | Length | Byte   |
 
-A Float64Array, it may be read as an array of 64-bit IEEE 764 floating points.
+A [Float64Array][], it may be read as an array of 64-bit IEEE 754 floating points.
 
 ## DataView
 
-| 1    |
-| :--: |
-| `40` |
+| 1    | 4      | Length |
+| :--: | :----: | :----: |
+| `40` | Length | Byte   |
 
-A DataView, it may be read as an array of 8-bit unsigned integers.
+A [DataView][], it may be read as an array of 8-bit unsigned integers.
 
 [Null]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null
 [PBigInt]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/BigInt
