@@ -23,11 +23,13 @@ docs/
 dist/test/
 dist/tsconfig.tsbuildinfo
 src/
+static/
 .eslintignore
 .eslintrc.json
 .gitattributes
 .gitignore
 .nycrc.json
 azure-pipelines.yml
+SPEC.md
 tsconfig.json
 webpack.config.js
