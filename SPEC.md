@@ -129,7 +129,7 @@ A [positive byte][UnsignedByte] inside the range of `0..0b1111_1111`.
 | :--: | :--: |
 | `9`  | Byte |
 
-A [negative byte][SignedByte] inside the range of `-0b0111_1111..0b0111_1111`, the first bit (sign bit) is always zero.
+A [negative byte][SignedByte] inside the range of `-0b0111_1111..0`, the first bit (sign bit) is always zero.
 
 ## UnsignedInt32
 
@@ -145,7 +145,7 @@ A [positive 32-bit integer][UnsignedInt32] inside the range `0..0b1111_1111_1111
 | :--: | :---: |
 | `11` | Bytes |
 
-A [negative 32-bit integer][SignedInt32] inside the range `-0b0111_1111_1111_1111_1111_1111_1111_1111..0b0111_1111_1111_1111_1111_1111_1111_1111`, the first bit (sign bit) is always zero.
+A [negative 32-bit integer][SignedInt32] inside the range `-0b0111_1111_1111_1111_1111_1111_1111_1111..0`, the first bit (sign bit) is always zero.
 
 ## UnsignedFloat64
 
