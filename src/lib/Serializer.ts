@@ -4,8 +4,10 @@ import { SerializerError, SerializerReason } from './errors/SerializerError';
 import { TextEncoder } from 'util';
 
 // Immutable
-const MIN_INT32 = -(2 ** 31);
-const MAX_INT32 = (2 ** 31) - 1;
+const MIN_INT8 = -0b0111_1111;
+const MAX_INT8 = 0b1111_1111;
+const MIN_INT32 = -0b0111_1111_1111_1111_1111_1111_1111_1111;
+const MAX_INT32 = 0b1111_1111_1111_1111_1111_1111_1111_1111;
 
 // Mutable
 const float64Array = new Float64Array(1);
@@ -102,22 +104,22 @@ export class Serializer {
 		this.write8(type);
 		/* istanbul ignore next: This prints an erroneous coverage result. Definitely must be checked in the future. */
 		switch (type) {
-			case BinaryTokens.NByte:
+			case BinaryTokens.SignedByte:
 				this.write8(-value);
 				break;
-			case BinaryTokens.PByte:
+			case BinaryTokens.UnsignedByte:
 				this.write8(value);
 				break;
-			case BinaryTokens.NInt32:
+			case BinaryTokens.SignedInt32:
 				this.write32(-value);
 				break;
-			case BinaryTokens.PInt32:
+			case BinaryTokens.UnsignedInt32:
 				this.write32(value);
 				break;
-			case BinaryTokens.NFloat64:
+			case BinaryTokens.SignedFloat64:
 				this.writeF64(-value);
 				break;
-			case BinaryTokens.PFloat64:
+			case BinaryTokens.UnsignedFloat64:
 				this.writeF64(value);
 				break;
 			default:
@@ -349,16 +351,16 @@ export class Serializer {
 	}
 
 	private getNumberType(value: number) {
-		const sign = value >= 0 ? 0 : 1;
+		const sign = value < 0;
 		if (value % 1 === 0) {
-			// Byte (N | P)
-			if (value >= -0xFF && value <= 0xFF) return sign ? BinaryTokens.NByte : BinaryTokens.PByte;
-			// Int32 (N | P)
-			if (value >= MIN_INT32 && value <= MAX_INT32) return sign ? BinaryTokens.NInt32 : BinaryTokens.PInt32;
+			// Byte (S | U)
+			if (value >= MIN_INT8 && value <= MAX_INT8) return sign ? BinaryTokens.SignedByte : BinaryTokens.UnsignedByte;
+			// Int32 (S | U)
+			if (value >= MIN_INT32 && value <= MAX_INT32) return sign ? BinaryTokens.SignedInt32 : BinaryTokens.UnsignedInt32;
 			// Fallback to float
 		}
 		// Float64
-		return sign ? BinaryTokens.NFloat64 : BinaryTokens.PFloat64;
+		return sign ? BinaryTokens.SignedFloat64 : BinaryTokens.UnsignedFloat64;
 	}
 
 	private ensureAlloc(amount: number) {

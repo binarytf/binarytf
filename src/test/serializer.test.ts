@@ -60,23 +60,23 @@ test('Serialize Undefined', t => {
 	t.equal(serialized.length, 1);
 });
 
-test('Serialize PByte', t => {
+test('Serialize UnsignedByte', t => {
 	t.plan(1);
 
-	const serialized = serialize(0xFF);
+	const serialized = serialize(0b1111_1111);
 	// 1 (TYPE) + 1 (BYTE)
 	t.equal(serialized.length, 2);
 });
 
-test('Serialize NByte', t => {
+test('Serialize SignedByte', t => {
 	t.plan(1);
 
-	const serialized = serialize(0xFF * -1);
+	const serialized = serialize(-0b0111_1111);
 	// 1 (TYPE) + 1 (BYTE)
 	t.equal(serialized.length, 2);
 });
 
-test('Serialize PInt32', t => {
+test('Serialize UnsignedInt32', t => {
 	t.plan(1);
 
 	const serialized = serialize(0xFFFF);
@@ -84,7 +84,7 @@ test('Serialize PInt32', t => {
 	t.equal(serialized.length, 5);
 });
 
-test('Serialize NInt32', t => {
+test('Serialize SignedInt32', t => {
 	t.plan(1);
 
 	const serialized = serialize(0xFFFF * -1);
@@ -140,7 +140,7 @@ test('Serialize Array (Empty)', t => {
 	t.equal(serialized.length, 1);
 });
 
-test('Serialize Array (PInt32)', t => {
+test('Serialize Array (UnsignedInt32)', t => {
 	t.plan(1);
 
 	const serialized = serialize([4]);

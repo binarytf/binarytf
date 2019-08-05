@@ -12,12 +12,12 @@
 | `Boolean`           | `5`   |
 | `String`            | `6`   |
 | `Undefined`         | `7`   |
-| `PByte`             | `8`   |
-| `NByte`             | `9`   |
-| `PInt32`            | `10`  |
-| `NInt32`            | `11`  |
-| `PFloat64`          | `12`  |
-| `NFloat64`          | `13`  |
+| `UnsignedByte`      | `8`   |
+| `SignedByte`        | `9`   |
+| `UnsignedInt32`     | `10`  |
+| `SignedInt32`       | `11`  |
+| `UnsignedFloat64`   | `12`  |
+| `SignedFloat64`     | `13`  |
 | `Array`             | `14`  |
 | `EmptyArray`        | `15`  |
 | `ObjectReference`   | `16`  |
@@ -115,53 +115,53 @@ During the serialization progress, the `null` character (`\0` in most languages)
 
 An [Undefined][] value. Can translated as `null` for other languages.
 
-## PByte
+## UnsignedByte
 
 | 1    | 1    |
 | :--: | :--: |
 | `8`  | Byte |
 
-A [positive byte][PByte].
+A [positive byte][UnsignedByte] inside the range of `0..0b1111_1111`.
 
-## NByte
+## SignedByte
 
 | 1    | 1    |
 | :--: | :--: |
 | `9`  | Byte |
 
-A [negative byte][NByte].
+A [negative byte][SignedByte] inside the range of `-0b0111_1111..0b0111_1111`, the first bit (sign bit) is always zero.
 
-## PInt32
+## UnsignedInt32
 
 | 1    | 4     |
 | :--: | :---: |
 | `10` | Bytes |
 
-A [positive 32-bit integer][PInt32].
+A [positive 32-bit integer][UnsignedInt32] inside the range `0..0b1111_1111_1111_1111_1111_1111_1111_1111`.
 
-## NInt32
+## SignedInt32
 
 | 1    | 4     |
 | :--: | :---: |
 | `11` | Bytes |
 
-A [negative 32-bit integer][NInt32].
+A [negative 32-bit integer][SignedInt32] inside the range `-0b0111_1111_1111_1111_1111_1111_1111_1111..0b0111_1111_1111_1111_1111_1111_1111_1111`, the first bit (sign bit) is always zero.
 
-## PFloat64
+## UnsignedFloat64
 
 | 1    | 8     |
 | :--: | :---: |
 | `12` | Bytes |
 
-A [positive IEEE 754][PFloat64] 64-bit float.
+A [positive IEEE 754][UnsignedFloat64] 64-bit float.
 
-## NFloat64
+## SignedFloat64
 
 | 1    | 8     |
 | :--: | :---: |
 | `13` | Bytes |
 
-A [negative IEEE 754][NFloat64] 64-bit float.
+A [negative IEEE 754][SignedFloat64] 64-bit float, the first bit (sign bit) is always zero.
 
 ## Array
 
@@ -401,12 +401,12 @@ A [DataView][], it may be read as an array of 8-bit unsigned integers.
 [Boolean]: https://developer.mozilla.org/en-US/docs/Glossary/Boolean
 [String]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String
 [Undefined]: https://developer.mozilla.org/en-US/docs/Glossary/undefined
-[PByte]: https://en.wikipedia.org/wiki/Byte
-[NByte]: https://en.wikipedia.org/wiki/Byte
-[PInt32]: https://en.wikipedia.org/wiki/Integer_(computer_science)
-[NInt32]: https://en.wikipedia.org/wiki/Integer_(computer_science)
-[PFloat64]: https://en.wikipedia.org/wiki/IEEE_754
-[NFloat64]: https://en.wikipedia.org/wiki/IEEE_754
+[UnsignedByte]: https://en.wikipedia.org/wiki/Byte
+[SignedByte]: https://en.wikipedia.org/wiki/Byte
+[UnsignedInt32]: https://en.wikipedia.org/wiki/Integer_(computer_science)
+[SignedInt32]: https://en.wikipedia.org/wiki/Integer_(computer_science)
+[UnsignedFloat64]: https://en.wikipedia.org/wiki/IEEE_754
+[SignedFloat64]: https://en.wikipedia.org/wiki/IEEE_754
 [Array]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
 [EmptyArray]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array
 [ObjectReference]: https://en.wikipedia.org/wiki/Pointer_(computer_programming)

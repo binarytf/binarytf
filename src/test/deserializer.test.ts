@@ -68,7 +68,7 @@ test('Deserialize Undefined', t => {
 	t.equal(deserialized, undefined);
 });
 
-test('Deserialize PByte', t => {
+test('Deserialize UnsignedByte', t => {
 	t.plan(2);
 
 	const serialized = serialize(24);
@@ -77,7 +77,7 @@ test('Deserialize PByte', t => {
 	t.equal(deserialized, 24);
 });
 
-test('Deserialize NByte', t => {
+test('Deserialize SignedByte', t => {
 	t.plan(2);
 
 	const serialized = serialize(-24);
@@ -86,7 +86,7 @@ test('Deserialize NByte', t => {
 	t.equal(deserialized, -24);
 });
 
-test('Deserialize PInt32', t => {
+test('Deserialize UnsignedInt32', t => {
 	t.plan(2);
 
 	const serialized = serialize(0xFFA);
@@ -95,7 +95,7 @@ test('Deserialize PInt32', t => {
 	t.equal(deserialized, 0xFFA);
 });
 
-test('Deserialize NInt32', t => {
+test('Deserialize SignedInt32', t => {
 	t.plan(2);
 
 	const serialized = serialize(-0xFFA);
@@ -160,7 +160,7 @@ test('Deserialize Array (Empty)', t => {
 	t.equal(deserialized.length, 0);
 });
 
-test('Deserialize Array (PInt32)', t => {
+test('Deserialize Array (UnsignedInt32)', t => {
 	t.plan(3);
 
 	const serialized = serialize([4]);
@@ -834,7 +834,7 @@ test('Deserialize Forged Buffer (Invalid Number)', t => {
 	t.plan(2);
 	try {
 		const uint8Array = new Uint8Array(2);
-		uint8Array[0] = BinaryTokens.PInt32;
+		uint8Array[0] = BinaryTokens.UnsignedInt32;
 		uint8Array[1] = 0x12;
 		deserialize<never>(uint8Array);
 		t.fail('Deserialize should fail.');

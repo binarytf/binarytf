@@ -35,12 +35,12 @@ export class Deserializer {
 			case BinaryTokens.Boolean: return Boolean(this.read8());
 			case BinaryTokens.String: return this.readString();
 			case BinaryTokens.Undefined: return undefined;
-			case BinaryTokens.PByte: return this.read8();
-			case BinaryTokens.NByte: return -this.read8();
-			case BinaryTokens.PInt32: return this.read32();
-			case BinaryTokens.NInt32: return -this.read32();
-			case BinaryTokens.PFloat64: return this.readF64();
-			case BinaryTokens.NFloat64: return -this.readF64();
+			case BinaryTokens.UnsignedByte: return this.read8();
+			case BinaryTokens.SignedByte: return -this.read8();
+			case BinaryTokens.UnsignedInt32: return this.read32();
+			case BinaryTokens.SignedInt32: return -this.read32();
+			case BinaryTokens.UnsignedFloat64: return this.readF64();
+			case BinaryTokens.SignedFloat64: return -this.readF64();
 			case BinaryTokens.Array: return this.readValueArray();
 			case BinaryTokens.EmptyArray: return this.createObjectID([]);
 			case BinaryTokens.ObjectReference: return this._objectIDs.get(this.read32());
