@@ -59,10 +59,10 @@ export namespace TypedArrays {
 	if (typeof BigUint64Array === 'function') constructors.push(BigUint64Array);
 
 	export const typedArrayTags = new Map(constructors.map(typedArray =>
-		// @ts-ignore
+		// @ts-ignore 7015
 		[Object.prototype.toString.call(new typedArray(new ArrayBuffer(0))), BinaryTokens[typedArray.name]] as [string, BinaryTokens]));
 
 	export const typedArrayTagToConstructor = new Map(constructors.map(typedArray =>
-		// @ts-ignore
+		// @ts-ignore 7015
 		[BinaryTokens[typedArray.name], typedArray] as unknown as [BinaryTokens, { new <T extends TypedArray>(...args: any): T }]));
 }

@@ -1,4 +1,3 @@
-import { TextDecoder } from 'util';
 import { BinaryTokens, TypedArray } from './util/constants';
 import { BigIntegers, RegExps, TypedArrays } from './util/util';
 import { DeserializerError, DeserializerReason } from './errors/DeserializerError';
@@ -81,7 +80,7 @@ export class Deserializer {
 		const byteLength = this.read32();
 		this.ensureBytes(byteLength);
 
-		let value: TypedArray;
+		let value: TypedArray = TypedArray;
 		// Fast-path if we are deserializing an Uint8Array
 		if (token === BinaryTokens.Uint8Array) {
 			value = this._buffer!.subarray(this.offset, this.offset + byteLength);
@@ -233,6 +232,7 @@ export class Deserializer {
 		}
 	}
 
+	// @ts-expect-error 2304
 	private static _textDecoder = new TextDecoder();
 
 }

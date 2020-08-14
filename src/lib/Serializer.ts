@@ -1,7 +1,6 @@
 import { BinaryPrimitives, BinaryTokens, TypedArray } from './util/constants';
 import { Numbers, BigIntegers, RegExps, TypedArrays } from './util/util';
 import { SerializerError, SerializerReason } from './errors/SerializerError';
-import { TextEncoder } from 'util';
 
 // Immutable
 const MIN_INT8 = -0b0111_1111;
@@ -128,15 +127,15 @@ export class Serializer {
 		}
 	}
 
-	private parseObject(value: object) {
+	private parseObject(value: unknown) {
 		if (value === null) return this.parseValueNull();
 
 		// Circular reference detection
-		const id = this._objectIDs.get(value);
+		const id = this._objectIDs.get(value as Record<string, unknown>);
 		if (typeof id === 'number') return this.parseValueReference(id);
 
 		// Set this object to the reference list
-		this._objectIDs.set(value, this._objectIDs.size);
+		this._objectIDs.set(value as Record<string, unknown>, this._objectIDs.size);
 
 		// If it's an array, parse it
 		if (Array.isArray(value)) return this.parseValueArray(value);
@@ -154,14 +153,14 @@ export class Serializer {
 			case '[object Number]': return this.parseValueObjectNumber(value as Number);
 			case '[object Date]': return this.parseValueObjectDate(value as Date);
 			case '[object RegExp]': return this.parseValueObjectRegExp(value as RegExp);
-			case '[object Object]': return this.parseValueObjectLiteral(value);
+			case '[object Object]': return this.parseValueObjectLiteral(value as Record<string, unknown>);
 			case '[object Map]': return this.parseValueObjectMap(value as Map<unknown, unknown>);
 			case '[object Set]': return this.parseValueObjectSet(value as Set<unknown>);
 			case '[object ArrayBuffer]': return this.parseValueObjectArrayBuffer(value as ArrayBuffer);
 			case '[object WeakMap]': return this.parseValueObjectWeakMap();
 			case '[object WeakSet]': return this.parseValueObjectWeakSet();
 			case '[object Promise]': return this.handleUnsupported(value, 'object');
-			default: return this.parseValueObjectFallback(value, tag);
+			default: return this.parseValueObjectFallback(value as Record<string, unknown>, tag);
 		}
 	}
 
@@ -265,9 +264,9 @@ export class Serializer {
 		this.write8(BinaryTokens.WeakSet);
 	}
 
-	private parseValueObjectFallback(value: object, tag: string) {
+	private parseValueObjectFallback(value: Record<string, unknown>, tag: string) {
 		const typedArrayTag = TypedArrays.typedArrayTags.get(tag);
-		if (typedArrayTag) this.writeValueTypedArray(value as TypedArray, typedArrayTag);
+		if (typedArrayTag) this.writeValueTypedArray(value as unknown as TypedArray, typedArrayTag);
 		else this.parseValueObjectLiteral(value);
 	}
 
@@ -375,6 +374,7 @@ export class Serializer {
 		}
 	}
 
+	// @ts-expect-error 2304
 	private static _textEncoder = new TextEncoder();
 
 }

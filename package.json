@@ -4,19 +4,23 @@
   "description": "Binary Term Format",
   "author": "Antonio Román <kyradiscord@gmail.com>",
   "license": "MIT",
-  "main": "dist/index.js",
+	"main": "dist/index.js",
+	"module": "dist/index.es.js",
+	"browser": "dist/index.umd.js",
+	"unpkg": "dist/index.umd.js",
+	"types": "dist/index.d.ts",
   "repository": "https://github.com/kyranet/binarytf",
   "private": false,
   "scripts": {
+    "build": "rollup -c rollup.config.ts",
+    "watch": "yarn build -w",
     "prepublishOnly": "yarn build",
     "lint": "eslint --ext ts src --fix",
-    "test:lint": "eslint --ext ts src",
-    "build": "tsc -p .",
-    "watch": "tsc -p . -w"
+    "test:lint": "eslint --ext ts src"
   },
   "files": [
-		"dist"
-	],
+    "dist"
+  ],
   "keywords": [
     "binary",
     "term",
@@ -40,35 +44,40 @@
     "eslint": "^7.6.0",
     "husky": "^4.2.5",
     "lint-staged": "^10.2.11",
+    "rollup": "^2.25.0",
+    "rollup-plugin-cleaner": "^1.0.0",
+    "rollup-plugin-terser": "^7.0.0",
+    "rollup-plugin-typescript2": "^0.27.2",
     "standard-version": "^8.0.2",
+    "ts-node": "^8.10.2",
     "typescript": "^3.9.7"
   },
   "engines": {
-		"node": ">=12",
-		"npm": ">=6"
+    "node": ">=12",
+    "npm": ">=6"
   },
   "husky": {
-		"hooks": {
-			"commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
-			"pre-commit": "yarn lint-staged"
-		}
-	},
-	"commitlint": {
-		"extends": [
-			"@commitlint/config-conventional"
-		]
-	},
-	"lint-staged": {
-		"*.ts": [
-			"eslint --fix --ext ts"
-		]
-	},
-	"config": {
-		"commitizen": {
-			"path": "./node_modules/cz-conventional-changelog"
-		}
-	},
-	"publishConfig": {
-		"access": "public"
-	}
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS",
+      "pre-commit": "yarn lint-staged"
+    }
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.ts": [
+      "eslint --fix --ext ts"
+    ]
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }

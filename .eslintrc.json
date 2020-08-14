@@ -1,11 +1,14 @@
 {
   "extends": "@skyra",
   "rules": {
-	  "@typescript-eslint/no-namespace": 0
+    "@typescript-eslint/no-namespace": 0,
+    "@typescript-eslint/naming-convention": 0
   },
   "globals": {
     "BigInt": true,
     "BigInt64Array": true,
-    "BigUint64Array": true
+    "BigUint64Array": true,
+    "TextEnoder": true,
+    "TextDecoder": true
   }
 }
