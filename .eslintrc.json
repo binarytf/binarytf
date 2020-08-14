@@ -1,5 +1,5 @@
 {
-  "extends": "bamboo",
+  "extends": "@skyra",
   "rules": {
 	  "@typescript-eslint/no-namespace": 0
   },
