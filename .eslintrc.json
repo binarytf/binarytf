@@ -1,7 +1,9 @@
 {
-  "extends": "bamboo",
+  "extends": ["@skyra", "plugin:prettier/recommended"],
   "rules": {
-	  "@typescript-eslint/no-namespace": 0
+    "@typescript-eslint/no-namespace": 0,
+	"@typescript-eslint/indent": 0,
+	"@typescript-eslint/naming-convention": 0
   },
   "globals": {
     "BigInt": true,

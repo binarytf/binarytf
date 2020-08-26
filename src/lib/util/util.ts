@@ -9,12 +9,14 @@ export namespace RegExps {
 	const s = 1 << 5;
 
 	export function flagsAsInteger(regExp: RegExp) {
-		return (regExp.global ? g : 0)
-			| (regExp.ignoreCase ? i : 0)
-			| (regExp.multiline ? m : 0)
-			| (regExp.sticky ? y : 0)
-			| (regExp.unicode ? u : 0)
-			| (regExp.dotAll ? s : 0);
+		return (
+			(regExp.global ? g : 0) |
+			(regExp.ignoreCase ? i : 0) |
+			(regExp.multiline ? m : 0) |
+			(regExp.sticky ? y : 0) |
+			(regExp.unicode ? u : 0) |
+			(regExp.dotAll ? s : 0)
+		);
 	}
 
 	export function flagsFromInteger(integer: number) {
@@ -38,7 +40,7 @@ export namespace BigIntegers {
 	/* istanbul ignore next: This is environment-specific, unused when unsupported */
 	export const EIGHT = SUPPORTED ? BigInt(8) : null;
 	/* istanbul ignore next: This is environment-specific, unused when unsupported */
-	export const BYTE = SUPPORTED ? BigInt(0xFF) : null;
+	export const BYTE = SUPPORTED ? BigInt(0xff) : null;
 }
 
 export namespace Numbers {
@@ -48,21 +50,37 @@ export namespace Numbers {
 }
 
 export namespace TypedArrays {
-
-	export const constructors = [Int8Array, Uint8Array, Uint8ClampedArray,
-		Int16Array, Uint16Array, Int32Array, Uint32Array,
-		Float32Array, Float64Array, DataView] as { new<T extends TypedArray>(...args: any): T }[];
+	export const constructors = [
+		Int8Array,
+		Uint8Array,
+		Uint8ClampedArray,
+		Int16Array,
+		Uint16Array,
+		Int32Array,
+		Uint32Array,
+		Float32Array,
+		Float64Array,
+		DataView
+	] as { new <T extends TypedArray>(...args: any): T }[];
 
 	/* istanbul ignore next: This is environment-specific, unused when unsupported */
 	if (typeof BigInt64Array === 'function') constructors.push(BigInt64Array);
 	/* istanbul ignore next: This is environment-specific, unused when unsupported */
 	if (typeof BigUint64Array === 'function') constructors.push(BigUint64Array);
 
-	export const typedArrayTags = new Map(constructors.map(typedArray =>
-		// @ts-ignore
-		[Object.prototype.toString.call(new typedArray(new ArrayBuffer(0))), BinaryTokens[typedArray.name]] as [string, BinaryTokens]));
+	export const typedArrayTags = new Map(
+		constructors.map(
+			(typedArray) =>
+				// @ts-ignore 7015
+				[Object.prototype.toString.call(new typedArray(new ArrayBuffer(0))), BinaryTokens[typedArray.name]] as [string, BinaryTokens]
+		)
+	);
 
-	export const typedArrayTagToConstructor = new Map(constructors.map(typedArray =>
-		// @ts-ignore
-		[BinaryTokens[typedArray.name], typedArray] as unknown as [BinaryTokens, { new <T extends TypedArray>(...args: any): T }]));
+	export const typedArrayTagToConstructor = new Map(
+		constructors.map(
+			(typedArray) =>
+				// @ts-ignore 7015
+				([BinaryTokens[typedArray.name], typedArray] as unknown) as [BinaryTokens, { new <T extends TypedArray>(...args: any): T }]
+		)
+	);
 }

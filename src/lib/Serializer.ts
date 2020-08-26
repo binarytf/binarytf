@@ -1,7 +1,6 @@
 import { BinaryPrimitives, BinaryTokens, TypedArray } from './util/constants';
 import { Numbers, BigIntegers, RegExps, TypedArrays } from './util/util';
 import { SerializerError, SerializerReason } from './errors/SerializerError';
-import { TextEncoder } from 'util';
 
 // Immutable
 const MIN_INT8 = -0b0111_1111;
@@ -18,7 +17,6 @@ export interface OnUnsupported {
 }
 
 export class Serializer {
-
 	public onUnsupported: OnUnsupported | null;
 	private _buffer: Uint8Array | null = new Uint8Array(16);
 	private _offset = 0;
@@ -44,13 +42,20 @@ export class Serializer {
 
 	public parse(value: any, hint = typeof value) {
 		switch (hint) {
-			case BinaryPrimitives.BigInt: return this.parseBigInt(value);
-			case BinaryPrimitives.Boolean: return this.parseBoolean(value);
-			case BinaryPrimitives.Number: return this.parseNumber(value);
-			case BinaryPrimitives.Object: return this.parseObject(value);
-			case BinaryPrimitives.String: return this.parseString(value);
-			case BinaryPrimitives.Undefined: return this.parseUndefined();
-			default: return this.handleUnsupported(value, hint);
+			case BinaryPrimitives.BigInt:
+				return this.parseBigInt(value);
+			case BinaryPrimitives.Boolean:
+				return this.parseBoolean(value);
+			case BinaryPrimitives.Number:
+				return this.parseNumber(value);
+			case BinaryPrimitives.Object:
+				return this.parseObject(value);
+			case BinaryPrimitives.String:
+				return this.parseString(value);
+			case BinaryPrimitives.Undefined:
+				return this.parseUndefined();
+			default:
+				return this.handleUnsupported(value, hint);
 		}
 	}
 
@@ -128,6 +133,7 @@ export class Serializer {
 		}
 	}
 
+	// eslint-disable-next-line @typescript-eslint/ban-types
 	private parseObject(value: object) {
 		if (value === null) return this.parseValueNull();
 
@@ -147,21 +153,34 @@ export class Serializer {
 		/* istanbul ignore next: This prints an erroneous coverage result. Definitely must be checked in the future. */
 		switch (tag) {
 			// eslint-disable-next-line @typescript-eslint/ban-types
-			case '[object String]': return this.parseValueObjectString(value as String);
+			case '[object String]':
+				return this.parseValueObjectString((value as unknown) as string);
 			// eslint-disable-next-line @typescript-eslint/ban-types
-			case '[object Boolean]': return this.parseValueObjectBoolean(value as Boolean);
+			case '[object Boolean]':
+				return this.parseValueObjectBoolean((value as unknown) as boolean);
 			// eslint-disable-next-line @typescript-eslint/ban-types
-			case '[object Number]': return this.parseValueObjectNumber(value as Number);
-			case '[object Date]': return this.parseValueObjectDate(value as Date);
-			case '[object RegExp]': return this.parseValueObjectRegExp(value as RegExp);
-			case '[object Object]': return this.parseValueObjectLiteral(value);
-			case '[object Map]': return this.parseValueObjectMap(value as Map<unknown, unknown>);
-			case '[object Set]': return this.parseValueObjectSet(value as Set<unknown>);
-			case '[object ArrayBuffer]': return this.parseValueObjectArrayBuffer(value as ArrayBuffer);
-			case '[object WeakMap]': return this.parseValueObjectWeakMap();
-			case '[object WeakSet]': return this.parseValueObjectWeakSet();
-			case '[object Promise]': return this.handleUnsupported(value, 'object');
-			default: return this.parseValueObjectFallback(value, tag);
+			case '[object Number]':
+				return this.parseValueObjectNumber((value as unknown) as number);
+			case '[object Date]':
+				return this.parseValueObjectDate(value as Date);
+			case '[object RegExp]':
+				return this.parseValueObjectRegExp(value as RegExp);
+			case '[object Object]':
+				return this.parseValueObjectLiteral(value);
+			case '[object Map]':
+				return this.parseValueObjectMap(value as Map<unknown, unknown>);
+			case '[object Set]':
+				return this.parseValueObjectSet(value as Set<unknown>);
+			case '[object ArrayBuffer]':
+				return this.parseValueObjectArrayBuffer(value as ArrayBuffer);
+			case '[object WeakMap]':
+				return this.parseValueObjectWeakMap();
+			case '[object WeakSet]':
+				return this.parseValueObjectWeakSet();
+			case '[object Promise]':
+				return this.handleUnsupported(value, 'object');
+			default:
+				return this.parseValueObjectFallback(value, tag);
 		}
 	}
 
@@ -265,6 +284,7 @@ export class Serializer {
 		this.write8(BinaryTokens.WeakSet);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/ban-types
 	private parseValueObjectFallback(value: object, tag: string) {
 		const typedArrayTag = TypedArrays.typedArrayTags.get(tag);
 		if (typedArrayTag) this.writeValueTypedArray(value as TypedArray, typedArrayTag);
@@ -376,5 +396,4 @@ export class Serializer {
 	}
 
 	private static _textEncoder = new TextEncoder();
-
 }

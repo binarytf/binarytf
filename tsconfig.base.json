@@ -1,0 +1,9 @@
+{
+	"extends": "@skyra/eslint-config",
+	"compilerOptions": {
+		"lib": ["ESNext", "DOM"],
+		"target": "ES2019",
+		"module": "ESNext",
+		"useDefineForClassFields": true
+	}
+}

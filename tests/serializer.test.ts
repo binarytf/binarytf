@@ -2,7 +2,7 @@ import * as test from 'tape';
 import { serialize } from '../index';
 import { SerializerError, SerializerReason } from '../lib/errors/SerializerError';
 
-test('Serialize Null', t => {
+test('Serialize Null', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(null);
@@ -11,7 +11,7 @@ test('Serialize Null', t => {
 });
 
 if (typeof BigInt === 'function') {
-	test('Serialize PBigInt', t => {
+	test('Serialize PBigInt', (t) => {
 		t.plan(1);
 
 		const serialized = serialize(BigInt('4'));
@@ -19,7 +19,7 @@ if (typeof BigInt === 'function') {
 		t.equal(serialized.length, 6);
 	});
 
-	test('Serialize PBigInt', t => {
+	test('Serialize PBigInt', (t) => {
 		t.plan(1);
 
 		const serialized = serialize(-BigInt('4'));
@@ -28,7 +28,7 @@ if (typeof BigInt === 'function') {
 	});
 }
 
-test('Serialize Boolean', t => {
+test('Serialize Boolean', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(false);
@@ -36,7 +36,7 @@ test('Serialize Boolean', t => {
 	t.equal(serialized.length, 2);
 });
 
-test('Serialize UTF8', t => {
+test('Serialize UTF8', (t) => {
 	t.plan(1);
 
 	const serialized = serialize('Hello');
@@ -44,7 +44,7 @@ test('Serialize UTF8', t => {
 	t.equal(serialized.length, 7);
 });
 
-test('Serialize UTF16', t => {
+test('Serialize UTF16', (t) => {
 	t.plan(1);
 
 	const serialized = serialize('⭐');
@@ -52,7 +52,7 @@ test('Serialize UTF16', t => {
 	t.equal(serialized.length, 5);
 });
 
-test('Serialize Undefined', t => {
+test('Serialize Undefined', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(undefined);
@@ -60,7 +60,7 @@ test('Serialize Undefined', t => {
 	t.equal(serialized.length, 1);
 });
 
-test('Serialize UnsignedByte', t => {
+test('Serialize UnsignedByte', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(0b1111_1111);
@@ -68,7 +68,7 @@ test('Serialize UnsignedByte', t => {
 	t.equal(serialized.length, 2);
 });
 
-test('Serialize SignedByte', t => {
+test('Serialize SignedByte', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(-0b0111_1111);
@@ -76,39 +76,39 @@ test('Serialize SignedByte', t => {
 	t.equal(serialized.length, 2);
 });
 
-test('Serialize UnsignedInt32', t => {
+test('Serialize UnsignedInt32', (t) => {
 	t.plan(1);
 
-	const serialized = serialize(0xFFFF);
+	const serialized = serialize(0xffff);
 	// 1 (TYPE) + 4 (BYTE)
 	t.equal(serialized.length, 5);
 });
 
-test('Serialize SignedInt32', t => {
+test('Serialize SignedInt32', (t) => {
 	t.plan(1);
 
-	const serialized = serialize(0xFFFF * -1);
+	const serialized = serialize(0xffff * -1);
 	// 1 (TYPE) + 4 (BYTE)
 	t.equal(serialized.length, 5);
 });
 
-test('Serialize PFloat64', t => {
+test('Serialize PFloat64', (t) => {
 	t.plan(1);
 
-	const serialized = serialize(0xFFFFFFFFF - 0.1);
+	const serialized = serialize(0xfffffffff - 0.1);
 	// 1 (TYPE) + 8 (BYTE)
 	t.equal(serialized.length, 9);
 });
 
-test('Serialize NFloat64', t => {
+test('Serialize NFloat64', (t) => {
 	t.plan(1);
 
-	const serialized = serialize((0xFFFFFFFF - 0.1) * -1);
+	const serialized = serialize((0xffffffff - 0.1) * -1);
 	// 1 (TYPE) + 8 (BYTE)
 	t.equal(serialized.length, 9);
 });
 
-test('Serialize NaN', t => {
+test('Serialize NaN', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(NaN);
@@ -116,7 +116,7 @@ test('Serialize NaN', t => {
 	t.equal(serialized.length, 9);
 });
 
-test('Serialize Infinity', t => {
+test('Serialize Infinity', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(Infinity);
@@ -124,7 +124,7 @@ test('Serialize Infinity', t => {
 	t.equal(serialized.length, 9);
 });
 
-test('Serialize Unsafe Float', t => {
+test('Serialize Unsafe Float', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(Number.MAX_VALUE);
@@ -132,7 +132,7 @@ test('Serialize Unsafe Float', t => {
 	t.equal(serialized.length, 9);
 });
 
-test('Serialize Array (Empty)', t => {
+test('Serialize Array (Empty)', (t) => {
 	t.plan(1);
 
 	const serialized = serialize([]);
@@ -140,7 +140,7 @@ test('Serialize Array (Empty)', t => {
 	t.equal(serialized.length, 1);
 });
 
-test('Serialize Array (UnsignedInt32)', t => {
+test('Serialize Array (UnsignedInt32)', (t) => {
 	t.plan(1);
 
 	const serialized = serialize([4]);
@@ -148,16 +148,16 @@ test('Serialize Array (UnsignedInt32)', t => {
 	t.equal(serialized.length, 4);
 });
 
-test('Serialize Array (Holey)', t => {
+test('Serialize Array (Holey)', (t) => {
 	t.plan(1);
 
 	// eslint-disable-next-line no-sparse-arrays, array-bracket-spacing
-	const serialized = serialize([, ]);
+	const serialized = serialize([,]);
 	// 1 (TYPE) + 1 (TYPE), value inferred + 1 (NULL TERMINATOR)
 	t.equal(serialized.length, 3);
 });
 
-test('Serialize Object (Empty)', t => {
+test('Serialize Object (Empty)', (t) => {
 	t.plan(1);
 
 	const serialized = serialize({});
@@ -165,7 +165,7 @@ test('Serialize Object (Empty)', t => {
 	t.equal(serialized.length, 1);
 });
 
-test('Serialize Object', t => {
+test('Serialize Object', (t) => {
 	t.plan(1);
 
 	const serialized = serialize({ a: 12 });
@@ -173,7 +173,7 @@ test('Serialize Object', t => {
 	t.equal(serialized.length, 7);
 });
 
-test('Serialize Object Fallback (Math)', t => {
+test('Serialize Object Fallback (Math)', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(Math);
@@ -181,10 +181,12 @@ test('Serialize Object Fallback (Math)', t => {
 	t.equal(serialized.length, 1);
 });
 
-test('Serialize Object (Circular)', t => {
+test('Serialize Object (Circular)', (t) => {
 	t.plan(1);
 
-	interface Test { a: Test | null }
+	interface Test {
+		a: Test | null;
+	}
 	const object: Test = { a: null };
 	object.a = object;
 	const serialized = serialize(object);
@@ -192,7 +194,7 @@ test('Serialize Object (Circular)', t => {
 	t.equal(serialized.length, 10);
 });
 
-test('Serialize Date', t => {
+test('Serialize Date', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(new Date());
@@ -200,7 +202,7 @@ test('Serialize Date', t => {
 	t.equal(serialized.length, 9);
 });
 
-test('Serialize Boolean Object', t => {
+test('Serialize Boolean Object', (t) => {
 	t.plan(1);
 
 	// eslint-disable-next-line no-new-wrappers
@@ -209,7 +211,7 @@ test('Serialize Boolean Object', t => {
 	t.equal(serialized.length, 2);
 });
 
-test('Serialize Number Object', t => {
+test('Serialize Number Object', (t) => {
 	t.plan(1);
 
 	// eslint-disable-next-line no-new-wrappers
@@ -218,7 +220,7 @@ test('Serialize Number Object', t => {
 	t.equal(serialized.length, 9);
 });
 
-test('Serialize String Object', t => {
+test('Serialize String Object', (t) => {
 	t.plan(1);
 
 	// eslint-disable-next-line no-new-wrappers
@@ -227,7 +229,7 @@ test('Serialize String Object', t => {
 	t.equal(serialized.length, 7);
 });
 
-test('Serialize RegExp', t => {
+test('Serialize RegExp', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(/ab/g);
@@ -235,7 +237,7 @@ test('Serialize RegExp', t => {
 	t.equal(serialized.length, 5);
 });
 
-test('Serialize Map (Empty)', t => {
+test('Serialize Map (Empty)', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(new Map());
@@ -243,7 +245,7 @@ test('Serialize Map (Empty)', t => {
 	t.equal(serialized.length, 1);
 });
 
-test('Serialize Map', t => {
+test('Serialize Map', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(new Map([[1, null]]));
@@ -251,7 +253,7 @@ test('Serialize Map', t => {
 	t.equal(serialized.length, 5);
 });
 
-test('Serialize Set (Empty)', t => {
+test('Serialize Set (Empty)', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(new Set());
@@ -259,7 +261,7 @@ test('Serialize Set (Empty)', t => {
 	t.equal(serialized.length, 1);
 });
 
-test('Serialize Set', t => {
+test('Serialize Set', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(new Set([null]));
@@ -267,7 +269,7 @@ test('Serialize Set', t => {
 	t.equal(serialized.length, 3);
 });
 
-test('Serialize ArrayBuffer', t => {
+test('Serialize ArrayBuffer', (t) => {
 	t.plan(1);
 
 	const buffer = new ArrayBuffer(4);
@@ -278,7 +280,7 @@ test('Serialize ArrayBuffer', t => {
 
 // TODO: Add TypedArray tests
 
-test('Serialize WeakMap', t => {
+test('Serialize WeakMap', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(new WeakMap());
@@ -286,7 +288,7 @@ test('Serialize WeakMap', t => {
 	t.equal(serialized.length, 1);
 });
 
-test('Serialize WeakSet', t => {
+test('Serialize WeakSet', (t) => {
 	t.plan(1);
 
 	const serialized = serialize(new WeakSet());
@@ -294,15 +296,18 @@ test('Serialize WeakSet', t => {
 	t.equal(serialized.length, 1);
 });
 
-test('Serialize Unsupported Types', t => {
+test('Serialize Unsupported Types', (t) => {
 	t.plan(1);
 
-	const serialized = serialize(() => { }, () => null);
+	const serialized = serialize(
+		() => {},
+		() => null
+	);
 	// 1 (TYPE)
 	t.equal(serialized.length, 1);
 });
 
-test('Serialize Unsupported Types No-Fallback (Invalid)', t => {
+test('Serialize Unsupported Types No-Fallback (Invalid)', (t) => {
 	t.plan(2);
 	try {
 		serialize(() => {});
@@ -313,7 +318,7 @@ test('Serialize Unsupported Types No-Fallback (Invalid)', t => {
 	}
 });
 
-test('Serialize Unsupported Object Types (Invalid)', t => {
+test('Serialize Unsupported Object Types (Invalid)', (t) => {
 	t.plan(2);
 	try {
 		serialize(Promise.resolve());
@@ -324,10 +329,13 @@ test('Serialize Unsupported Object Types (Invalid)', t => {
 	}
 });
 
-test('Serialize Unsupported Serialized Types (Invalid)', t => {
+test('Serialize Unsupported Serialized Types (Invalid)', (t) => {
 	t.plan(2);
 	try {
-		serialize(() => { }, () => Symbol(''));
+		serialize(
+			() => {},
+			() => Symbol('')
+		);
 		t.fail('Serialize should fail.');
 	} catch (error) {
 		t.true(error instanceof SerializerError);
@@ -335,7 +343,7 @@ test('Serialize Unsupported Serialized Types (Invalid)', t => {
 	}
 });
 
-test('Serialize String with Null Pointer (Invalid)', t => {
+test('Serialize String with Null Pointer (Invalid)', (t) => {
 	t.plan(2);
 	try {
 		serialize('Hello\0 World');
