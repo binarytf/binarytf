@@ -1,6 +1,6 @@
-import { BinaryPrimitives, BinaryTokens, TypedArray } from './util/constants';
-import { Numbers, BigIntegers, RegExps, TypedArrays } from './util/util';
 import { SerializerError, SerializerReason } from './errors/SerializerError';
+import { BinaryPrimitives, BinaryTokens, TypedArray } from './util/constants';
+import { BigIntegers, Numbers, RegExps, TypedArrays } from './util/util';
 
 // Immutable
 const MIN_INT8 = -0b0111_1111;

@@ -1,4 +1,4 @@
-import { TypedArray, BinaryTokens } from './constants';
+import { BinaryTokens, TypedArray } from './constants';
 
 export namespace RegExps {
 	const g = 1 << 0;

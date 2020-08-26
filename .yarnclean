@@ -135,6 +135,7 @@ docs
 doc
 website
 images
+!typedoc-default-themes/bin/default/assets/images
 
 ## examples
 example

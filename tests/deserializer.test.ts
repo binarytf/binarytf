@@ -1,4 +1,4 @@
-import { serialize, deserialize, deserializeWithMetadata } from '../src/index';
+import { deserialize, deserializeWithMetadata, serialize } from '../src/index';
 import { DeserializerError, DeserializerReason } from '../src/lib/errors/DeserializerError';
 import { BinaryTokens } from '../src/lib/util/constants';
 

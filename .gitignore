@@ -4,6 +4,7 @@ node_modules/
 .idea/
 *.iml
 coverage/
+docs/
 
 # Build code
 dist/
