@@ -1,6 +1,6 @@
+import { DeserializerError, DeserializerReason } from './errors/DeserializerError';
 import { BinaryTokens, TypedArray } from './util/constants';
 import { BigIntegers, RegExps, TypedArrays } from './util/util';
-import { DeserializerError, DeserializerReason } from './errors/DeserializerError';
 
 const float64Array = new Float64Array(1);
 const uInt8Float64Array = new Uint8Array(float64Array.buffer);
@@ -59,15 +59,15 @@ export class Deserializer {
 				return this._objectIDs.get(this.read32());
 			case BinaryTokens.Date:
 				return this.createObjectID(new Date(this.readF64()));
-			// eslint-disable-next-line no-new-wrappers
 			case BinaryTokens.BooleanObject:
-				return this.createObjectID(Boolean(this.read8()));
-			// eslint-disable-next-line no-new-wrappers
+				// eslint-disable-next-line no-new-wrappers
+				return this.createObjectID(new Boolean(this.read8()));
 			case BinaryTokens.NumberObject:
-				return this.createObjectID(Number(this.readF64()));
-			// eslint-disable-next-line no-new-wrappers
+				// eslint-disable-next-line no-new-wrappers
+				return this.createObjectID(new Number(this.readF64()));
 			case BinaryTokens.StringObject:
-				return this.createObjectID(String(this.readString()));
+				// eslint-disable-next-line no-new-wrappers
+				return this.createObjectID(new String(this.readString()));
 			case BinaryTokens.EmptyObject:
 				return this.createObjectID({});
 			case BinaryTokens.Object:

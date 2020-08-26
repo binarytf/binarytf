@@ -133,7 +133,6 @@ export class Serializer {
 		}
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types
 	private parseObject(value: object) {
 		if (value === null) return this.parseValueNull();
 
@@ -152,13 +151,10 @@ export class Serializer {
 		const tag = Object.prototype.toString.call(value);
 		/* istanbul ignore next: This prints an erroneous coverage result. Definitely must be checked in the future. */
 		switch (tag) {
-			// eslint-disable-next-line @typescript-eslint/ban-types
 			case '[object String]':
 				return this.parseValueObjectString((value as unknown) as string);
-			// eslint-disable-next-line @typescript-eslint/ban-types
 			case '[object Boolean]':
 				return this.parseValueObjectBoolean((value as unknown) as boolean);
-			// eslint-disable-next-line @typescript-eslint/ban-types
 			case '[object Number]':
 				return this.parseValueObjectNumber((value as unknown) as number);
 			case '[object Date]':
@@ -197,19 +193,16 @@ export class Serializer {
 		this.write8(BinaryTokens.Null);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types
 	private parseValueObjectString(value: String) {
 		this.write8(BinaryTokens.StringObject);
 		this.writeValueString(value.valueOf());
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types
 	private parseValueObjectBoolean(value: Boolean) {
 		this.write8(BinaryTokens.BooleanObject);
 		this.write8(value.valueOf() ? 1 : 0);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types
 	private parseValueObjectNumber(value: Number) {
 		this.write8(BinaryTokens.NumberObject);
 		this.writeF64(value.valueOf());
@@ -284,7 +277,6 @@ export class Serializer {
 		this.write8(BinaryTokens.WeakSet);
 	}
 
-	// eslint-disable-next-line @typescript-eslint/ban-types
 	private parseValueObjectFallback(value: object, tag: string) {
 		const typedArrayTag = TypedArrays.typedArrayTags.get(tag);
 		if (typedArrayTag) this.writeValueTypedArray(value as TypedArray, typedArrayTag);

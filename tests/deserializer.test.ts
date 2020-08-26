@@ -1,216 +1,215 @@
-import * as test from 'tape';
 import { serialize, deserialize, deserializeWithMetadata } from '../src/index';
 import { DeserializerError, DeserializerReason } from '../src/lib/errors/DeserializerError';
 import { BinaryTokens } from '../src/lib/util/constants';
 
-test('Deserialize Null', (t) => {
-	t.plan(2);
+test('Deserialize Null', () => {
+	expect.assertions(2);
 
 	const serialized = serialize(null);
 	const deserialized = deserialize<null>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.equal(deserialized, null);
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized).toBe(null);
 });
 
 if (typeof BigInt === 'function') {
-	test('Deserialize PBigInt', (t) => {
-		t.plan(2);
+	test('Deserialize PBigInt', () => {
+		expect.assertions(2);
 
 		const serialized = serialize(BigInt('4'));
 		const deserialized = deserialize<bigint>(serialized);
-		t.equal(typeof deserialized, 'bigint');
-		t.equal(deserialized, BigInt('4'));
+		expect(typeof deserialized).toBe('bigint');
+		expect(deserialized).toBe(BigInt('4'));
 	});
 
-	test('Deserialize PBigInt', (t) => {
-		t.plan(2);
+	test('Deserialize PBigInt', () => {
+		expect.assertions(2);
 
 		const serialized = serialize(-BigInt('4'));
 		const deserialized = deserialize<bigint>(serialized);
-		t.equal(typeof deserialized, 'bigint');
-		t.equal(deserialized, -BigInt('4'));
+		expect(typeof deserialized).toBe('bigint');
+		expect(deserialized).toBe(-BigInt('4'));
 	});
 }
 
-test('Deserialize Boolean', (t) => {
-	t.plan(2);
+test('Deserialize Boolean', () => {
+	expect.assertions(2);
 
 	const serialized = serialize(false);
 	const deserialized = deserialize<boolean>(serialized);
-	t.equal(typeof deserialized, 'boolean');
-	t.equal(deserialized, false);
+	expect(typeof deserialized).toBe('boolean');
+	expect(deserialized).toBe(false);
 });
 
-test('Deserialize UTF8', (t) => {
-	t.plan(2);
+test('Deserialize UTF8', () => {
+	expect.assertions(2);
 
 	const serialized = serialize('Hello');
 	const deserialized = deserialize<string>(serialized);
-	t.equal(typeof deserialized, 'string');
-	t.equal(deserialized, 'Hello');
+	expect(typeof deserialized).toBe('string');
+	expect(deserialized).toBe('Hello');
 });
 
-test('Deserialize UTF16', (t) => {
-	t.plan(2);
+test('Deserialize UTF16', () => {
+	expect.assertions(2);
 
 	const serialized = serialize('⭐');
 	const deserialized = deserialize<string>(serialized);
-	t.equal(typeof deserialized, 'string');
-	t.equal(deserialized, '⭐');
+	expect(typeof deserialized).toBe('string');
+	expect(deserialized).toBe('⭐');
 });
 
-test('Deserialize Undefined', (t) => {
-	t.plan(2);
+test('Deserialize Undefined', () => {
+	expect.assertions(2);
 
 	const serialized = serialize(undefined);
 	const deserialized = deserialize<undefined>(serialized);
-	t.equal(typeof deserialized, 'undefined');
-	t.equal(deserialized, undefined);
+	expect(typeof deserialized).toBe('undefined');
+	expect(deserialized).toBe(undefined);
 });
 
-test('Deserialize UnsignedByte', (t) => {
-	t.plan(2);
+test('Deserialize UnsignedByte', () => {
+	expect.assertions(2);
 
 	const serialized = serialize(24);
 	const deserialized = deserialize<number>(serialized);
-	t.equal(typeof deserialized, 'number');
-	t.equal(deserialized, 24);
+	expect(typeof deserialized).toBe('number');
+	expect(deserialized).toBe(24);
 });
 
-test('Deserialize SignedByte', (t) => {
-	t.plan(2);
+test('Deserialize SignedByte', () => {
+	expect.assertions(2);
 
 	const serialized = serialize(-24);
 	const deserialized = deserialize<number>(serialized);
-	t.equal(typeof deserialized, 'number');
-	t.equal(deserialized, -24);
+	expect(typeof deserialized).toBe('number');
+	expect(deserialized).toBe(-24);
 });
 
-test('Deserialize UnsignedInt32', (t) => {
-	t.plan(2);
+test('Deserialize UnsignedInt32', () => {
+	expect.assertions(2);
 
 	const serialized = serialize(0xffa);
 	const deserialized = deserialize<number>(serialized);
-	t.equal(typeof deserialized, 'number');
-	t.equal(deserialized, 0xffa);
+	expect(typeof deserialized).toBe('number');
+	expect(deserialized).toBe(0xffa);
 });
 
-test('Deserialize SignedInt32', (t) => {
-	t.plan(2);
+test('Deserialize SignedInt32', () => {
+	expect.assertions(2);
 
 	const serialized = serialize(-0xffa);
 	const deserialized = deserialize<number>(serialized);
-	t.equal(typeof deserialized, 'number');
-	t.equal(deserialized, -0xffa);
+	expect(typeof deserialized).toBe('number');
+	expect(deserialized).toBe(-0xffa);
 });
 
-test('Deserialize PFloat64', (t) => {
-	t.plan(2);
+test('Deserialize PFloat64', () => {
+	expect.assertions(2);
 
 	const value = 0xffffffff + 0.1;
 	const serialized = serialize(value);
 	const deserialized = deserialize<number>(serialized);
-	t.equal(typeof deserialized, 'number');
-	t.equal(deserialized, value);
+	expect(typeof deserialized).toBe('number');
+	expect(deserialized).toBe(value);
 });
 
-test('Deserialize NFloat64', (t) => {
-	t.plan(2);
+test('Deserialize NFloat64', () => {
+	expect.assertions(2);
 
 	const value = -0xffffffff - 0.1;
 	const serialized = serialize(value);
 	const deserialized = deserialize<number>(serialized);
-	t.equal(typeof deserialized, 'number');
-	t.equal(deserialized, value);
+	expect(typeof deserialized).toBe('number');
+	expect(deserialized).toBe(value);
 });
 
-test('Deserialize NaN', (t) => {
-	t.plan(2);
+test('Deserialize NaN', () => {
+	expect.assertions(2);
 
 	const serialized = serialize(NaN);
 	const deserialized = deserialize<number>(serialized);
-	t.equal(typeof deserialized, 'number');
-	t.true(Number.isNaN(deserialized));
+	expect(typeof deserialized).toBe('number');
+	expect(Number.isNaN(deserialized)).toBeTruthy();
 });
 
-test('Deserialize Infinity', (t) => {
-	t.plan(2);
+test('Deserialize Infinity', () => {
+	expect.assertions(2);
 
 	const serialized = serialize(Infinity);
 	const deserialized = deserialize<number>(serialized);
-	t.equal(typeof deserialized, 'number');
-	t.equal(deserialized, Infinity);
+	expect(typeof deserialized).toBe('number');
+	expect(deserialized).toBe(Infinity);
 });
 
-test('Deserialize Unsafe Float', (t) => {
-	t.plan(2);
+test('Deserialize Unsafe Float', () => {
+	expect.assertions(2);
 
 	const serialized = serialize(Number.MAX_VALUE);
 	const deserialized = deserialize<number>(serialized);
-	t.equal(typeof deserialized, 'number');
-	t.equal(deserialized, Number.MAX_VALUE);
+	expect(typeof deserialized).toBe('number');
+	expect(deserialized).toBe(Number.MAX_VALUE);
 });
 
-test('Deserialize Array (Empty)', (t) => {
-	t.plan(2);
+test('Deserialize Array (Empty)', () => {
+	expect.assertions(2);
 
 	const serialized = serialize([]);
 	const deserialized = deserialize<never[]>(serialized);
-	t.true(Array.isArray(deserialized));
-	t.equal(deserialized.length, 0);
+	expect(Array.isArray(deserialized)).toBeTruthy();
+	expect(deserialized.length).toBe(0);
 });
 
-test('Deserialize Array (UnsignedInt32)', (t) => {
-	t.plan(3);
+test('Deserialize Array (UnsignedInt32)', () => {
+	expect.assertions(3);
 
 	const serialized = serialize([4]);
 	const deserialized = deserialize<number[]>(serialized);
-	t.true(Array.isArray(deserialized));
-	t.equal(deserialized.length, 1);
-	t.equal(deserialized[0], 4);
+	expect(Array.isArray(deserialized)).toBeTruthy();
+	expect(deserialized.length).toBe(1);
+	expect(deserialized[0]).toBe(4);
 });
 
-test('Deserialize Array (Holey)', (t) => {
-	t.plan(3);
+test('Deserialize Array (Holey)', () => {
+	expect.assertions(3);
 
 	// eslint-disable-next-line no-sparse-arrays, array-bracket-spacing
 	const serialized = serialize([,]);
 	const deserialized = deserialize<never[]>(serialized);
-	t.true(Array.isArray(deserialized));
-	t.equal(deserialized.length, 1);
-	t.false(0 in deserialized);
+	expect(Array.isArray(deserialized)).toBeTruthy();
+	expect(deserialized.length).toBe(1);
+	expect(0 in deserialized).toBeFalsy();
 });
 
-test('Deserialize Array (Circular)', (t) => {
-	t.plan(3);
+test('Deserialize Array (Circular)', () => {
+	expect.assertions(3);
 
 	const array: unknown[] = [];
 	array.push(array);
 	const serialized = serialize(array);
 	const deserialized = deserialize<unknown[]>(serialized);
-	t.true(Array.isArray(deserialized));
-	t.equal(deserialized.length, 1);
-	t.equal(deserialized[0], deserialized);
+	expect(Array.isArray(deserialized)).toBeTruthy();
+	expect(deserialized.length).toBe(1);
+	expect(deserialized[0]).toBe(deserialized);
 });
 
-test('Deserialize Object (Empty)', (t) => {
-	t.plan(1);
+test('Deserialize Object (Empty)', () => {
+	expect.assertions(1);
 
 	const serialized = serialize({});
 	const deserialized = deserialize<{}>(serialized);
-	t.deepEqual(deserialized, {});
+	expect(deserialized).toEqual({});
 });
 
-test('Deserialize Object', (t) => {
-	t.plan(1);
+test('Deserialize Object', () => {
+	expect.assertions(1);
 
 	const serialized = serialize({ a: 12 });
 	const deserialized = deserialize<{ a: number }>(serialized);
-	t.deepEqual(deserialized, { a: 12 });
+	expect(deserialized).toEqual({ a: 12 });
 });
 
-test('Deserialize Object (Circular)', (t) => {
-	t.plan(3);
+test('Deserialize Object (Circular)', () => {
+	expect.assertions(3);
 
 	interface Test {
 		a: Test | null;
@@ -219,259 +218,255 @@ test('Deserialize Object (Circular)', (t) => {
 	object.a = object;
 	const serialized = serialize(object);
 	const deserialized = deserialize<Test>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof Object);
-	t.assert(deserialized === deserialized.a);
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized instanceof Object).toBeTruthy();
+	expect(deserialized === deserialized.a).toBeTruthy();
 });
 
-test('Deserialize Date', (t) => {
-	t.plan(3);
+test('Deserialize Date', () => {
+	expect.assertions(3);
 
 	const serialized = serialize(new Date(1000));
 	const deserialized = deserialize<Date>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof Date);
-	t.equal(deserialized.valueOf(), 1000);
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized instanceof Date).toBeTruthy();
+	expect(deserialized.valueOf()).toBe(1000);
 });
 
-test('Deserialize Boolean Object (True)', (t) => {
-	t.plan(3);
+test('Deserialize Boolean Object (True)', () => {
+	expect.assertions(3);
 
 	// eslint-disable-next-line no-new-wrappers
 	const serialized = serialize(new Boolean(true));
-	// eslint-disable-next-line @typescript-eslint/ban-types
 	const deserialized = deserialize<Boolean>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof Boolean);
-	t.equal(deserialized.valueOf(), true);
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized instanceof Boolean).toBeTruthy();
+	expect(deserialized.valueOf()).toBe(true);
 });
 
-test('Deserialize Boolean Object (False)', (t) => {
-	t.plan(3);
+test('Deserialize Boolean Object (False)', () => {
+	expect.assertions(3);
 
 	// eslint-disable-next-line no-new-wrappers
 	const serialized = serialize(new Boolean(false));
-	// eslint-disable-next-line @typescript-eslint/ban-types
 	const deserialized = deserialize<Boolean>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof Boolean);
-	t.equal(deserialized.valueOf(), false);
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized instanceof Boolean).toBeTruthy();
+	expect(deserialized.valueOf()).toBe(false);
 });
 
-test('Deserialize Number Object', (t) => {
-	t.plan(3);
+test('Deserialize Number Object', () => {
+	expect.assertions(3);
 
 	// eslint-disable-next-line no-new-wrappers
 	const serialized = serialize(new Number(12));
-	// eslint-disable-next-line @typescript-eslint/ban-types
 	const deserialized = deserialize<Number>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof Number);
-	t.equal(deserialized.valueOf(), 12);
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized instanceof Number).toBeTruthy();
+	expect(deserialized.valueOf()).toBe(12);
 });
 
-test('Deserialize String Object', (t) => {
-	t.plan(3);
+test('Deserialize String Object', () => {
+	expect.assertions(3);
 
 	// eslint-disable-next-line no-new-wrappers
 	const serialized = serialize(new String('Hello'));
-	// eslint-disable-next-line @typescript-eslint/ban-types
 	const deserialized = deserialize<Number>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof String);
-	t.equal(deserialized.valueOf(), 'Hello');
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized instanceof String).toBeTruthy();
+	expect(deserialized.valueOf()).toBe('Hello');
 });
 
-test('Deserialize RegExp', (t) => {
-	t.plan(9);
+test('Deserialize RegExp', () => {
+	expect.assertions(9);
 
 	const serialized = serialize(/ab/);
 	const deserialized = deserialize<RegExp>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof RegExp);
-	t.equal(deserialized.source, 'ab');
-	t.false(deserialized.global);
-	t.false(deserialized.ignoreCase);
-	t.false(deserialized.multiline);
-	t.false(deserialized.sticky);
-	t.false(deserialized.unicode);
-	t.false(deserialized.dotAll);
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized instanceof RegExp).toBeTruthy();
+	expect(deserialized.source).toBe('ab');
+	expect(deserialized.global).toBeFalsy();
+	expect(deserialized.ignoreCase).toBeFalsy();
+	expect(deserialized.multiline).toBeFalsy();
+	expect(deserialized.sticky).toBeFalsy();
+	expect(deserialized.unicode).toBeFalsy();
+	expect(deserialized.dotAll).toBeFalsy();
 });
 
-test('Deserialize RegExp (Flag: Global)', (t) => {
-	t.plan(6);
+test('Deserialize RegExp (Flag: Global)', () => {
+	expect.assertions(6);
 
 	const serialized = serialize(/ab/g);
 	const deserialized = deserialize<RegExp>(serialized);
-	t.true(deserialized.global);
-	t.false(deserialized.ignoreCase);
-	t.false(deserialized.multiline);
-	t.false(deserialized.sticky);
-	t.false(deserialized.unicode);
-	t.false(deserialized.dotAll);
+	expect(deserialized.global).toBeTruthy();
+	expect(deserialized.ignoreCase).toBeFalsy();
+	expect(deserialized.multiline).toBeFalsy();
+	expect(deserialized.sticky).toBeFalsy();
+	expect(deserialized.unicode).toBeFalsy();
+	expect(deserialized.dotAll).toBeFalsy();
 });
 
-test('Deserialize RegExp (Flag: IgnoreCase)', (t) => {
-	t.plan(6);
+test('Deserialize RegExp (Flag: IgnoreCase)', () => {
+	expect.assertions(6);
 
 	const serialized = serialize(/ab/i);
 	const deserialized = deserialize<RegExp>(serialized);
-	t.false(deserialized.global);
-	t.true(deserialized.ignoreCase);
-	t.false(deserialized.multiline);
-	t.false(deserialized.sticky);
-	t.false(deserialized.unicode);
-	t.false(deserialized.dotAll);
+	expect(deserialized.global).toBeFalsy();
+	expect(deserialized.ignoreCase).toBeTruthy();
+	expect(deserialized.multiline).toBeFalsy();
+	expect(deserialized.sticky).toBeFalsy();
+	expect(deserialized.unicode).toBeFalsy();
+	expect(deserialized.dotAll).toBeFalsy();
 });
 
-test('Deserialize RegExp (Flag: Multiline)', (t) => {
-	t.plan(6);
+test('Deserialize RegExp (Flag: Multiline)', () => {
+	expect.assertions(6);
 
 	const serialized = serialize(/ab/m);
 	const deserialized = deserialize<RegExp>(serialized);
-	t.false(deserialized.global);
-	t.false(deserialized.ignoreCase);
-	t.true(deserialized.multiline);
-	t.false(deserialized.sticky);
-	t.false(deserialized.unicode);
-	t.false(deserialized.dotAll);
+	expect(deserialized.global).toBeFalsy();
+	expect(deserialized.ignoreCase).toBeFalsy();
+	expect(deserialized.multiline).toBeTruthy();
+	expect(deserialized.sticky).toBeFalsy();
+	expect(deserialized.unicode).toBeFalsy();
+	expect(deserialized.dotAll).toBeFalsy();
 });
 
-test('Deserialize RegExp (Flag: Sticky)', (t) => {
-	t.plan(6);
+test('Deserialize RegExp (Flag: Sticky)', () => {
+	expect.assertions(6);
 
 	const serialized = serialize(/ab/y);
 	const deserialized = deserialize<RegExp>(serialized);
-	t.false(deserialized.global);
-	t.false(deserialized.ignoreCase);
-	t.false(deserialized.multiline);
-	t.true(deserialized.sticky);
-	t.false(deserialized.unicode);
-	t.false(deserialized.dotAll);
+	expect(deserialized.global).toBeFalsy();
+	expect(deserialized.ignoreCase).toBeFalsy();
+	expect(deserialized.multiline).toBeFalsy();
+	expect(deserialized.sticky).toBeTruthy();
+	expect(deserialized.unicode).toBeFalsy();
+	expect(deserialized.dotAll).toBeFalsy();
 });
 
-test('Deserialize RegExp (Flag: Unicode)', (t) => {
-	t.plan(6);
+test('Deserialize RegExp (Flag: Unicode)', () => {
+	expect.assertions(6);
 
 	const serialized = serialize(/ab/u);
 	const deserialized = deserialize<RegExp>(serialized);
-	t.false(deserialized.global);
-	t.false(deserialized.ignoreCase);
-	t.false(deserialized.multiline);
-	t.false(deserialized.sticky);
-	t.true(deserialized.unicode);
-	t.false(deserialized.dotAll);
+	expect(deserialized.global).toBeFalsy();
+	expect(deserialized.ignoreCase).toBeFalsy();
+	expect(deserialized.multiline).toBeFalsy();
+	expect(deserialized.sticky).toBeFalsy();
+	expect(deserialized.unicode).toBeTruthy();
+	expect(deserialized.dotAll).toBeFalsy();
 });
 
-test('Deserialize RegExp (Flag: DotAll)', (t) => {
-	t.plan(6);
+test('Deserialize RegExp (Flag: DotAll)', () => {
+	expect.assertions(6);
 
 	const serialized = serialize(/ab/s);
 	const deserialized = deserialize<RegExp>(serialized);
-	t.false(deserialized.global);
-	t.false(deserialized.ignoreCase);
-	t.false(deserialized.multiline);
-	t.false(deserialized.sticky);
-	t.false(deserialized.unicode);
-	t.true(deserialized.dotAll);
+	expect(deserialized.global).toBeFalsy();
+	expect(deserialized.ignoreCase).toBeFalsy();
+	expect(deserialized.multiline).toBeFalsy();
+	expect(deserialized.sticky).toBeFalsy();
+	expect(deserialized.unicode).toBeFalsy();
+	expect(deserialized.dotAll).toBeTruthy();
 });
 
-test('Deserialize RegExp (All Flags)', (t) => {
-	t.plan(6);
+test('Deserialize RegExp (All Flags)', () => {
+	expect.assertions(6);
 
 	const serialized = serialize(/ab/gimsuy);
 	const deserialized = deserialize<RegExp>(serialized);
-	t.true(deserialized.global);
-	t.true(deserialized.ignoreCase);
-	t.true(deserialized.multiline);
-	t.true(deserialized.sticky);
-	t.true(deserialized.unicode);
-	t.true(deserialized.dotAll);
+	expect(deserialized.global).toBeTruthy();
+	expect(deserialized.ignoreCase).toBeTruthy();
+	expect(deserialized.multiline).toBeTruthy();
+	expect(deserialized.sticky).toBeTruthy();
+	expect(deserialized.unicode).toBeTruthy();
+	expect(deserialized.dotAll).toBeTruthy();
 });
 
-test('Deserialize Map (Empty)', (t) => {
-	t.plan(3);
+test('Deserialize Map (Empty)', () => {
+	expect.assertions(3);
 
 	const serialized = serialize(new Map());
 	const deserialized = deserialize<Map<any, any>>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof Map);
-	t.equal(deserialized.size, 0);
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized instanceof Map).toBeTruthy();
+	expect(deserialized.size).toBe(0);
 });
 
-test('Deserialize Map', (t) => {
-	t.plan(4);
+test('Deserialize Map', () => {
+	expect.assertions(4);
 
 	const serialized = serialize(new Map([[1, null]]));
 	const deserialized = deserialize<Map<any, any>>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof Map);
-	t.equal(deserialized.size, 1);
-	t.equal(deserialized.get(1), null);
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized instanceof Map).toBeTruthy();
+	expect(deserialized.size).toBe(1);
+	expect(deserialized.get(1)).toBe(null);
 });
 
-test('Deserialize Map (Circular)', (t) => {
-	t.plan(7);
+test('Deserialize Map (Circular)', () => {
+	expect.assertions(7);
 
 	const map = new Map();
 	map.set('a', map);
 	const serialized = serialize(map);
 	const deserialized = deserialize<Map<any, any>>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof Map);
-	t.equal(deserialized.size, 1);
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized instanceof Map).toBeTruthy();
+	expect(deserialized.size).toBe(1);
 
 	const [[key, value]] = deserialized;
-	t.equal(typeof key, 'string');
-	t.equal(key, 'a');
-	t.true(value instanceof Map);
-	t.equal(value, deserialized);
+	expect(typeof key).toBe('string');
+	expect(key).toBe('a');
+	expect(value instanceof Map).toBeTruthy();
+	expect(value).toBe(deserialized);
 });
 
-test('Deserialize Set (Empty)', (t) => {
-	t.plan(3);
+test('Deserialize Set (Empty)', () => {
+	expect.assertions(3);
 
 	const serialized = serialize(new Set());
 	const deserialized = deserialize<Set<unknown>>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof Set);
-	t.equal(deserialized.size, 0);
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized instanceof Set).toBeTruthy();
+	expect(deserialized.size).toBe(0);
 });
 
-test('Deserialize Set', (t) => {
-	t.plan(4);
+test('Deserialize Set', () => {
+	expect.assertions(4);
 
 	const serialized = serialize(new Set([null]));
 	const deserialized = deserialize<Set<null>>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof Set);
-	t.equal(deserialized.size, 1);
-	t.equal(deserialized.values().next().value, null);
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized instanceof Set).toBeTruthy();
+	expect(deserialized.size).toBe(1);
+	expect(deserialized.values().next().value).toBe(null);
 });
 
-test('Deserialize Set (Circular)', (t) => {
-	t.plan(8);
+test('Deserialize Set (Circular)', () => {
+	expect.assertions(8);
 
 	const set = new Set();
 	set.add(new Set());
 	set.add(set);
 	const serialized = serialize(set);
 	const deserialized = deserialize<Set<Set<unknown>>>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.true(deserialized instanceof Set);
-	t.equal(deserialized.size, 2);
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized instanceof Set).toBeTruthy();
+	expect(deserialized.size).toBe(2);
 
 	const [first, second] = deserialized;
-	t.true(first instanceof Set);
-	t.equal(first.size, 0);
+	expect(first instanceof Set).toBeTruthy();
+	expect(first.size).toBe(0);
 
-	t.true(second instanceof Set);
-	t.equal(second.size, 2);
-	t.equal(second, deserialized);
+	expect(second instanceof Set).toBeTruthy();
+	expect(second.size).toBe(2);
+	expect(second).toBe(deserialized);
 });
 
-test('Deserialize Multiple (Circular)', (t) => {
-	t.plan(16);
+test('Deserialize Multiple (Circular)', () => {
+	expect.assertions(16);
 
 	interface Test {
 		map: Map<number, Test> | null;
@@ -486,29 +481,29 @@ test('Deserialize Multiple (Circular)', (t) => {
 	const serialized = serialize(object);
 	const deserialized = deserialize<Test>(serialized);
 
-	t.notEqual(deserialized, null);
-	t.equal(typeof deserialized, 'object');
-	t.equal(Object.keys(deserialized).length, 3);
-	t.true('map' in deserialized);
-	t.true('set' in deserialized);
-	t.true('array' in deserialized);
+	expect(deserialized).not.toBe(null);
+	expect(typeof deserialized).toBe('object');
+	expect(Object.keys(deserialized).length).toBe(3);
+	expect('map' in deserialized).toBeTruthy();
+	expect('set' in deserialized).toBeTruthy();
+	expect('array' in deserialized).toBeTruthy();
 
-	t.true(deserialized.map instanceof Map);
-	t.equal(deserialized.map!.size, 1);
-	t.equal(deserialized.map!.keys().next().value, 1);
-	t.equal(deserialized.map!.values().next().value, deserialized);
+	expect(deserialized.map instanceof Map).toBeTruthy();
+	expect(deserialized.map!.size).toBe(1);
+	expect(deserialized.map!.keys().next().value).toBe(1);
+	expect(deserialized.map!.values().next().value).toBe(deserialized);
 
-	t.true(deserialized.set instanceof Set);
-	t.equal(deserialized.set!.size, 1);
-	t.equal(deserialized.set!.keys().next().value, deserialized);
+	expect(deserialized.set instanceof Set).toBeTruthy();
+	expect(deserialized.set!.size).toBe(1);
+	expect(deserialized.set!.keys().next().value).toBe(deserialized);
 
-	t.true(Array.isArray(deserialized.array));
-	t.equal(deserialized.array.length, 1);
-	t.equal(deserialized.array[0], deserialized);
+	expect(Array.isArray(deserialized.array)).toBeTruthy();
+	expect(deserialized.array.length).toBe(1);
+	expect(deserialized.array[0]).toBe(deserialized);
 });
 
-test('Deserialize Multiple (Cross-Circular)', (t) => {
-	t.plan(16);
+test('Deserialize Multiple (Cross-Circular)', () => {
+	expect.assertions(16);
 
 	type CircularMap = Map<string, unknown | Set<unknown | Test> | Set<unknown | Test> | Test>;
 	type CircularSet = Set<Map<string, unknown | Set<unknown | Test> | Test> | unknown | Test>;
@@ -526,32 +521,32 @@ test('Deserialize Multiple (Cross-Circular)', (t) => {
 
 	const serialized = serialize(object);
 	const deserialized = deserialize<Test>(serialized);
-	t.equal(typeof deserialized, 'object');
-	t.equal(Object.keys(deserialized).length, 3);
-	t.true('circle' in deserialized);
-	t.true('map' in deserialized);
-	t.true('set' in deserialized);
+	expect(typeof deserialized).toBe('object');
+	expect(Object.keys(deserialized).length).toBe(3);
+	expect('circle' in deserialized).toBeTruthy();
+	expect('map' in deserialized).toBeTruthy();
+	expect('set' in deserialized).toBeTruthy();
 
-	t.true(deserialized.map instanceof Map);
-	t.equal(deserialized.map!.size, 2);
+	expect(deserialized.map instanceof Map).toBeTruthy();
+	expect(deserialized.map!.size).toBe(2);
 	const mapKeysIterator = deserialized.map!.keys();
-	t.equal(mapKeysIterator.next().value, 'set');
-	t.equal(mapKeysIterator.next().value, 'map');
+	expect(mapKeysIterator.next().value).toBe('set');
+	expect(mapKeysIterator.next().value).toBe('map');
 	const mapValuesIterator = deserialized.map!.values();
-	t.equal(mapValuesIterator.next().value, deserialized.set);
-	t.equal(mapValuesIterator.next().value, deserialized.map);
+	expect(mapValuesIterator.next().value).toBe(deserialized.set);
+	expect(mapValuesIterator.next().value).toBe(deserialized.map);
 
-	t.true(deserialized.set instanceof Set);
-	t.equal(deserialized.set!.size, 2);
+	expect(deserialized.set instanceof Set).toBeTruthy();
+	expect(deserialized.set!.size).toBe(2);
 	const setKeysIterator = deserialized.set!.keys();
-	t.equal(setKeysIterator.next().value, deserialized.set);
-	t.equal(setKeysIterator.next().value, deserialized.map);
+	expect(setKeysIterator.next().value).toBe(deserialized.set);
+	expect(setKeysIterator.next().value).toBe(deserialized.map);
 
-	t.equal(deserialized.circle, deserialized);
+	expect(deserialized.circle).toBe(deserialized);
 });
 
-test('Deserialize Object Nested (Circular)', (t) => {
-	t.plan(13);
+test('Deserialize Object Nested (Circular)', () => {
+	expect.assertions(13);
 
 	interface Test {
 		a: { b: InnerTest; obj: Test | null };
@@ -567,33 +562,33 @@ test('Deserialize Object Nested (Circular)', (t) => {
 	const serialized = serialize(obj);
 	const deserialized = deserialize<Test>(serialized);
 
-	t.notEqual(deserialized, null);
-	t.equal(typeof deserialized, 'object');
-	t.equal(Object.keys(deserialized).length, 1);
+	expect(deserialized).not.toBe(null);
+	expect(typeof deserialized).toBe('object');
+	expect(Object.keys(deserialized).length).toBe(1);
 
 	// obj | { a: [Object] }
-	t.true('a' in deserialized);
-	t.equal(Object.keys(deserialized.a).length, 2);
+	expect('a' in deserialized).toBeTruthy();
+	expect(Object.keys(deserialized.a).length).toBe(2);
 
 	// obj.a | { b: [Object], obj: [Object] }
-	t.true('b' in deserialized.a);
-	t.equal(Object.keys(deserialized.a.b).length, 2);
+	expect('b' in deserialized.a).toBeTruthy();
+	expect(Object.keys(deserialized.a.b).length).toBe(2);
 
 	// obj.a.b | { c: true, d: [Circular] }
-	t.true('c' in deserialized.a.b);
-	t.equal(deserialized.a.b.c, true);
+	expect('c' in deserialized.a.b).toBeTruthy();
+	expect(deserialized.a.b.c).toBe(true);
 
 	// obj.a.b | { c: true, d: [Circular] }
-	t.true('d' in deserialized.a.b);
-	t.equal(deserialized.a.b.d, deserialized.a.b);
+	expect('d' in deserialized.a.b).toBeTruthy();
+	expect(deserialized.a.b.d).toBe(deserialized.a.b);
 
 	// obj.a | { b: [Object], obj: [Object] }
-	t.true('obj' in deserialized.a);
-	t.equal(deserialized.a.obj, deserialized);
+	expect('obj' in deserialized.a).toBeTruthy();
+	expect(deserialized.a.obj).toBe(deserialized);
 });
 
-test('Deserialize ArrayBuffer', (t) => {
-	t.plan(6);
+test('Deserialize ArrayBuffer', () => {
+	expect.assertions(6);
 
 	const buffer = new ArrayBuffer(4);
 	{
@@ -604,164 +599,164 @@ test('Deserialize ArrayBuffer', (t) => {
 	const serialized = serialize(buffer);
 	const deserialized = deserialize<ArrayBuffer>(serialized);
 
-	t.true(deserialized instanceof ArrayBuffer);
-	t.equal(deserialized.byteLength, 4);
+	expect(deserialized instanceof ArrayBuffer).toBeTruthy();
+	expect(deserialized.byteLength).toBe(4);
 
 	{
 		const uint8Array = new Uint8Array(deserialized);
-		t.equal(uint8Array[0], 0);
-		t.equal(uint8Array[1], 1);
-		t.equal(uint8Array[2], 2);
-		t.equal(uint8Array[3], 3);
+		expect(uint8Array[0]).toBe(0);
+		expect(uint8Array[1]).toBe(1);
+		expect(uint8Array[2]).toBe(2);
+		expect(uint8Array[3]).toBe(3);
 	}
 });
 
-test('Deserialize Int8Array', (t) => {
-	t.plan(7);
+test('Deserialize Int8Array', () => {
+	expect.assertions(7);
 
 	const value = new Int8Array([-10, -5, 0, 5, 10]);
 	const serialized = serialize(value);
 	const deserialized = deserialize<Int8Array>(serialized);
 
-	t.true(deserialized instanceof Int8Array);
-	t.equal(deserialized.length, value.length);
-	t.equal(deserialized[0], value[0]);
-	t.equal(deserialized[1], value[1]);
-	t.equal(deserialized[2], value[2]);
-	t.equal(deserialized[3], value[3]);
-	t.equal(deserialized[4], value[4]);
+	expect(deserialized instanceof Int8Array).toBeTruthy();
+	expect(deserialized.length).toBe(value.length);
+	expect(deserialized[0]).toBe(value[0]);
+	expect(deserialized[1]).toBe(value[1]);
+	expect(deserialized[2]).toBe(value[2]);
+	expect(deserialized[3]).toBe(value[3]);
+	expect(deserialized[4]).toBe(value[4]);
 });
 
-test('Deserialize Uint8Array', (t) => {
-	t.plan(7);
+test('Deserialize Uint8Array', () => {
+	expect.assertions(7);
 
 	const value = new Uint8Array([0, 1, 2, 5, 0xff]);
 	const serialized = serialize(value);
 	const deserialized = deserialize<Uint8Array>(serialized);
 
-	t.true(deserialized instanceof Uint8Array);
-	t.equal(deserialized.length, value.length);
-	t.equal(deserialized[0], value[0]);
-	t.equal(deserialized[1], value[1]);
-	t.equal(deserialized[2], value[2]);
-	t.equal(deserialized[3], value[3]);
-	t.equal(deserialized[4], value[4]);
+	expect(deserialized instanceof Uint8Array).toBeTruthy();
+	expect(deserialized.length).toBe(value.length);
+	expect(deserialized[0]).toBe(value[0]);
+	expect(deserialized[1]).toBe(value[1]);
+	expect(deserialized[2]).toBe(value[2]);
+	expect(deserialized[3]).toBe(value[3]);
+	expect(deserialized[4]).toBe(value[4]);
 });
 
-test('Deserialize Uint8ClampedArray', (t) => {
-	t.plan(7);
+test('Deserialize Uint8ClampedArray', () => {
+	expect.assertions(7);
 
 	const value = new Uint8ClampedArray([0, 1, 2, 5, 0xff]);
 	const serialized = serialize(value);
 	const deserialized = deserialize<Uint8ClampedArray>(serialized);
 
-	t.true(deserialized instanceof Uint8ClampedArray);
-	t.equal(deserialized.length, value.length);
-	t.equal(deserialized[0], value[0]);
-	t.equal(deserialized[1], value[1]);
-	t.equal(deserialized[2], value[2]);
-	t.equal(deserialized[3], value[3]);
-	t.equal(deserialized[4], value[4]);
+	expect(deserialized instanceof Uint8ClampedArray).toBeTruthy();
+	expect(deserialized.length).toBe(value.length);
+	expect(deserialized[0]).toBe(value[0]);
+	expect(deserialized[1]).toBe(value[1]);
+	expect(deserialized[2]).toBe(value[2]);
+	expect(deserialized[3]).toBe(value[3]);
+	expect(deserialized[4]).toBe(value[4]);
 });
 
-test('Deserialize Int16Array', (t) => {
-	t.plan(7);
+test('Deserialize Int16Array', () => {
+	expect.assertions(7);
 
 	const value = new Int16Array([-0x7ffe, 1, 2, 0xff, 0x7fff]);
 	const serialized = serialize(value);
 	const deserialized = deserialize<Int16Array>(serialized);
 
-	t.true(deserialized instanceof Int16Array);
-	t.equal(deserialized.length, value.length);
-	t.equal(deserialized[0], value[0]);
-	t.equal(deserialized[1], value[1]);
-	t.equal(deserialized[2], value[2]);
-	t.equal(deserialized[3], value[3]);
-	t.equal(deserialized[4], value[4]);
+	expect(deserialized instanceof Int16Array).toBeTruthy();
+	expect(deserialized.length).toBe(value.length);
+	expect(deserialized[0]).toBe(value[0]);
+	expect(deserialized[1]).toBe(value[1]);
+	expect(deserialized[2]).toBe(value[2]);
+	expect(deserialized[3]).toBe(value[3]);
+	expect(deserialized[4]).toBe(value[4]);
 });
 
-test('Deserialize Uint16Array', (t) => {
-	t.plan(7);
+test('Deserialize Uint16Array', () => {
+	expect.assertions(7);
 
 	const value = new Uint16Array([0, 1, 2, 0xff, 0xffff]);
 	const serialized = serialize(value);
 	const deserialized = deserialize<Uint16Array>(serialized);
 
-	t.true(deserialized instanceof Uint16Array);
-	t.equal(deserialized.length, value.length);
-	t.equal(deserialized[0], value[0]);
-	t.equal(deserialized[1], value[1]);
-	t.equal(deserialized[2], value[2]);
-	t.equal(deserialized[3], value[3]);
-	t.equal(deserialized[4], value[4]);
+	expect(deserialized instanceof Uint16Array).toBeTruthy();
+	expect(deserialized.length).toBe(value.length);
+	expect(deserialized[0]).toBe(value[0]);
+	expect(deserialized[1]).toBe(value[1]);
+	expect(deserialized[2]).toBe(value[2]);
+	expect(deserialized[3]).toBe(value[3]);
+	expect(deserialized[4]).toBe(value[4]);
 });
 
-test('Deserialize Int32Array', (t) => {
-	t.plan(7);
+test('Deserialize Int32Array', () => {
+	expect.assertions(7);
 
 	const value = new Int32Array([-0x7ffffffe, 1, 2, 0xff, 0x7fffffff]);
 	const serialized = serialize(value);
 	const deserialized = deserialize<Int32Array>(serialized);
 
-	t.true(deserialized instanceof Int32Array);
-	t.equal(deserialized.length, value.length);
-	t.equal(deserialized[0], value[0]);
-	t.equal(deserialized[1], value[1]);
-	t.equal(deserialized[2], value[2]);
-	t.equal(deserialized[3], value[3]);
-	t.equal(deserialized[4], value[4]);
+	expect(deserialized instanceof Int32Array).toBeTruthy();
+	expect(deserialized.length).toBe(value.length);
+	expect(deserialized[0]).toBe(value[0]);
+	expect(deserialized[1]).toBe(value[1]);
+	expect(deserialized[2]).toBe(value[2]);
+	expect(deserialized[3]).toBe(value[3]);
+	expect(deserialized[4]).toBe(value[4]);
 });
 
-test('Deserialize Uint32Array', (t) => {
-	t.plan(7);
+test('Deserialize Uint32Array', () => {
+	expect.assertions(7);
 
 	const value = new Uint32Array([0, 1, 2, 0xff, 0xffffffff]);
 	const serialized = serialize(value);
 	const deserialized = deserialize<Uint32Array>(serialized);
 
-	t.true(deserialized instanceof Uint32Array);
-	t.equal(deserialized.length, value.length);
-	t.equal(deserialized[0], value[0]);
-	t.equal(deserialized[1], value[1]);
-	t.equal(deserialized[2], value[2]);
-	t.equal(deserialized[3], value[3]);
-	t.equal(deserialized[4], value[4]);
+	expect(deserialized instanceof Uint32Array).toBeTruthy();
+	expect(deserialized.length).toBe(value.length);
+	expect(deserialized[0]).toBe(value[0]);
+	expect(deserialized[1]).toBe(value[1]);
+	expect(deserialized[2]).toBe(value[2]);
+	expect(deserialized[3]).toBe(value[3]);
+	expect(deserialized[4]).toBe(value[4]);
 });
 
-test('Deserialize Float32Array', (t) => {
-	t.plan(7);
+test('Deserialize Float32Array', () => {
+	expect.assertions(7);
 
 	const value = new Float32Array([-50, 3.14159, 4.2, 5.1234, 54321.4321]);
 	const serialized = serialize(value);
 	const deserialized = deserialize<Float32Array>(serialized);
 
-	t.true(deserialized instanceof Float32Array);
-	t.equal(deserialized.length, value.length);
-	t.equal(deserialized[0], value[0]);
-	t.equal(deserialized[1], value[1]);
-	t.equal(deserialized[2], value[2]);
-	t.equal(deserialized[3], value[3]);
-	t.equal(deserialized[4], value[4]);
+	expect(deserialized instanceof Float32Array).toBeTruthy();
+	expect(deserialized.length).toBe(value.length);
+	expect(deserialized[0]).toBe(value[0]);
+	expect(deserialized[1]).toBe(value[1]);
+	expect(deserialized[2]).toBe(value[2]);
+	expect(deserialized[3]).toBe(value[3]);
+	expect(deserialized[4]).toBe(value[4]);
 });
 
-test('Deserialize Float64Array', (t) => {
-	t.plan(7);
+test('Deserialize Float64Array', () => {
+	expect.assertions(7);
 
 	const value = new Float64Array([-500, 3.141592653589793, 4.2, 5.12345678, 54321.4321234]);
 	const serialized = serialize(value);
 	const deserialized = deserialize<Float64Array>(serialized);
 
-	t.true(deserialized instanceof Float64Array);
-	t.equal(deserialized.length, value.length);
-	t.equal(deserialized[0], value[0]);
-	t.equal(deserialized[1], value[1]);
-	t.equal(deserialized[2], value[2]);
-	t.equal(deserialized[3], value[3]);
-	t.equal(deserialized[4], value[4]);
+	expect(deserialized instanceof Float64Array).toBeTruthy();
+	expect(deserialized.length).toBe(value.length);
+	expect(deserialized[0]).toBe(value[0]);
+	expect(deserialized[1]).toBe(value[1]);
+	expect(deserialized[2]).toBe(value[2]);
+	expect(deserialized[3]).toBe(value[3]);
+	expect(deserialized[4]).toBe(value[4]);
 });
 
-test('Deserialize DataView', (t) => {
-	t.plan(6);
+test('Deserialize DataView', () => {
+	expect.assertions(6);
 
 	const buffer = new ArrayBuffer(4);
 	const uint8Array = new Uint8Array(buffer);
@@ -770,36 +765,36 @@ test('Deserialize DataView', (t) => {
 	const serialized = serialize(value);
 	const deserialized = deserialize<DataView>(serialized);
 
-	t.true(deserialized instanceof DataView);
-	t.equal(deserialized.byteLength, value.byteLength);
+	expect(deserialized instanceof DataView).toBeTruthy();
+	expect(deserialized.byteLength).toBe(value.byteLength);
 
 	const deserializedBuffer = new Uint8Array(deserialized.buffer);
-	t.equal(deserializedBuffer[0], uint8Array[0]);
-	t.equal(deserializedBuffer[1], uint8Array[1]);
-	t.equal(deserializedBuffer[2], uint8Array[2]);
-	t.equal(deserializedBuffer[3], uint8Array[3]);
+	expect(deserializedBuffer[0]).toBe(uint8Array[0]);
+	expect(deserializedBuffer[1]).toBe(uint8Array[1]);
+	expect(deserializedBuffer[2]).toBe(uint8Array[2]);
+	expect(deserializedBuffer[3]).toBe(uint8Array[3]);
 });
 
-test('Deserialize WeakMap', (t) => {
-	t.plan(1);
+test('Deserialize WeakMap', () => {
+	expect.assertions(1);
 
 	const serialized = serialize(new WeakMap());
 	const deserialized = deserialize<WeakMap<object, unknown>>(serialized);
 
-	t.true(deserialized instanceof WeakMap);
+	expect(deserialized instanceof WeakMap).toBeTruthy();
 });
 
-test('Deserialize WeakSet', (t) => {
-	t.plan(1);
+test('Deserialize WeakSet', () => {
+	expect.assertions(1);
 
 	const serialized = serialize(new WeakSet());
 	const deserialized = deserialize<WeakSet<object>>(serialized);
 
-	t.true(deserialized instanceof WeakSet);
+	expect(deserialized instanceof WeakSet).toBeTruthy();
 });
 
-test('Deserialize Unsupported Types', (t) => {
-	t.plan(1);
+test('Deserialize Unsupported Types', () => {
+	expect.assertions(1);
 
 	const serialized = serialize(
 		() => {},
@@ -807,11 +802,11 @@ test('Deserialize Unsupported Types', (t) => {
 	);
 	const deserialized = deserialize<null>(serialized);
 
-	t.equal(deserialized, null);
+	expect(deserialized).toBe(null);
 });
 
-test('Deserialize Object With Unsupported Types', (t) => {
-	t.plan(2);
+test('Deserialize Object With Unsupported Types', () => {
+	expect.assertions(2);
 
 	interface Test {
 		a: boolean;
@@ -826,63 +821,63 @@ test('Deserialize Object With Unsupported Types', (t) => {
 	const serialized = serialize(value, () => 'Wrong Input');
 	const deserialized = deserialize<ExpectedTest>(serialized);
 
-	t.equal(typeof deserialized, 'object');
-	t.deepEqual(deserialized, { a: true, b: 'Wrong Input' });
+	expect(typeof deserialized).toBe('object');
+	expect(deserialized).toEqual({ a: true, b: 'Wrong Input' });
 });
 
-test('Deserialize Value Offsets', (t) => {
-	t.plan(3);
+test('Deserialize Value Offsets', () => {
+	expect.assertions(3);
 
 	const value = [1, 2, 3];
 	const serialized = serialize(value);
 
-	t.equal(deserialize<number>(serialized, 1), 1);
-	t.equal(deserialize<number>(serialized, 3), 2);
-	t.equal(deserialize<number>(serialized, 5), 3);
+	expect(deserialize<number>(serialized, 1)).toBe(1);
+	expect(deserialize<number>(serialized, 3)).toBe(2);
+	expect(deserialize<number>(serialized, 5)).toBe(3);
 });
 
-test('Deserialize Forged Buffer (Invalid Type)', (t) => {
-	t.plan(2);
+test('Deserialize Forged Buffer (Invalid Type)', (done) => {
+	expect.assertions(2);
 	try {
 		const uint8Array = new Uint8Array(1);
 		uint8Array[0] = 0xff;
 		deserialize<never>(uint8Array);
-		t.fail('Deserialize should fail.');
+		done.fail('Deserialize should fail.');
 	} catch (error) {
-		t.true(error instanceof DeserializerError);
-		t.equal((error as DeserializerError).kind, DeserializerReason.UnknownType);
+		expect(error instanceof DeserializerError).toBeTruthy();
+		expect((error as DeserializerError).kind).toBe(DeserializerReason.UnknownType);
 	}
 });
 
-test('Deserialize Forged Buffer (Invalid Number)', (t) => {
-	t.plan(2);
+test('Deserialize Forged Buffer (Invalid Number)', (done) => {
+	expect.assertions(2);
 	try {
 		const uint8Array = new Uint8Array(2);
 		uint8Array[0] = BinaryTokens.UnsignedInt32;
 		uint8Array[1] = 0x12;
 		deserialize<never>(uint8Array);
-		t.fail('Deserialize should fail.');
+		done.fail('Deserialize should fail.');
 	} catch (error) {
-		t.true(error instanceof DeserializerError);
-		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
+		expect(error instanceof DeserializerError).toBeTruthy();
+		expect((error as DeserializerError).kind).toBe(DeserializerReason.UnexpectedEndOfBuffer);
 	}
 });
 
-test('Deserialize Forged Buffer (Invalid BigInt | Missing ByteLength)', (t) => {
-	t.plan(2);
+test('Deserialize Forged Buffer (Invalid BigInt | Missing ByteLength)', (done) => {
+	expect.assertions(2);
 	try {
 		const uint8Array = new Uint8Array(1);
 		uint8Array[0] = BinaryTokens.PBigInt;
 		deserialize<never>(uint8Array);
-		t.fail('Deserialize should fail.');
+		done.fail('Deserialize should fail.');
 	} catch (error) {
-		t.true(error instanceof DeserializerError);
-		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
+		expect(error instanceof DeserializerError).toBeTruthy();
+		expect((error as DeserializerError).kind).toBe(DeserializerReason.UnexpectedEndOfBuffer);
 	}
 });
 
-test('Deserialize Forged Buffer (Invalid BigInt | Missing Value)', (t) => {
-	t.plan(2);
+test('Deserialize Forged Buffer (Invalid BigInt | Missing Value)', (done) => {
+	expect.assertions(2);
 	try {
 		const uint8Array = new Uint8Array(5);
 		uint8Array[0] = BinaryTokens.PBigInt;
@@ -891,28 +886,28 @@ test('Deserialize Forged Buffer (Invalid BigInt | Missing Value)', (t) => {
 		uint8Array[3] = 0x00;
 		uint8Array[4] = 0x06;
 		deserialize<never>(uint8Array);
-		t.fail('Deserialize should fail.');
+		done.fail('Deserialize should fail.');
 	} catch (error) {
-		t.true(error instanceof DeserializerError);
-		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
+		expect(error instanceof DeserializerError).toBeTruthy();
+		expect((error as DeserializerError).kind).toBe(DeserializerReason.UnexpectedEndOfBuffer);
 	}
 });
 
-test('Deserialize Forged Buffer (Invalid TypedArray | Missing ByteLength)', (t) => {
-	t.plan(2);
+test('Deserialize Forged Buffer (Invalid TypedArray | Missing ByteLength)', (done) => {
+	expect.assertions(2);
 	try {
 		const uint8Array = new Uint8Array(1);
 		uint8Array[0] = BinaryTokens.Uint8Array;
 		deserialize<never>(uint8Array);
-		t.fail('Deserialize should fail.');
+		done.fail('Deserialize should fail.');
 	} catch (error) {
-		t.true(error instanceof DeserializerError);
-		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
+		expect(error instanceof DeserializerError).toBeTruthy();
+		expect((error as DeserializerError).kind).toBe(DeserializerReason.UnexpectedEndOfBuffer);
 	}
 });
 
-test('Deserialize Forged Buffer (Invalid TypedArray | Missing Value)', (t) => {
-	t.plan(2);
+test('Deserialize Forged Buffer (Invalid TypedArray | Missing Value)', (done) => {
+	expect.assertions(2);
 	try {
 		const uint8Array = new Uint8Array(5);
 		uint8Array[0] = BinaryTokens.Uint8Array;
@@ -921,59 +916,59 @@ test('Deserialize Forged Buffer (Invalid TypedArray | Missing Value)', (t) => {
 		uint8Array[3] = 0x00;
 		uint8Array[4] = 0x06;
 		deserialize<never>(uint8Array);
-		t.fail('Deserialize should fail.');
+		done.fail('Deserialize should fail.');
 	} catch (error) {
-		t.true(error instanceof DeserializerError);
-		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
+		expect(error instanceof DeserializerError).toBeTruthy();
+		expect((error as DeserializerError).kind).toBe(DeserializerReason.UnexpectedEndOfBuffer);
 	}
 });
 
-test('Deserialize Forged Buffer (String Invalid Null Pointer)', (t) => {
-	t.plan(2);
+test('Deserialize Forged Buffer (String Invalid Null Pointer)', (done) => {
+	expect.assertions(2);
 	try {
 		const uint8Array = new Uint8Array(2);
 		uint8Array[0] = BinaryTokens.String;
 		uint8Array[1] = 0x61;
 		deserialize<never>(uint8Array);
-		t.fail('Deserialize should fail.');
+		done.fail('Deserialize should fail.');
 	} catch (error) {
-		t.true(error instanceof DeserializerError);
-		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
+		expect(error instanceof DeserializerError).toBeTruthy();
+		expect((error as DeserializerError).kind).toBe(DeserializerReason.UnexpectedEndOfBuffer);
 	}
 });
 
-test('Deserialize Forged Buffer (Array Invalid Null Pointer)', (t) => {
-	t.plan(2);
+test('Deserialize Forged Buffer (Array Invalid Null Pointer)', (done) => {
+	expect.assertions(2);
 	try {
 		const uint8Array = new Uint8Array(2);
 		uint8Array[0] = BinaryTokens.Array;
 		uint8Array[1] = BinaryTokens.Null;
 		deserialize<never>(uint8Array);
-		t.fail('Deserialize should fail.');
+		done.fail('Deserialize should fail.');
 	} catch (error) {
-		t.true(error instanceof DeserializerError);
-		t.equal((error as DeserializerError).kind, DeserializerReason.UnexpectedEndOfBuffer);
+		expect(error instanceof DeserializerError).toBeTruthy();
+		expect((error as DeserializerError).kind).toBe(DeserializerReason.UnexpectedEndOfBuffer);
 	}
 });
 
-test('Deserialize With Metadata (Simple)', (t) => {
-	t.plan(3);
+test('Deserialize With Metadata (Simple)', () => {
+	expect.assertions(3);
 
 	const serialized = serialize('Hello World');
 	const metadata = deserializeWithMetadata<string>(serialized);
 
 	// The return of the metadata must always be an object
-	t.equal(typeof metadata, 'object');
+	expect(typeof metadata).toBe('object');
 
 	// Test the offset
-	t.equal(metadata.offset, -1);
+	expect(metadata.offset).toBe(-1);
 
 	// Test the serialized data
-	t.equal(metadata.value, 'Hello World');
+	expect(metadata.value).toBe('Hello World');
 });
 
-test('Deserialize With Metadata (Combinated)', (t) => {
-	t.plan(4);
+test('Deserialize With Metadata (Combinated)', () => {
+	expect.assertions(4);
 
 	const hello = serialize('Hello');
 	const world = serialize('World');
@@ -986,10 +981,10 @@ test('Deserialize With Metadata (Combinated)', (t) => {
 		const metadata = deserializeWithMetadata<string>(serialized);
 
 		// Test the offset
-		t.equal(metadata.offset, hello.byteLength);
+		expect(metadata.offset).toBe(hello.byteLength);
 
 		// Test the serialized data
-		t.equal(metadata.value, 'Hello');
+		expect(metadata.value).toBe('Hello');
 	}
 
 	// Second part
@@ -997,9 +992,9 @@ test('Deserialize With Metadata (Combinated)', (t) => {
 		const metadata = deserializeWithMetadata<string>(serialized, hello.byteLength);
 
 		// Test the offset
-		t.equal(metadata.offset, -1);
+		expect(metadata.offset).toBe(-1);
 
 		// Test the serialized data
-		t.equal(metadata.value, 'World');
+		expect(metadata.value).toBe('World');
 	}
 });
