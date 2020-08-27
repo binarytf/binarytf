@@ -24,7 +24,7 @@ There are a number of guidelines considered when reviewing Pull Requests to be m
 
 <!-- Link Dump -->
 
-[discord server]: https://join.skyra.pw
+[discord server]: https://discord.gg/pE5sfxK
 [here]: https://github.com/binarytf/binarytf/pulls
 [eslint]: https://eslint.org/
 [oop paradigms]: https://en.wikipedia.org/wiki/Object-oriented_programming
