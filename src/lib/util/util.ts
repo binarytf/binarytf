@@ -33,13 +33,9 @@ export namespace RegExps {
 
 export namespace BigIntegers {
 	export const SUPPORTED = typeof BigInt === 'function';
-	/* istanbul ignore next: This is environment-specific, unused when unsupported */
 	export const ZERO = SUPPORTED ? BigInt(0) : null;
-	/* istanbul ignore next: This is environment-specific, unused when unsupported */
 	export const ONE = SUPPORTED ? BigInt(1) : null;
-	/* istanbul ignore next: This is environment-specific, unused when unsupported */
 	export const EIGHT = SUPPORTED ? BigInt(8) : null;
-	/* istanbul ignore next: This is environment-specific, unused when unsupported */
 	export const BYTE = SUPPORTED ? BigInt(0xff) : null;
 }
 
@@ -63,9 +59,7 @@ export namespace TypedArrays {
 		DataView
 	] as { new <T extends TypedArray>(...args: any): T }[];
 
-	/* istanbul ignore next: This is environment-specific, unused when unsupported */
 	if (typeof BigInt64Array === 'function') constructors.push(BigInt64Array);
-	/* istanbul ignore next: This is environment-specific, unused when unsupported */
 	if (typeof BigUint64Array === 'function') constructors.push(BigUint64Array);
 
 	export const typedArrayTags = new Map(

@@ -107,7 +107,6 @@ export class Serializer {
 	private parseNumber(value: number) {
 		const type = this.getNumberType(value);
 		this.write8(type);
-		/* istanbul ignore next: This prints an erroneous coverage result. Definitely must be checked in the future. */
 		switch (type) {
 			case BinaryTokens.SignedByte:
 				this.write8(-value);
@@ -128,7 +127,6 @@ export class Serializer {
 				this.writeF64(value);
 				break;
 			default:
-				/* istanbul ignore next */
 				throw new Error(`Unreachable code. Got unexpected integer type ${type}`);
 		}
 	}
@@ -149,7 +147,6 @@ export class Serializer {
 		// We're doing this because it's safer for the context where you
 		// extend the classes.
 		const tag = Object.prototype.toString.call(value);
-		/* istanbul ignore next: This prints an erroneous coverage result. Definitely must be checked in the future. */
 		switch (tag) {
 			case '[object String]':
 				return this.parseValueObjectString((value as unknown) as string);
