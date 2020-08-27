@@ -1,6 +1,6 @@
 <div align="center">
   <p>
-  <img src="https://github.com/binarytf/binarytf/blob/master/static/logo.png?raw=true" width="22%" alt="logo"/>
+  <img src="https://github.com/binarytf/binarytf/blob/main/static/logo.png?raw=true" width="22%" alt="logo"/>
   </p>
   <p>
 <h1> BinaryTF </h1>
@@ -92,7 +92,7 @@ import { serialize, deserialize } from 'binarytf';
 ## Author
 
 **binarytf** © [kyranet](https://github.com/kyranet), released under the
-[MIT](https://github.com/kyranet/binarytf/blob/master/LICENSE) License.
+[MIT](https://github.com/binarytf/binarytf/blob/main/LICENSE.md) License.
 Authored and maintained by kyranet.
 
 > Github [kyranet](https://github.com/kyranet) - Twitter [@kyranet\_](https://twitter.com/kyranet_)
