@@ -1,14 +1,51 @@
 {
-	"projectName": "binarytf",
-	"projectOwner": "binarytf",
-	"repoType": "github",
-	"repoHost": "https://github.com",
-	"files": [
-		"README.md"
-	],
-	"imageSize": 100,
-	"commit": true,
-	"commitConvention": "angular",
-	"contributors": [],
-	"contributorsPerLine": 7
+  "projectName": "binarytf",
+  "projectOwner": "binarytf",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "angular",
+  "contributors": [
+    {
+      "login": "kyranet",
+      "name": "Antonio Román",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/24852502?v=4",
+      "profile": "https://github.com/kyranet",
+      "contributions": [
+        "code",
+        "example",
+        "ideas",
+        "projectManagement",
+        "review",
+        "question",
+        "test"
+      ]
+    },
+    {
+      "login": "vladfrangu",
+      "name": "Vlad Frangu",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/17960496?v=4",
+      "profile": "https://github.com/vladfrangu",
+      "contributions": [
+        "bug",
+        "code"
+      ]
+    },
+    {
+      "login": "Favna",
+      "name": "Jeroen Claassens",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/4019718?v=4",
+      "profile": "https://favware.tech/",
+      "contributions": [
+        "code",
+        "test",
+        "platform"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
 }
