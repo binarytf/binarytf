@@ -1,6 +1,6 @@
 # The MIT License (MIT)
 
-Copyright © `2019` `Antonio Román`
+Copyright © `2019` `BinaryTF and contributors`
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
