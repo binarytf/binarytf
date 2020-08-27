@@ -1,36 +1,38 @@
-# binarytf <img src="https://github.com/binarytf/binarytf/blob/master/static/logo.png?raw=true" align="right" width="22%">
-
 <div align="center">
-	<p>
-		<a href="https://discord.gg/pE5sfxK">
-			<img src="https://discordapp.com/api/guilds/582495121698717696/embed.png" alt="Discord" />
-		</a>
-		<a href="https://www.npmjs.com/package/binarytf">
-			<img src="https://img.shields.io/npm/v/binarytf.svg?maxAge=3600" alt="NPM version" />
-		</a>
-		<a href="https://www.npmjs.com/package/binarytf">
-			<img src="https://img.shields.io/npm/dt/binarytf.svg?maxAge=3600" alt="NPM downloads" />
-		</a>
-		<a href="https://dev.azure.com/kyranet/kyranet.public/_build/latest?definitionId=12&branchName=master">
-			<img src="https://dev.azure.com/kyranet/kyranet.public/_apis/build/status/kyranet.binarytf?branchName=master" alt="Build status" />
-		</a>
-		<a href="https://dev.azure.com/kyranet/kyranet.public/_build/latest?definitionId=12&branchName=master">
-			<img src="https://img.shields.io/azure-devops/coverage/kyranet/kyranet.public/12/master.svg" alt="Azure DevOps coverage">
-		</a>
-		<a href="https://lgtm.com/projects/g/kyranet/binarytf/alerts/">
-			<img src="https://img.shields.io/lgtm/alerts/g/kyranet/binarytf.svg?logo=lgtm&logoWidth=18" alt="Total alerts">
-		</a>
-		<a href="https://dependabot.com">
-			<img src="https://api.dependabot.com/badges/status?host=github&repo=kyranet/binarytf" alt="Dependabot Status">
-		</a>
-		<a href="https://www.patreon.com/kyranet">
-			<img src="https://img.shields.io/badge/donate-patreon-F96854.svg" alt="Patreon" />
-		</a>
-	</p>
-	<p>
-		<a href="https://nodei.co/npm/binarytf/"><img src="https://nodei.co/npm/binarytf.png?downloads=true&stars=true" alt="npm installnfo" /></a>
-	</p>
+  <p>
+  <img src="https://github.com/binarytf/binarytf/blob/master/static/logo.png?raw=true" width="22%" alt="logo"/>
+  </p>
+  <p>
+<h1> BinaryTF </h1>
+  </p>
 </div>
+
+**Table of Contents**
+
+-   [About](#about)
+-   [Usage](#usage)
+-   [Credit](#credit)
+-   [Contributing](#contributing)
+-   [Author](#author)
+
+---
+
+[![Discord](https://discordapp.com/api/guilds/582495121698717696/embed.png)](https://discord.gg/pE5sfxK)
+[![Twitter Follow](https://img.shields.io/twitter/follow/kyranet_?label=Follow%20@kyranet_&logo=twitter&colorB=1DA1F2&style=flat-square)](https://twitter.com/kyranet_/follow)
+[![Patreon Donate](https://img.shields.io/badge/patreon-donate-brightgreen.svg?label=Donate%20with%20Patreon&logo=patreon&colorB=F96854&style=flat-square&link=https://donate.skyra.pw/patreon)](https://donate.skyra.pw/patreon)
+[![PayPal Donate](https://img.shields.io/badge/paypal-donate-brightgreen.svg?label=Donate%20with%20Paypal&logo=paypal&colorB=00457C&style=flat-square&link=https://donate.skyra.pw/paypal)](https://donate.skyra.pw/paypal)
+
+[![GitHub](https://img.shields.io/github/license/binarytf/binarytf?logo=github&style=flat-square)](https://github.com/binarytf/binarytf/blob/main/LICENSE.md)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/binarytf/binarytf.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/binarytf/binarytf/alerts/)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/binarytf/binarytf.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/binarytf/binarytf/context:javascript)
+[![Coverage Status](https://coveralls.io/repos/github/binarytf/binarytf/badge.svg?branch=main&style=flat-square)](https://coveralls.io/github/binarytf/binarytf?branch=main)
+
+[![npm](https://img.shields.io/npm/v/binarytf?color=crimson&logo=npm&style=flat-square)](https://www.npmjs.com/package/binarytf)
+[![npm](https://img.shields.io/npm/dt/binarytf?style=flat-square)](https://www.npmjs.com/package/binarytf)
+[![npm bundle size](https://img.shields.io/bundlephobia/min/binarytf?style=flat-square)](https://bundlephobia.com/result?p=binarytf)
+[![npm bundle size](https://img.shields.io/bundlephobia/minzip/binarytf?style=flat-square)](https://bundlephobia.com/result?p=binarytf)
+
+---
 
 ## About
 
@@ -40,7 +42,13 @@ This term format is designed to fix one of ETF's flaws: byte size.
 Serializing this object:
 
 ```json
-{ "test": ["hello", "world"], "more": { "nested": "objects", "do": ["you", "like", "it?"] } }
+{
+	"test": ["hello", "world"],
+	"more": {
+		"nested": "objects",
+		"do": ["you", "like", "it?"]
+	}
+}
 ```
 
 Takes `80` bytes as `JSON.stringify()`'d, `116` bytes as `ETF` using [`devsnek/earl`][earl], and just `71` bytes in `BTF`.
@@ -61,11 +69,17 @@ const deserialized = deserialize(serialized);
 console.log(deserialized); // { hello: 'world' }
 ```
 
+This module is TypeScript ready and comes with types included. To import with ESM use the following syntax:
+
+```typescript
+import { serialize, deserialize } from 'binarytf';
+```
+
 ## Credit
 
 `binarytf` is heavily based on [`devsnek/earl`][earl], this module wouldn't be possible without it's author:
 
-- [Gus Caplan](https://github.com/devsnek)
+-   [Gus Caplan](https://github.com/devsnek)
 
 ## Contributing
 
@@ -81,6 +95,27 @@ console.log(deserialized); // { hello: 'world' }
 [MIT](https://github.com/kyranet/binarytf/blob/master/LICENSE) License.
 Authored and maintained by kyranet.
 
-> Github [kyranet](https://github.com/kyranet) - Twitter [@kyranet_](https://twitter.com/kyranet_)
+> Github [kyranet](https://github.com/kyranet) - Twitter [@kyranet\_](https://twitter.com/kyranet_)
 
 [earl]: https://github.com/devsnek/earl
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://github.com/kyranet"><img src="https://avatars0.githubusercontent.com/u/24852502?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Antonio Román</b></sub></a><br /><a href="https://github.com/binarytf/binarytf/commits?author=kyranet" title="Code">💻</a> <a href="#example-kyranet" title="Examples">💡</a> <a href="#ideas-kyranet" title="Ideas, Planning, & Feedback">🤔</a> <a href="#projectManagement-kyranet" title="Project Management">📆</a> <a href="https://github.com/binarytf/binarytf/pulls?q=is%3Apr+reviewed-by%3Akyranet" title="Reviewed Pull Requests">👀</a> <a href="#question-kyranet" title="Answering Questions">💬</a> <a href="https://github.com/binarytf/binarytf/commits?author=kyranet" title="Tests">⚠️</a></td>
+    <td align="center"><a href="https://github.com/vladfrangu"><img src="https://avatars3.githubusercontent.com/u/17960496?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Vlad Frangu</b></sub></a><br /><a href="https://github.com/binarytf/binarytf/issues?q=author%3Avladfrangu" title="Bug reports">🐛</a> <a href="https://github.com/binarytf/binarytf/commits?author=vladfrangu" title="Code">💻</a></td>
+    <td align="center"><a href="https://favware.tech/"><img src="https://avatars3.githubusercontent.com/u/4019718?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jeroen Claassens</b></sub></a><br /><a href="https://github.com/binarytf/binarytf/commits?author=Favna" title="Code">💻</a> <a href="https://github.com/binarytf/binarytf/commits?author=Favna" title="Tests">⚠️</a> <a href="#platform-Favna" title="Packaging/porting to new platform">📦</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-enable -->
+<!-- prettier-ignore-end -->
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

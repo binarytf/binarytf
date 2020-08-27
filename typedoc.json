@@ -1,0 +1,13 @@
+{
+	"inputFiles": ["./src"],
+	"out": "./docs/",
+	"readme": "./README.md",
+	"name": "binarytf",
+	"exclude": ["**/node_modules/**", "tests/**", "rollup.config.ts"],
+	"mode": "file",
+	"excludeExternals": true,
+	"excludePrivate": true,
+	"excludeProtected": true,
+	"excludeNotExported": true,
+	"tsconfig": "./tsconfig.base.json"
+}

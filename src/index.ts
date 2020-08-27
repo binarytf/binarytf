@@ -1,11 +1,11 @@
-import { Serializer, OnUnsupported } from './lib/Serializer';
 import { Deserializer } from './lib/Deserializer';
+import { OnUnsupported, Serializer } from './lib/Serializer';
 
 export function serialize(data: any, onUnsupported?: OnUnsupported) {
 	return new Serializer(data, onUnsupported).process();
 }
 
-export function deserialize<T = unknown>(buffer: Uint8Array, offset: number = -1) {
+export function deserialize<T = unknown>(buffer: Uint8Array, offset = -1) {
 	const deserializer = new Deserializer(buffer);
 	if (offset !== -1) deserializer.offset = offset;
 	const value = deserializer.read() as T;
@@ -13,7 +13,7 @@ export function deserialize<T = unknown>(buffer: Uint8Array, offset: number = -1
 	return value;
 }
 
-export function deserializeWithMetadata<T = unknown>(buffer: Uint8Array, offset: number = -1) {
+export function deserializeWithMetadata<T = unknown>(buffer: Uint8Array, offset = -1) {
 	const deserializer = new Deserializer(buffer);
 	if (offset !== -1) deserializer.offset = offset;
 	const value = deserializer.read() as T;

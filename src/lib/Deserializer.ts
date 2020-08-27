@@ -1,13 +1,11 @@
-import { TextDecoder } from 'util';
+import { DeserializerError, DeserializerReason } from './errors/DeserializerError';
 import { BinaryTokens, TypedArray } from './util/constants';
 import { BigIntegers, RegExps, TypedArrays } from './util/util';
-import { DeserializerError, DeserializerReason } from './errors/DeserializerError';
 
 const float64Array = new Float64Array(1);
 const uInt8Float64Array = new Uint8Array(float64Array.buffer);
 
 export class Deserializer {
-
 	public offset = 0;
 	private _buffer: Uint8Array | null;
 	private _objectIDs = new Map() as Map<number, Record<any, any>>;
@@ -29,38 +27,67 @@ export class Deserializer {
 	public read() {
 		const type = this.read8();
 		switch (type) {
-			case BinaryTokens.Null: return null;
-			case BinaryTokens.PBigInt: return this.readValueBigInt(false);
-			case BinaryTokens.NBigInt: return this.readValueBigInt(true);
-			case BinaryTokens.Boolean: return Boolean(this.read8());
-			case BinaryTokens.String: return this.readString();
-			case BinaryTokens.Undefined: return undefined;
-			case BinaryTokens.UnsignedByte: return this.read8();
-			case BinaryTokens.SignedByte: return -this.read8();
-			case BinaryTokens.UnsignedInt32: return this.read32();
-			case BinaryTokens.SignedInt32: return -this.read32();
-			case BinaryTokens.UnsignedFloat64: return this.readF64();
-			case BinaryTokens.SignedFloat64: return -this.readF64();
-			case BinaryTokens.Array: return this.readValueArray();
-			case BinaryTokens.EmptyArray: return this.createObjectID([]);
-			case BinaryTokens.ObjectReference: return this._objectIDs.get(this.read32());
-			case BinaryTokens.Date: return this.createObjectID(new Date(this.readF64()));
-			// eslint-disable-next-line no-new-wrappers
-			case BinaryTokens.BooleanObject: return this.createObjectID(new Boolean(this.read8()));
-			// eslint-disable-next-line no-new-wrappers
-			case BinaryTokens.NumberObject: return this.createObjectID(new Number(this.readF64()));
-			// eslint-disable-next-line no-new-wrappers
-			case BinaryTokens.StringObject: return this.createObjectID(new String(this.readString()));
-			case BinaryTokens.EmptyObject: return this.createObjectID({});
-			case BinaryTokens.Object: return this.readValueObject();
-			case BinaryTokens.RegExp: return this.createObjectID(new RegExp(this.readString(), RegExps.flagsFromInteger(this.read8())));
-			case BinaryTokens.Map: return this.readValueMap();
-			case BinaryTokens.EmptyMap: return this.createObjectID(new Map());
-			case BinaryTokens.Set: return this.readValueSet();
-			case BinaryTokens.EmptySet: return this.createObjectID(new Set());
-			case BinaryTokens.ArrayBuffer: return this.readValueArrayBuffer();
-			case BinaryTokens.WeakMap: return this.createObjectID(new WeakMap());
-			case BinaryTokens.WeakSet: return this.createObjectID(new WeakSet());
+			case BinaryTokens.Null:
+				return null;
+			case BinaryTokens.PBigInt:
+				return this.readValueBigInt(false);
+			case BinaryTokens.NBigInt:
+				return this.readValueBigInt(true);
+			case BinaryTokens.Boolean:
+				return Boolean(this.read8());
+			case BinaryTokens.String:
+				return this.readString();
+			case BinaryTokens.Undefined:
+				return undefined;
+			case BinaryTokens.UnsignedByte:
+				return this.read8();
+			case BinaryTokens.SignedByte:
+				return -this.read8();
+			case BinaryTokens.UnsignedInt32:
+				return this.read32();
+			case BinaryTokens.SignedInt32:
+				return -this.read32();
+			case BinaryTokens.UnsignedFloat64:
+				return this.readF64();
+			case BinaryTokens.SignedFloat64:
+				return -this.readF64();
+			case BinaryTokens.Array:
+				return this.readValueArray();
+			case BinaryTokens.EmptyArray:
+				return this.createObjectID([]);
+			case BinaryTokens.ObjectReference:
+				return this._objectIDs.get(this.read32());
+			case BinaryTokens.Date:
+				return this.createObjectID(new Date(this.readF64()));
+			case BinaryTokens.BooleanObject:
+				// eslint-disable-next-line no-new-wrappers
+				return this.createObjectID(new Boolean(this.read8()));
+			case BinaryTokens.NumberObject:
+				// eslint-disable-next-line no-new-wrappers
+				return this.createObjectID(new Number(this.readF64()));
+			case BinaryTokens.StringObject:
+				// eslint-disable-next-line no-new-wrappers
+				return this.createObjectID(new String(this.readString()));
+			case BinaryTokens.EmptyObject:
+				return this.createObjectID({});
+			case BinaryTokens.Object:
+				return this.readValueObject();
+			case BinaryTokens.RegExp:
+				return this.createObjectID(new RegExp(this.readString(), RegExps.flagsFromInteger(this.read8())));
+			case BinaryTokens.Map:
+				return this.readValueMap();
+			case BinaryTokens.EmptyMap:
+				return this.createObjectID(new Map());
+			case BinaryTokens.Set:
+				return this.readValueSet();
+			case BinaryTokens.EmptySet:
+				return this.createObjectID(new Set());
+			case BinaryTokens.ArrayBuffer:
+				return this.readValueArrayBuffer();
+			case BinaryTokens.WeakMap:
+				return this.createObjectID(new WeakMap());
+			case BinaryTokens.WeakSet:
+				return this.createObjectID(new WeakSet());
 			case BinaryTokens.Int8Array:
 			case BinaryTokens.Uint8Array:
 			case BinaryTokens.Uint8ClampedArray:
@@ -70,8 +97,10 @@ export class Deserializer {
 			case BinaryTokens.Uint32Array:
 			case BinaryTokens.Float32Array:
 			case BinaryTokens.Float64Array:
-			case BinaryTokens.DataView: return this.readValueTypedArray(type);
-			default: throw new DeserializerError(`Unknown type received: ${type}`, DeserializerReason.UnknownType);
+			case BinaryTokens.DataView:
+				return this.readValueTypedArray(type);
+			default:
+				throw new DeserializerError(`Unknown type received: ${type}`, DeserializerReason.UnknownType);
 		}
 	}
 
@@ -81,6 +110,7 @@ export class Deserializer {
 		const byteLength = this.read32();
 		this.ensureBytes(byteLength);
 
+		// eslint-disable-next-line @typescript-eslint/init-declarations
 		let value: TypedArray;
 		// Fast-path if we are deserializing an Uint8Array
 		if (token === BinaryTokens.Uint8Array) {
@@ -207,11 +237,12 @@ export class Deserializer {
 
 	private read32() {
 		this.ensureBytes(4);
-		return (this._buffer![this.offset++] * (2 ** 24)) +
-			(this._buffer![this.offset++] * (2 ** 16)) +
-			(this._buffer![this.offset++] * (2 ** 8)) +
-			this._buffer![this.offset++];
-
+		return (
+			this._buffer![this.offset++] * 2 ** 24 +
+			this._buffer![this.offset++] * 2 ** 16 +
+			this._buffer![this.offset++] * 2 ** 8 +
+			this._buffer![this.offset++]
+		);
 	}
 
 	private readF64() {
@@ -234,5 +265,4 @@ export class Deserializer {
 	}
 
 	private static _textDecoder = new TextDecoder();
-
 }
