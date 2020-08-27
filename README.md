@@ -7,16 +7,6 @@
   </p>
 </div>
 
-**Table of Contents**
-
--   [About](#about)
--   [Usage](#usage)
--   [Credit](#credit)
--   [Contributing](#contributing)
--   [Author](#author)
-
----
-
 [![Discord](https://discordapp.com/api/guilds/582495121698717696/embed.png)](https://discord.gg/pE5sfxK)
 [![Twitter Follow](https://img.shields.io/twitter/follow/kyranet_?label=Follow%20@kyranet_&logo=twitter&colorB=1DA1F2&style=flat-square)](https://twitter.com/kyranet_/follow)
 [![Patreon Donate](https://img.shields.io/badge/patreon-donate-brightgreen.svg?label=Donate%20with%20Patreon&logo=patreon&colorB=F96854&style=flat-square&link=https://donate.skyra.pw/patreon)](https://donate.skyra.pw/patreon)
