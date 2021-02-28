@@ -1,5 +1,5 @@
 {
-	"extends": ["@skyra", "plugin:prettier/recommended"],
+	"extends": ["@sapphire"],
 	"rules": {
 		"@typescript-eslint/no-namespace": 0,
 		"@typescript-eslint/indent": 0,

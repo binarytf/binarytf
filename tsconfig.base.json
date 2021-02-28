@@ -1,5 +1,5 @@
 {
-	"extends": "@skyra/eslint-config",
+	"extends": "@sapphire/ts-config",
 	"compilerOptions": {
 		"lib": ["ESNext", "DOM"],
 		"target": "ES2019",
