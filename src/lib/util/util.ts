@@ -74,7 +74,7 @@ export namespace TypedArrays {
 		constructors.map(
 			(typedArray) =>
 				// @ts-ignore 7015
-				([BinaryTokens[typedArray.name], typedArray] as unknown) as [BinaryTokens, { new <T extends TypedArray>(...args: any): T }]
+				[BinaryTokens[typedArray.name], typedArray] as unknown as [BinaryTokens, { new <T extends TypedArray>(...args: any): T }]
 		)
 	);
 }
