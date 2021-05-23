@@ -149,11 +149,11 @@ export class Serializer {
 		const tag = Object.prototype.toString.call(value);
 		switch (tag) {
 			case '[object String]':
-				return this.parseValueObjectString((value as unknown) as string);
+				return this.parseValueObjectString(value as unknown as string);
 			case '[object Boolean]':
-				return this.parseValueObjectBoolean((value as unknown) as boolean);
+				return this.parseValueObjectBoolean(value as unknown as boolean);
 			case '[object Number]':
-				return this.parseValueObjectNumber((value as unknown) as number);
+				return this.parseValueObjectNumber(value as unknown as number);
 			case '[object Date]':
 				return this.parseValueObjectDate(value as Date);
 			case '[object RegExp]':
