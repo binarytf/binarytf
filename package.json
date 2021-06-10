@@ -105,7 +105,8 @@
 		"kind-of": "^6.0.3",
 		"lodash": "^4.17.21",
 		"minimist": "^1.2.5",
-		"marked": "^2.0.1"
+		"marked": "^2.0.1",
+		"trim-newlines": "^3.0.1"
 	},
 	"prettier": "@sapphire/prettier-config"
 }
