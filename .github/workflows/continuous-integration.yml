@@ -7,43 +7,20 @@ on:
   pull_request:
 
 jobs:
-  pre_ci:
-    name: Prepare CI environment
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Project
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 2
-      - name: '[Push] Get commit message'
-        if: github.event_name == 'push'
-        id: push_get_commit_message
-        run: echo ::set-output name=push_commit_message::$(git log --format=%B -n 1 HEAD)
-      - name: '[Pull Request] Get commit message'
-        if: github.event_name == 'pull_request'
-        id: pr_get_commit_message
-        run: echo ::set-output name=pr_commit_message::$(git log --format=%B -n 1 HEAD^2)
-      - name: Add problem matchers
-        run: |
-          echo "::add-matcher::.github/problemMatchers/tsc.json"
-          echo "::add-matcher::.github/problemMatchers/eslint-stylish.json"
-    outputs:
-      commit_message: $( [ -z "${{ steps.pr_get_commit_message.outputs.pr_commit_message }}" ] && echo "${{ steps.push_get_commit_message.outputs.push_commit_message }}" || echo "${{ steps.pr_get_commit_message.outputs.pr_commit_message }}" )
-
   Linting:
     name: Linting
     runs-on: ubuntu-latest
-    if: "!contains(needs.pre_ci.outputs.commit_message, '[skip ci]')"
-    needs: pre_ci
     steps:
       - name: Checkout Project
         uses: actions/checkout@v2
+      - name: Add problem matcher
+        run: echo "::add-matcher::.github/problemMatchers/eslint.json"
       - name: Use Node.js v16
         uses: actions/setup-node@v2
         with:
           node-version: 16
       - name: Restore CI Cache
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         id: cache-restore
         with:
           path: node_modules
@@ -54,35 +31,9 @@ jobs:
       - name: Run ESLint
         run: yarn lint --fix=false
 
-  Formatting:
-    name: Prettier Formatting
-    runs-on: ubuntu-latest
-    if: "!contains(needs.pre_ci.outputs.commit_message, '[skip ci]')"
-    needs: pre_ci
-    steps:
-      - name: Checkout Project
-        uses: actions/checkout@v2
-      - name: Use Node.js v16
-        uses: actions/setup-node@v2
-        with:
-          node-version: 16
-      - name: Restore CI Cache
-        uses: actions/cache@v2.1.5
-        id: cache-restore
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-16-${{ hashFiles('**/yarn.lock') }}
-      - name: Install Dependencies if Cache Miss
-        if: ${{ !steps.cache-restore.outputs.cache-hit }}
-        run: yarn --frozen-lockfile
-      - name: Run Prettier check
-        run: yarn format:check
-
   Testing:
     name: Unit Tests
     runs-on: ubuntu-latest
-    if: "!contains(needs.pre_ci.outputs.commit_message, '[skip ci]')"
-    needs: pre_ci
     steps:
       - name: Checkout Project
         uses: actions/checkout@v2
@@ -91,7 +42,7 @@ jobs:
         with:
           node-version: 16
       - name: Restore CI Cache
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         id: cache-restore
         with:
           path: node_modules
@@ -110,17 +61,17 @@ jobs:
   Building:
     name: Compile source code
     runs-on: ubuntu-latest
-    if: "!contains(needs.pre_ci.outputs.commit_message, '[skip ci]')"
-    needs: pre_ci
     steps:
       - name: Checkout Project
         uses: actions/checkout@v2
+      - name: Add problem matcher
+        run: echo "::add-matcher::.github/problemMatchers/tsc.json"
       - name: Use Node.js v16
         uses: actions/setup-node@v2
         with:
           node-version: 16
       - name: Restore CI Cache
-        uses: actions/cache@v2.1.5
+        uses: actions/cache@v2.1.6
         id: cache-restore
         with:
           path: node_modules
@@ -132,18 +83,22 @@ jobs:
         run: yarn build
 
   Upload_Coverage_Report:
-    name: Upload coverage report to coveralls
+    name: Upload coverage report to codecov
     needs: [Testing]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
       - name: Download Coverage report
         uses: actions/download-artifact@v2
         with:
           name: coverage
           path: coverage/
-      - name: Coveralls Upload
-        uses: coverallsapp/github-action@master
+      - name: Codecov Upload
+        uses: codecov/codecov-action@v2
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.CODECOV_TOKEN }}
+          directory: coverage/
+          fail_ci_if_error: true
