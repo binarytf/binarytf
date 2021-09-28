@@ -105,7 +105,7 @@
 		"lodash": "^4.17.21",
 		"minimist": "^1.2.5",
 		"marked": "^2.0.7",
-		"trim-newlines": "^3.0.1"
+		"trim-newlines": "^4.0.2"
 	},
 	"prettier": "@sapphire/prettier-config"
 }
