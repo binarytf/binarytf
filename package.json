@@ -31,23 +31,23 @@
 		"prepare": "husky install .github/husky"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "^13.2.0",
+		"@commitlint/cli": "^13.2.1",
 		"@commitlint/config-conventional": "^13.2.0",
 		"@sapphire/eslint-config": "^3.3.1",
 		"@sapphire/prettier-config": "^1.2.1",
 		"@sapphire/ts-config": "^3.1.0",
 		"@types/jest": "^27.0.2",
 		"@types/node": "^16.10.1",
-		"@typescript-eslint/eslint-plugin": "^4.32.0",
-		"@typescript-eslint/parser": "^4.32.0",
+		"@typescript-eslint/eslint-plugin": "^4.33.0",
+		"@typescript-eslint/parser": "^4.33.0",
 		"cz-conventional-changelog": "^3.3.0",
 		"eslint": "^7.32.0",
 		"eslint-config-prettier": "^8.3.0",
 		"eslint-plugin-prettier": "^4.0.0",
 		"husky": "^7.0.2",
-		"jest": "^27.2.4",
-		"jest-circus": "^27.2.4",
-		"lint-staged": "^11.1.2",
+		"jest": "^27.2.5",
+		"jest-circus": "^27.2.5",
+		"lint-staged": "^11.2.2",
 		"prettier": "^2.4.1",
 		"pretty-quick": "^3.1.1",
 		"rollup": "^2.58.0",
@@ -66,7 +66,7 @@
 	},
 	"engines": {
 		"node": ">=v14.18.0",
-		"npm": ">=7.24.1"
+		"npm": ">=7.24.2"
 	},
 	"keywords": [
 		"binary",
@@ -104,7 +104,7 @@
 		"kind-of": "^6.0.3",
 		"lodash": "^4.17.21",
 		"minimist": "^1.2.5",
-		"marked": "^3.0.4",
+		"marked": "^3.0.7",
 		"trim-newlines": "^4.0.2"
 	},
 	"prettier": "@sapphire/prettier-config"
