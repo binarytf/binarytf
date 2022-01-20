@@ -100,12 +100,13 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tr>
     <td align="center"><a href="https://github.com/kyranet"><img src="https://avatars0.githubusercontent.com/u/24852502?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Antonio Román</b></sub></a><br /><a href="https://github.com/binarytf/binarytf/commits?author=kyranet" title="Code">💻</a> <a href="#example-kyranet" title="Examples">💡</a> <a href="#ideas-kyranet" title="Ideas, Planning, & Feedback">🤔</a> <a href="#projectManagement-kyranet" title="Project Management">📆</a> <a href="https://github.com/binarytf/binarytf/pulls?q=is%3Apr+reviewed-by%3Akyranet" title="Reviewed Pull Requests">👀</a> <a href="#question-kyranet" title="Answering Questions">💬</a> <a href="https://github.com/binarytf/binarytf/commits?author=kyranet" title="Tests">⚠️</a></td>
     <td align="center"><a href="https://github.com/vladfrangu"><img src="https://avatars3.githubusercontent.com/u/17960496?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Vlad Frangu</b></sub></a><br /><a href="https://github.com/binarytf/binarytf/issues?q=author%3Avladfrangu" title="Bug reports">🐛</a> <a href="https://github.com/binarytf/binarytf/commits?author=vladfrangu" title="Code">💻</a></td>
-    <td align="center"><a href="https://favware.tech/"><img src="https://avatars3.githubusercontent.com/u/4019718?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jeroen Claassens</b></sub></a><br /><a href="https://github.com/binarytf/binarytf/commits?author=Favna" title="Code">💻</a> <a href="https://github.com/binarytf/binarytf/commits?author=Favna" title="Tests">⚠️</a> <a href="#platform-Favna" title="Packaging/porting to new platform">📦</a></td>
+    <td align="center"><a href="https://favware.tech/"><img src="https://avatars3.githubusercontent.com/u/4019718?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Jeroen Claassens</b></sub></a><br /><a href="https://github.com/binarytf/binarytf/commits?author=favna" title="Code">💻</a> <a href="https://github.com/binarytf/binarytf/commits?author=favna" title="Tests">⚠️</a> <a href="#platform-favna" title="Packaging/porting to new platform">📦</a></td>
   </tr>
 </table>
 
-<!-- markdownlint-enable -->
+<!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!

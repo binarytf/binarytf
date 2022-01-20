@@ -1,3 +1,11 @@
 # Source files
 /src/ @kyranet
 /tests/ @kyranet
+
+# Project setup
+.yarnrc.yml @favna
+jest.config.cjs @favna
+tsconfig.base.json @favna
+tsconfig.eslint.json @favna
+tsup.config.ts @favna
+typedoc.json @favna

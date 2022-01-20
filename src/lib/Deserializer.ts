@@ -1,3 +1,6 @@
+// eslint-disable-next-line spaced-comment
+/// <reference lib="dom" />
+
 import { DeserializerError, DeserializerReason } from './errors/DeserializerError';
 import { BinaryTokens, TypedArray } from './util/constants';
 import { BigIntegers, RegExps, TypedArrays } from './util/util';
