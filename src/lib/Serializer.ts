@@ -1,3 +1,6 @@
+// eslint-disable-next-line spaced-comment
+/// <reference lib="dom" />
+
 import { SerializerError, SerializerReason } from './errors/SerializerError';
 import { BinaryPrimitives, BinaryTokens, TypedArray } from './util/constants';
 import { BigIntegers, Numbers, RegExps, TypedArrays } from './util/util';

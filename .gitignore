@@ -9,15 +9,9 @@ docs/
 # Build code
 dist/
 
-# Ignore JavaScript files
-**/*.js
-**/*.mjs
-!scripts/*.mjs
-**/*.js.map
-**/*.d.ts
-!src/**/*.d.ts
-**/*.tsbuildinfo
-!jest.config.js
+# Yarn files
+.yarn/install-state.gz
+.yarn/build-state.yml
 
 # Ignore heapsnapshot and log files
 *.heapsnapshot
@@ -25,6 +19,3 @@ dist/
 
 # Ignore package locks
 package-lock.json
-
-# Test results
-test.xml
