@@ -1,5 +1,11 @@
 import { Deserializer } from './lib/Deserializer';
 import { OnUnsupported, Serializer } from './lib/Serializer';
+export * from './lib/Deserializer';
+export * from './lib/errors/DeserializerError';
+export * from './lib/errors/SerializerError';
+export * from './lib/Serializer';
+export * from './lib/util/constants';
+export * from './lib/util/util';
 
 export function serialize<T = unknown>(data: T, onUnsupported?: OnUnsupported) {
 	return new Serializer(data, onUnsupported).process();
