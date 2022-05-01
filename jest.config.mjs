@@ -1,11 +1,13 @@
 /** @type {import('@jest/types').Config.InitialOptions} */
-export default {
+const config = {
 	coverageProvider: 'v8',
 	displayName: 'unit test',
-	testEnvironment: 'node',
-	testRunner: 'jest-circus/runner',
 	testMatch: ['<rootDir>/tests/**/*.test.ts'],
+	collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
+	reporters: ['default', 'github-actions'],
 	transform: {
 		'^.+\\.tsx?$': 'esbuild-jest'
 	}
 };
+
+export default config;
