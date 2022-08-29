@@ -220,7 +220,7 @@ export class Deserializer {
 		return false;
 	}
 
-	private createObjectID<T>(value: T) {
+	private createObjectID<T extends {} | object>(value: T) {
 		this._objectIDs.set(this._objectIDs.size, value);
 		return value;
 	}
