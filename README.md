@@ -8,14 +8,11 @@
 </div>
 
 [![Discord](https://discordapp.com/api/guilds/582495121698717696/embed.png)](https://discord.gg/pE5sfxK)
-[![Twitter Follow](https://img.shields.io/twitter/follow/kyranet_?label=Follow%20@kyranet_&logo=twitter&colorB=1DA1F2&style=flat-square)](https://twitter.com/kyranet_/follow)
+[![Twitter Follow](https://img.shields.io/twitter/follow/kyranet_?label=Follow%20@kyranet_&logo=twitter&colorB=1DA1F2&style=flat-square)](https://twitter.com/kyranet_)
 [![Patreon Donate](https://img.shields.io/badge/patreon-donate-brightgreen.svg?label=Donate%20with%20Patreon&logo=patreon&colorB=F96854&style=flat-square&link=https://donate.skyra.pw/patreon)](https://donate.skyra.pw/patreon)
 [![PayPal Donate](https://img.shields.io/badge/paypal-donate-brightgreen.svg?label=Donate%20with%20Paypal&logo=paypal&colorB=00457C&style=flat-square&link=https://donate.skyra.pw/paypal)](https://donate.skyra.pw/paypal)
 
 [![GitHub](https://img.shields.io/github/license/binarytf/binarytf?logo=github&style=flat-square)](https://github.com/binarytf/binarytf/blob/main/LICENSE.md)
-[![Total alerts](https://img.shields.io/lgtm/alerts/g/binarytf/binarytf.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/binarytf/binarytf/alerts/)
-[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/binarytf/binarytf.svg?logo=lgtm&logoWidth=18&style=flat-square)](https://lgtm.com/projects/g/binarytf/binarytf/context:javascript)
-[![Coverage Status](https://coveralls.io/repos/github/binarytf/binarytf/badge.svg?branch=main&style=flat-square)](https://coveralls.io/github/binarytf/binarytf?branch=main)
 
 [![npm](https://img.shields.io/npm/v/binarytf?color=crimson&logo=npm&style=flat-square)](https://www.npmjs.com/package/binarytf)
 [![npm](https://img.shields.io/npm/dt/binarytf?style=flat-square)](https://www.npmjs.com/package/binarytf)
