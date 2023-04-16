@@ -9,78 +9,30 @@ jobs:
   Publish:
     name: Publish Next to npm
     runs-on: ubuntu-latest
+    if: github.repository_owner == 'binarytf'
     steps:
       - name: Checkout Project
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Add TypeScript problem matcher
-        run: echo "::add-matcher::.github/problemMatchers/tsc.json"
-      - name: Use Node.js v16
-        uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3
+      - name: Use Node.js v18
+        uses: actions/setup-node@v3
         with:
-          node-version: 16
-          registry-url: https://registry.npmjs.org/
+          node-version: 18
           cache: yarn
+          registry-url: https://registry.yarnpkg.com/
       - name: Install Dependencies
-        run: yarn --frozen-lockfile
+        run: yarn --immutable
       - name: Bump Version & Publish
         run: |
           # Resolve the tag to be used. "next" for push events, "pr-{prNumber}" for dispatch events.
           TAG=$([[ ${{ github.event_name }} == 'push' ]] && echo 'next' || echo 'pr-${{ github.event.inputs.prNumber }}')
 
-          # Bump the version
-          yarn standard-version --skip.commit --skip.tag --prerelease "${TAG}.$(git rev-parse --verify --short HEAD)"
+          yarn config set npmAuthToken ${NODE_AUTH_TOKEN}
+          yarn config set npmPublishRegistry "https://registry.yarnpkg.com"
 
-          # Publish to NPM
-          npm publish --tag ${TAG} || true
+          yarn bump --preid "${TAG}.$(git rev-parse --verify --short HEAD)"
+
+          yarn npm publish --tag ${TAG}
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
-
-  Docgen:
-    name: Docgen
-    runs-on: ubuntu-latest
-    if: "github.event_name == 'push'"
-    steps:
-      - name: Checkout Project
-        uses: actions/checkout@93ea575cb5d8a053eaa0ac8fa3b40d7e05a33cc8 # tag=v3
-      - name: Use Node.js v16
-        uses: actions/setup-node@8c91899e586c5b171469028077307d293428b516 # tag=v3
-        with:
-          node-version: 16
-          cache: yarn
-      - name: Install Dependencies
-        run: yarn --frozen-lockfile
-      - name: Build documentation
-        run: yarn docs
-      - name: Publish Docs
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
-          REPO="https://${GITHUB_ACTOR}:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
-
-          echo -e "\n# Checkout the repo in the target branch"
-          TARGET_BRANCH="gh-pages"
-          git clone $REPO out -b $TARGET_BRANCH
-
-          echo -e "\n# Remove any old files in the out folder"
-          rm -rfv out/assets/*
-          rm -rfv out/interfaces/*
-          rm -rfv out/*.html
-
-          echo -e "\n# Move the generated docs to the newly-checked-out repo, to be committed and pushed"
-          rsync -vaI .all-contributorsrc out/
-          rsync -vaI LICENSE.md out/
-          rsync -vaI README.md out/
-          rsync -vaI docs/ out/
-
-          echo -e "\n# Commit and push"
-          cd out
-          git add --all .
-          git config user.name "${GITHUB_ACTOR}"
-          git config user.email "${GITHUB_EMAIL}"
-          git commit -m "docs: api docs build for ${GITHUB_SHA}" || true
-          git push origin $TARGET_BRANCH
-        env:
-          GITHUB_TOKEN: ${{ secrets.SKYRA_TOKEN }}
-          GITHUB_ACTOR: NM-EEA-Y
-          GITHUB_EMAIL: contact@skyra.pw

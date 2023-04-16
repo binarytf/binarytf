@@ -2,7 +2,7 @@ import { defineConfig } from 'tsup';
 
 export default defineConfig({
 	clean: true,
-	dts: false,
+	dts: true,
 	entry: ['src/index.ts'],
 	format: ['esm', 'cjs', 'iife'],
 	minify: false,
@@ -11,8 +11,5 @@ export default defineConfig({
 	target: 'es2021',
 	tsconfig: 'src/tsconfig.json',
 	keepNames: true,
-	banner: {
-		js: '"use strict";'
-	},
 	globalName: 'BinaryTF'
 });

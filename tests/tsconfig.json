@@ -5,6 +5,5 @@
 		"incremental": false,
 		"baseUrl": "."
 	},
-	"include": [".", "../src/**/*"],
-	"references": [{ "path": "../src" }]
+	"include": ["."]
 }
