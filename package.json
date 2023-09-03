@@ -36,7 +36,7 @@
 		"@favware/cliff-jumper": "^2.1.1",
 		"@sapphire/eslint-config": "^5.0.1",
 		"@sapphire/prettier-config": "^2.0.0",
-		"@sapphire/ts-config": "^4.0.1",
+		"@sapphire/ts-config": "^5.0.0",
 		"@types/node": "^18.17.6",
 		"@typescript-eslint/eslint-plugin": "^6.4.0",
 		"@typescript-eslint/parser": "^6.4.0",
