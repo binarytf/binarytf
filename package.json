@@ -46,7 +46,7 @@
 		"lint-staged": "^15.0.2",
 		"prettier": "^3.0.3",
 		"tsup": "^7.2.0",
-		"typedoc": "^0.25.0",
+		"typedoc": "^0.25.2",
 		"typescript": "^5.2.2",
 		"vitest": "^0.34.6"
 	},
@@ -94,5 +94,5 @@
 		"minimist": "^1.2.8"
 	},
 	"prettier": "@sapphire/prettier-config",
-	"packageManager": "yarn@3.6.4"
+	"packageManager": "yarn@4.0.1"
 }
