@@ -94,5 +94,5 @@
 		"minimist": "^1.2.8"
 	},
 	"prettier": "@sapphire/prettier-config",
-	"packageManager": "yarn@4.2.1"
+	"packageManager": "yarn@4.2.2"
 }
