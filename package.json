@@ -31,7 +31,7 @@
 	"devDependencies": {
 		"@commitlint/cli": "^19.4.0",
 		"@commitlint/config-conventional": "^19.2.2",
-		"@favware/cliff-jumper": "^4.0.3",
+		"@favware/cliff-jumper": "^4.1.0",
 		"@sapphire/eslint-config": "^5.0.5",
 		"@sapphire/prettier-config": "^2.0.0",
 		"@sapphire/ts-config": "^5.0.1",
@@ -94,5 +94,5 @@
 		"minimist": "^1.2.8"
 	},
 	"prettier": "@sapphire/prettier-config",
-	"packageManager": "yarn@4.4.0"
+	"packageManager": "yarn@4.4.1"
 }
