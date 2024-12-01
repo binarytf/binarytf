@@ -38,17 +38,17 @@
 		"@types/node": "^20.11.5",
 		"@typescript-eslint/eslint-plugin": "^7.13.1",
 		"@typescript-eslint/parser": "^7.13.1",
-		"@vitest/coverage-v8": "^2.1.5",
+		"@vitest/coverage-v8": "^2.1.6",
 		"cz-conventional-changelog": "^3.3.0",
 		"eslint": "^8.57.1",
 		"eslint-config-prettier": "^9.1.0",
 		"eslint-plugin-prettier": "^5.2.1",
 		"lint-staged": "^15.2.10",
-		"prettier": "^3.3.3",
+		"prettier": "^3.4.1",
 		"tsup": "^8.3.5",
 		"typedoc": "^0.26.1",
 		"typescript": "^5.5.2",
-		"vitest": "^2.1.5"
+		"vitest": "^2.1.6"
 	},
 	"repository": {
 		"type": "git",
@@ -94,5 +94,5 @@
 		"minimist": "^1.2.8"
 	},
 	"prettier": "@sapphire/prettier-config",
-	"packageManager": "yarn@4.5.2"
+	"packageManager": "yarn@4.5.3"
 }
