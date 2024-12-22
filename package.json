@@ -29,7 +29,7 @@
 		"prepack": "yarn build"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "^19.6.0",
+		"@commitlint/cli": "^19.6.1",
 		"@commitlint/config-conventional": "^19.6.0",
 		"@favware/cliff-jumper": "^5.0.0",
 		"@sapphire/eslint-config": "^5.0.5",
