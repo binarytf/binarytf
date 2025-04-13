@@ -41,9 +41,9 @@
 		"@vitest/coverage-v8": "^3.1.1",
 		"cz-conventional-changelog": "^3.3.0",
 		"eslint": "^8.57.1",
-		"eslint-config-prettier": "^10.1.1",
+		"eslint-config-prettier": "^10.1.2",
 		"eslint-plugin-prettier": "^5.2.6",
-		"lint-staged": "^15.5.0",
+		"lint-staged": "^15.5.1",
 		"prettier": "^3.5.3",
 		"tsup": "^8.4.0",
 		"typedoc": "^0.26.1",
@@ -94,5 +94,5 @@
 		"minimist": "^1.2.8"
 	},
 	"prettier": "@sapphire/prettier-config",
-	"packageManager": "yarn@4.8.1"
+	"packageManager": "yarn@4.9.0"
 }
