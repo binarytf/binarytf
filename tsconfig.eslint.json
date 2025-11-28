@@ -3,7 +3,8 @@
 	"compilerOptions": {
 		"allowJs": true,
 		"checkJs": true,
-		"types": ["vitest/globals"]
+		"types": ["vitest/globals"],
+		"skipLibCheck": true
 	},
 	"include": ["src", "tests", "vitest.config.ts", "tsup.config.ts"]
 }
