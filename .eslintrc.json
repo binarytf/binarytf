@@ -1,6 +1,7 @@
 {
 	"extends": ["@sapphire"],
 	"rules": {
+		"@typescript-eslint/unbound-method": "off",
 		"@typescript-eslint/no-namespace": "off",
 		"@typescript-eslint/indent": "off",
 		"@typescript-eslint/naming-convention": "off",
