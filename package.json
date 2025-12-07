@@ -29,8 +29,8 @@
 		"prepack": "yarn build"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "^20.1.0",
-		"@commitlint/config-conventional": "^20.0.0",
+		"@commitlint/cli": "^20.2.0",
+		"@commitlint/config-conventional": "^20.2.0",
 		"@favware/cliff-jumper": "^6.0.0",
 		"@sapphire/eslint-config": "^5.0.6",
 		"@sapphire/prettier-config": "^2.0.0",
@@ -39,17 +39,17 @@
 		"@types/node": "^20.19.25",
 		"@typescript-eslint/eslint-plugin": "^7.18.0",
 		"@typescript-eslint/parser": "^7.18.0",
-		"@vitest/coverage-v8": "^4.0.14",
+		"@vitest/coverage-v8": "^4.0.15",
 		"cz-conventional-changelog": "^3.3.0",
 		"eslint": "^8.57.1",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-prettier": "^5.5.4",
 		"lint-staged": "^16.2.7",
-		"prettier": "^3.7.3",
+		"prettier": "^3.7.4",
 		"tsup": "^8.5.1",
 		"typedoc": "^0.26.1",
 		"typescript": "^5.9.3",
-		"vitest": "^4.0.14"
+		"vitest": "^4.0.15"
 	},
 	"repository": {
 		"type": "git",
