@@ -29,13 +29,13 @@
 		"prepack": "yarn build"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "^20.2.0",
-		"@commitlint/config-conventional": "^20.2.0",
+		"@commitlint/cli": "^20.3.0",
+		"@commitlint/config-conventional": "^20.3.0",
 		"@favware/cliff-jumper": "^6.0.0",
 		"@sapphire/eslint-config": "^5.0.6",
 		"@sapphire/prettier-config": "^2.0.0",
 		"@sapphire/ts-config": "^5.0.3",
-		"@swc/core": "^1.15.7",
+		"@swc/core": "^1.15.8",
 		"@types/node": "^20.19.25",
 		"@typescript-eslint/eslint-plugin": "^7.18.0",
 		"@typescript-eslint/parser": "^7.18.0",
