@@ -29,8 +29,8 @@
 		"prepack": "yarn build"
 	},
 	"devDependencies": {
-		"@commitlint/cli": "^20.4.2",
-		"@commitlint/config-conventional": "^20.4.2",
+		"@commitlint/cli": "^20.4.3",
+		"@commitlint/config-conventional": "^20.4.3",
 		"@favware/cliff-jumper": "^6.0.0",
 		"@sapphire/eslint-config": "^5.0.6",
 		"@sapphire/prettier-config": "^2.0.0",
@@ -44,7 +44,7 @@
 		"eslint": "^8.57.1",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-prettier": "^5.5.5",
-		"lint-staged": "^16.3.0",
+		"lint-staged": "^16.3.2",
 		"prettier": "^3.8.1",
 		"tsup": "^8.5.1",
 		"typedoc": "^0.26.1",
